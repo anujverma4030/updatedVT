@@ -3,38 +3,43 @@ import React from 'react'
 import { Image } from 'react-native'
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function SignInLoginHeadPart() {
     const { height, width } = Dimensions.get('window');
-
+    const navigation = useNavigation();
     return (
         <SafeAreaView>
             <View style={styles.mainContainer}>
                 <View>
                     <Image
-                        source={require('../assests/loginSiginBacckgroundImage.png')}
+                        source={require('../../assests/loginSiginBacckgroundImage.png')}
                         style={styles.image}
                     />
                 </View>
                 <View>
                     <Image
                         style={[styles.image, { top: height * -0.45 }]}
-                        source={require("../assests/leftCoins.png")}
+                        source={require("../../assests/leftCoins.png")}
                     />
                     <Image
                         style={[styles.image, { top: height * -0.75, left: width * 0.4 }]}
-                        source={require("../assests/rightCoins.png")}
+                        source={require("../../assests/rightCoins.png")}
                     />
                 </View>
                 <View style={[styles.loginAndCreateAccountContainer, { top: height * 0.09 }]}>
                     <View style={styles.loginArrowBackContain}>
-                        <TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => navigation.goBack()}
+                        >
                             <Icon style={styles.icon} name='arrow-back' size={20} color="#000000" />
                         </TouchableOpacity>
                         <Text style={styles.loginText}>Log In</Text>
                     </View>
                     <View style={styles.loginArrowBackContain}>
-                        <TouchableOpacity style={styles.createAccountButton}>
+                        <TouchableOpacity
+                         onPress={() => navigation.navigate('SignUpScreen')}
+                        style={styles.createAccountButton}>
                             <Text style={styles.createNewText}>Create New Account</Text>
                         </TouchableOpacity>
                     </View>

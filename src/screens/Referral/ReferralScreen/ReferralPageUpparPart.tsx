@@ -9,19 +9,19 @@ const ReferralPageUpparPart = () => {
     return (
         <SafeAreaView style={styles.MainContainer}>
             <ScrollView
-                contentContainerStyle={{ flexGrow: 1}}
+                contentContainerStyle={{ flexGrow: 1 }}
                 showsVerticalScrollIndicator={false}
-            >x
+            >
                 <View style={{ height: 525 }}>
                     <ImageBackground
-                        source={require('../../assests/refferalPageBGImage.png')}
+                        source={require('../../../assests/refferalPageBGImage.png')}
                         style={styles.BGImage}
                         resizeMode='stretch'
                     >
                         <Text style={styles.ReferHeaderText}>Refer Your Friends {'\n'}And Earn</Text>
 
                         <Image
-                            source={require('../../assests/refferalPageBoyGirlImage.png')}
+                            source={require('../../../assests/refferalPageBoyGirlImage.png')}
                             style={[styles.refferralImage, { bottom: height * 0.03 }]}
                         />
 
@@ -39,19 +39,19 @@ const ReferralPageUpparPart = () => {
                         <View style={styles.socialIconsContainer}>
                             <TouchableOpacity style={[styles.IconImage]}>
                                 <Image
-                                    source={require('../../assests/refferalPageWhatsappImage.png')}
+                                    source={require('../../../assests/refferalPageWhatsappImage.png')}
                                     resizeMode='contain'
                                 />
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.IconImage, { bottom: height * 0.02 }]}>
                                 <Image
-                                    source={require('../../assests/refferalPageTelegramImage.png')}
+                                    source={require('../../../assests/refferalPageTelegramImage.png')}
                                     resizeMode='contain'
                                 />
                             </TouchableOpacity>
                             <TouchableOpacity style={[styles.IconImage]}>
                                 <Image
-                                    source={require('../../assests/refferalPageSmsImage.png')}
+                                    source={require('../../../assests/refferalPageSmsImage.png')}
                                     resizeMode='contain'
                                 />
                             </TouchableOpacity>

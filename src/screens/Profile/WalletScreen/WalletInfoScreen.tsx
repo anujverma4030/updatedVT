@@ -62,13 +62,13 @@ const WalletInfoScreen = () => {
 
                 <View style={styles.CuponCardContainer}>
                     <View style={styles.cuponCard}>
-                        <Image source={require('../../assests/homepageBigWinImage.png')} style={styles.cardImage} />
+                        <Image source={require('../../../assests/homepageBigWinImage.png')} style={styles.cardImage} />
                         <TouchableOpacity style={[styles.playButton, { top: height * 0.08, left: width * 0.1 }]}>
                             <Text style={styles.playButtonText}>Clam Now</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={styles.cuponCard}>
-                        <Image source={require('../../assests/homepageGirlScrollImage.png')} style={styles.cardImage} />
+                        <Image source={require('../../../assests/homepageGirlScrollImage.png')} style={styles.cardImage} />
                         <TouchableOpacity style={[styles.playButton, { top: height * 0.08, left: width * 0.1 }]}>
                             <Text style={styles.playButtonText}>Claimed</Text>
                         </TouchableOpacity>

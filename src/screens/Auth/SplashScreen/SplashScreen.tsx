@@ -1,9 +1,17 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Image, useWindowDimensions, View } from 'react-native'
 // import Logo from '../assests/landing.svg';
 
-const LandingScreen = () => {
+const SplashScreen = ({ navigation }) => {
     const screen = useWindowDimensions();
+    useEffect(() => {
+
+        const timer = setTimeout(() => {
+            navigation.replace('WelcomeScreen');
+        }, 2000);
+
+
+    }, [])
     return (
         <View>
 
@@ -12,13 +20,13 @@ const LandingScreen = () => {
                 style={{
                     width: "100%",
                     height: screen.height,
-                
+
 
                 }}
-                source={require('../assests/landing.png')}
+                source={require('../../../assests/landing.png')}
             />
         </View>
     )
 }
 
-export default LandingScreen;
+export default SplashScreen;

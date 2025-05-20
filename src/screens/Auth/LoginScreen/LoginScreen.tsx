@@ -1,11 +1,14 @@
 import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import React from 'react';
-import SignInLoginHeadPart from '../components/SignInLoginHeadPart';
+
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import SignInLoginHeadPart from '../../../components/Header/SignInLoginHeadPart';
+import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
     const { height, width } = Dimensions.get('window');
+    const navigation = useNavigation();
     return (
         <SafeAreaView style={styles.container}>
             <SignInLoginHeadPart />
@@ -31,7 +34,9 @@ export default function LoginScreen() {
                     <Text style={styles.forgotPasswordText}>Forgot Password ?</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.loginButton}>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('MainTabs')} // for now
+                    style={styles.loginButton}>
                     <Text style={styles.loginButtonText}>Log In</Text>
                 </TouchableOpacity>
 
@@ -47,19 +52,19 @@ export default function LoginScreen() {
                     <TouchableOpacity style={styles.button}>
                         <Image
                             style={styles.socialIcon}
-                            source={require('../assests/googleLogo.png')}
+                            source={require('../../../assests/googleLogo.png')}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button}>
                         <Image
                             style={styles.socialIcon}
-                            source={require('../assests/appleLogo.png')}
+                            source={require('../../../assests/appleLogo.png')}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button}>
                         <Image
                             style={styles.socialIcon}
-                            source={require('../assests/facebookLogo.png')}
+                            source={require('../../../assests/facebookLogo.png')}
                         />
                     </TouchableOpacity>
                 </View>
@@ -67,7 +72,7 @@ export default function LoginScreen() {
                 <Text style={styles.signUpPrompt}>
                     Don't Have Account?
                     <TouchableOpacity>
-                        <Text style={styles.signInLink}> Sign In</Text>
+                        <Text style={styles.signInLink}> Sign Up</Text>
                     </TouchableOpacity>
                 </Text>
             </View>

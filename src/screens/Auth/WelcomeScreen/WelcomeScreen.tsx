@@ -1,15 +1,17 @@
 import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import React from 'react'
+import { useNavigation } from '@react-navigation/native';
 
 export default function WelcomeScreen() {
+    const navigation = useNavigation();
     const { height } = Dimensions.get('window');
     return (
         <View>
             <SafeAreaView>
                 <View style={styles.mainContainer}>
                     <Image
-                        source={require('../assests/welcome.png')}
+                        source={require('../../../assests/welcome.png')}
                         style={styles.image}
                     />
                     <View style={[styles.overlay, { top: height * 0.05 }]}>
@@ -20,18 +22,22 @@ export default function WelcomeScreen() {
                     <View style={[styles.spinImageOverlay, { top: height * 0.16 }]}>
                         <Image
                             style={styles.spinImage}
-                            source={require('../assests/welcom@spin.png')}
+                            source={require('../../../assests/welcom@spin.png')}
                         />
                     </View>
                 </View>
                 <View style={[styles.buttonContainer, { top: height * 0.82 }]}>
                     <View>
-                        <TouchableOpacity style={styles.button}>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('SignUpScreen')}
+                            style={styles.button}>
                             <Text style={styles.signupText}>Sign Up</Text>
                         </TouchableOpacity>
                     </View>
                     <View>
-                        <TouchableOpacity style={styles.loginbutton}>
+                        <TouchableOpacity
+                            onPress={() => navigation.navigate('LoginScreen')}
+                            style={styles.loginbutton}>
                             <Text style={styles.loginText}>Log In</Text>
                         </TouchableOpacity>
                     </View>

@@ -1,42 +1,49 @@
-import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity, Dimensions, Image } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity, Dimensions, Image, Alert } from 'react-native'
 import React from 'react'
 import SignInLoginHeadPart from '../components/SignInLoginHeadPart';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { RFValue } from 'react-native-responsive-fontsize';
+import { useNavigation } from '@react-navigation/native';
 
 
-const SignInScreen = () => {
+const SignUpScreen = () => {
     const { height, width } = Dimensions.get('window');
-
+    const navigation = useNavigation();
     return (
         <SafeAreaView style={styles.container}>
             <SafeAreaView>
                 <View style={styles.mainContainer}>
                     <View>
                         <Image
-                            source={require('../assests/loginSiginBacckgroundImage.png')}
+                            source={require('../../../assests/loginSiginBacckgroundImage.png')}
                             style={styles.image}
                         />
                     </View>
                     <View>
                         <Image
                             style={[styles.image, { top: height * -0.45 }]}
-                            source={require("../assests/leftCoins.png")}
+                            source={require("../../../assests/leftCoins.png")}
                         />
                         <Image
                             style={[styles.image, { top: height * -0.75, left: width * 0.4 }]}
-                            source={require("../assests/rightCoins.png")}
+                            source={require("../../../assests/rightCoins.png")}
                         />
                     </View>
                     <View style={[styles.loginAndCreateAccountContainer, { top: height * 0.09 }]}>
                         <View style={styles.loginArrowBackContain}>
-                            <TouchableOpacity>
+                            <TouchableOpacity
+                                onPress={() =>navigation.goBack()}
+
+                            >
                                 <Icon style={styles.BackIcon} name='arrow-back' size={20} color="#000000" />
                             </TouchableOpacity>
-                            <Text style={styles.loginText}>Sign In</Text>
+                            <Text style={styles.loginText}>Sign Up</Text>
                         </View>
                         <View style={styles.loginArrowBackContain}>
-                            <TouchableOpacity style={styles.createAccountButton}>
+                            <TouchableOpacity 
+                            
+                            
+                            style={styles.createAccountButton}>
                                 <Text style={styles.createNewText}>Create New Account</Text>
                             </TouchableOpacity>
                         </View>
@@ -59,7 +66,7 @@ const SignInScreen = () => {
                             size={18}
                             color="#000"
                         />
-                    </TouchableOpacity> 
+                    </TouchableOpacity>
                 </View>
                 <TouchableOpacity style={styles.forgotPassword}>
                     <Text style={styles.forgotPasswordText}>Forgot Password ?</Text>
@@ -81,19 +88,19 @@ const SignInScreen = () => {
                     <TouchableOpacity style={styles.button}>
                         <Image
                             style={styles.socialIcon}
-                            source={require('../assests/googleLogo.png')}
+                            source={require('../../../assests/googleLogo.png')}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button}>
                         <Image
                             style={styles.socialIcon}
-                            source={require('../assests/appleLogo.png')}
+                            source={require('../../../assests/appleLogo.png')}
                         />
                     </TouchableOpacity>
                     <TouchableOpacity style={styles.button}>
                         <Image
                             style={styles.socialIcon}
-                            source={require('../assests/facebookLogo.png')}
+                            source={require('../../../assests/facebookLogo.png')}
                         />
                     </TouchableOpacity>
                 </View>
@@ -273,4 +280,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default SignInScreen
+export default SignUpScreen

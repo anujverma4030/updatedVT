@@ -19,7 +19,7 @@ const ProfileScreenUpperside = () => {
 
                 <View style={[styles.profileImageAndTextContainer, { bottom: height * 0.06 }]}>
                     <Image
-                        source={require('../assests/profileScreeenProfileImage.png')}
+                        source={require('../../../assests/profileScreeenProfileImage.png')}
                         style={styles.profileImage}
                         resizeMode='contain'
                     />

@@ -40,7 +40,7 @@ const PersonalDetails = () => {
 
                 <View style={styles.profileImageAndTextContainer}>
                     <Image
-                        source={require('../../assests/profileScreeenProfileImage.png')}
+                        source={require('../../../assests/profileScreeenProfileImage.png')}
                         style={styles.Image}
                     />
                     <TouchableOpacity

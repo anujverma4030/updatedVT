@@ -56,7 +56,7 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
                             <View style={styles.menu}>
                                 <View style={styles.MenuItemImageContainer}>
                                     <Image
-                                        source={require('../assests/MenuHeadIcon.png')}
+                                        source={require('../../assests/MenuHeadIcon.png')}
                                         style={styles.MenuItemImage}
                                     />
                                 </View>

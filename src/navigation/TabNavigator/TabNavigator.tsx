@@ -67,7 +67,7 @@ export default TabNavigator;
 
 const styles = StyleSheet.create({
     tabBarStyle: {
-        height: 75,
+        // height: 75,
         position: 'absolute',
         left: 0,
         right: 0,
@@ -79,5 +79,6 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: -2 },
         shadowOpacity: 0.1,
         shadowRadius: 5,
+        borderEndEndRadius:20
     }
 });

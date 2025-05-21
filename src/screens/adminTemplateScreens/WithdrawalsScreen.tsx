@@ -6,8 +6,9 @@ import {
   Text,
   View
 } from 'react-native'
-import AdminTemplateHeaderPart from '../components/AdminTemplateHeaderPart'
+
 import { RFValue } from 'react-native-responsive-fontsize'
+import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart'
 
 const depositRequests = [
   { REQId: 'REQ21', userId: 'UU01', amount: 'Rs.200', RequestTime: '5/09/2025', status: 'Pending' },

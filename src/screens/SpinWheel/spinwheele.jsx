@@ -50,7 +50,7 @@ class App extends Component {
       duration: 6000,
       backgroundColor: 'transparent',
       textAngle: 'horizontal',
-      knobSource: require('../assests/spinWheelImage.png'),
+      knobSource: require('../../assests/spinWheelImage.png'),
       onRef: ref => (this.child = ref),
     };
     return (

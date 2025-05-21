@@ -10,9 +10,12 @@ import SettingsScreen from '../screens/Settings/SettingsScreen';
 import WelcomeScreen from '../screens/Auth/WelcomeScreen/WelcomeScreen';
 import SplashScreen from '../screens/Auth/SplashScreen/SplashScreen';
 import { NavigationContainer } from '@react-navigation/native';
-import AuthNavigator from './AuthNavigator/AuthNavigator';
+
 import LoginScreen from '../screens/Auth/LoginScreen/LoginScreen';
 import SignUpScreen from '../screens/Auth/OTPVerificationScreen/SignUpScreen';
+import AdminStackNavigator from './AdminStackNavigator';
+import AuthNavigator from './AuthNavigator/AuthNavigator';
+// import AuthNavigator from './AuthNavigator/AuthNavigator';
 
 const Stack = createNativeStackNavigator();
 
@@ -21,11 +24,11 @@ const MainStackNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name='SplashScreen' component={SplashScreen} />
+        <Stack.Screen name='AdminPanel' component={AdminStackNavigator} />
         <Stack.Screen name='WelcomeScreen' component={WelcomeScreen} />
-        {/* <Stack.Screen name='AuthStack' component={AuthNavigator} /> */}
+        <Stack.Screen name='AuthStack' component={AuthNavigator} />
         <Stack.Screen name='LoginScreen' component={LoginScreen} />
-            <Stack.Screen name='SignUpScreen' component={SignUpScreen} />
-
+        <Stack.Screen name='SignUpScreen' component={SignUpScreen} />
         <Stack.Screen name="MainTabs" component={TabNavigator} />
         <Stack.Screen name="ReferralDetails" component={ReferralDetailsScreen} />
         <Stack.Screen name="PersonalDetails" component={PersonalDetails} />

@@ -148,7 +148,9 @@ const styles = StyleSheet.create({
         color: '#fff'
     },
     CuponCardContainer: {
-        flexDirection: 'row'
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: "center"
     },
     cuponCard: {
         marginTop: 20,
@@ -159,12 +161,14 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         backgroundColor: '#fff',
         elevation: 3,
-        opacity: 0.4
+
+
     },
     cardImage: {
         width: '100%',
         height: 112,
         resizeMode: 'cover',
+        opacity: 0.7
     },
     playButton: {
         backgroundColor: '#34A853',

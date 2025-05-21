@@ -7,8 +7,9 @@ import {
   View,
   TextInput
 } from 'react-native'
-import AdminTemplateHeaderPart from '../../../src/components/Header/AdminTemplateHeaderPart'
+
 import { RFValue } from 'react-native-responsive-fontsize'
+import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart'
 
 const users = new Array(8).fill({
   userId: 'UU01',
@@ -47,7 +48,6 @@ const UsersScreen = () => {
                 <Text style={[styles.headerCell, { width: columnWidths.status }]}>Status</Text>
                 <Text style={[styles.headerCell, { width: columnWidths.actions }]}>Actions</Text>
               </View>
-
               {users.map((user, index) => (
                 <View style={styles.row} key={index}>
                   <Text style={[styles.cell, { width: columnWidths.userId }]}>{user.userId}</Text>

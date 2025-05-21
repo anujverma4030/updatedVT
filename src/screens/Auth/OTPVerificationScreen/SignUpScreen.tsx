@@ -73,14 +73,14 @@ const SignUpScreen = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity style={styles.loginButton}>
-                    <Text style={styles.loginButtonText}>Sign In</Text>
+                    <Text style={styles.loginButtonText}>Sign Up</Text>
                 </TouchableOpacity>
 
                 <Text style={styles.orText}>Or</Text>
 
                 <View style={styles.dividerContainer}>
                     <View style={styles.divider} />
-                    <Text style={styles.loginWith}>Log In With</Text>
+                    <Text style={styles.loginWith}>Sign Up With</Text>
                     <View style={styles.divider} />
                 </View>
 

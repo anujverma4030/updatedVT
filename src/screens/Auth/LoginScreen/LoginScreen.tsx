@@ -1,6 +1,5 @@
 import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import React from 'react';
-
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import SignInLoginHeadPart from '../../../components/Header/SignInLoginHeadPart';
@@ -13,7 +12,7 @@ export default function LoginScreen() {
         <SafeAreaView style={styles.container}>
             <SignInLoginHeadPart />
             <View style={styles.body}>
-                <Text style={styles.welcomeText}>WellCome Back!</Text>
+                <Text style={styles.welcomeText}>WelCome Back!</Text>
 
                 <Text style={styles.label}>E-Mail Address / Phone Number</Text>
                 <TextInput style={styles.input} />
@@ -47,7 +46,6 @@ export default function LoginScreen() {
                     <Text style={styles.loginWith}>Log In With</Text>
                     <View style={styles.divider} />
                 </View>
-
                 <View style={styles.socialIconContainer}>
                     <TouchableOpacity style={styles.button}>
                         <Image
@@ -68,11 +66,10 @@ export default function LoginScreen() {
                         />
                     </TouchableOpacity>
                 </View>
-
                 <Text style={styles.signUpPrompt}>
                     Don't Have Account?
                     <TouchableOpacity>
-                        <Text style={styles.signInLink}> Sign Up</Text>
+                        <Text style={styles.signInLink}>Sign Up</Text>
                     </TouchableOpacity>
                 </Text>
             </View>

@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
-import AdminTemplateHeaderPart from '../../../src/components/Header/AdminTemplateHeaderPart'
+import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart'
+
 
 const AdminSettingsScreen = () => {
   return (

@@ -1,12 +1,13 @@
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import DashBoardScreen from '../../utils/sorce/adminTemplateScreens/DashBoardScreen';
-import UsersScreen from '../../utils/sorce/adminTemplateScreens/UsersScreen';
-import InvestmentsScreen from '../components/InvestmentCard/InvestmentsScreen';
-import SpinLogsScreen from '../../utils/sorce/adminTemplateScreens/SpinLogsScreen';
-import DepositsScreen from '../../utils/sorce/adminTemplateScreens/DepositsScreen';
-import WithdrawalsScreen from '../../utils/sorce/adminTemplateScreens/WithdrawalsScreen';
-import AdminSettingsScreen from '../../utils/sorce/adminTemplateScreens/AdminSettingsScreen';
+import DashBoardScreen from '../screens/adminTemplateScreens/DashBoardScreen';
+import UsersScreen from '../screens/adminTemplateScreens/UsersScreen';
+
+import SpinLogsScreen from '../screens/adminTemplateScreens/SpinLogsScreen';
+import DepositsScreen from '../screens/adminTemplateScreens/DepositsScreen';
+import WithdrawalsScreen from '../screens/adminTemplateScreens/WithdrawalsScreen';
+import AdminSettingsScreen from '../screens/adminTemplateScreens/AdminSettingsScreen';
+import InvestmentsScreen from '../screens/adminTemplateScreens/InvestmentsScreen';
 
 
 const Stack = createNativeStackNavigator();

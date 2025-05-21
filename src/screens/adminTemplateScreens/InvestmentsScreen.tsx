@@ -6,31 +6,34 @@ import {
   Text,
   View
 } from 'react-native'
-import AdminTemplateHeaderPart from '../components/AdminTemplateHeaderPart'
+
 import { RFValue } from 'react-native-responsive-fontsize'
+import { TextInput } from 'react-native-gesture-handler'
+import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart'
 
-const depositRequests = [
-  { txnId: 'TX001', userId: 'UU01', amount: 'Rs.200', screenshot: 'View', status: 'Pending' },
-  { txnId: 'TX002', userId: 'UU01', amount: 'Rs.300', screenshot: 'View', status: 'Pending' },
-  { txnId: 'TX003', userId: 'UU01', amount: 'Rs.200', screenshot: 'View', status: 'Pending' },
-  { txnId: 'TX004', userId: 'UU01', amount: 'Rs.400', screenshot: 'View', status: 'Pending' },
-]
-
+const investments = new Array(5).fill({
+  userId: 'UU01',
+  planName: 'Gold',
+  amount: 'Rs.500',
+  roi: '2.5%',
+  status: 'Active',
+  date: '1/25–15/25',
+})
 
 const columnWidths = {
-  txnId: 80,
   userId: 80,
+  planName: 100,
   amount: 100,
-  screenshot: 120,
+  roi: 100,
   status: 100,
-  actions: 140,
+  date: 100,
 }
 
-const DepositsScreen = () => {
+const InvestmentsScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
       <ScrollView>
-        <AdminTemplateHeaderPart name='Deposits' paddingBottom={20}/>
+        <AdminTemplateHeaderPart name='Investments' paddingBottom={20}/>
         <View style={styles.container}>
           <ScrollView
             horizontal
@@ -39,25 +42,22 @@ const DepositsScreen = () => {
           >
             <View style={styles.TableContainer}>
               <View style={[styles.row, styles.headerRow]}>
-                <Text style={[styles.headerCell, { width: columnWidths.txnId }]}>Txn ID</Text>
                 <Text style={[styles.headerCell, { width: columnWidths.userId }]}>User ID</Text>
+                <Text style={[styles.headerCell, { width: columnWidths.planName }]}>Plan Name</Text>
                 <Text style={[styles.headerCell, { width: columnWidths.amount }]}>Amount</Text>
-                <Text style={[styles.headerCell, { width: columnWidths.screenshot }]}>Screenshot Link</Text>
+                <Text style={[styles.headerCell, { width: columnWidths.roi }]}>R.O.I</Text>
                 <Text style={[styles.headerCell, { width: columnWidths.status }]}>Status</Text>
-                <Text style={[styles.headerCell, { width: columnWidths.actions }]}>Actions</Text>
+                <Text style={[styles.headerCell, { width: columnWidths.date }]}>Dates</Text>
               </View>
 
-              {depositRequests.map((item, index) => (
+              {investments.map((item, index) => (
                 <View style={styles.row} key={index}>
-                  <Text style={[styles.cell, { width: columnWidths.txnId }]}>{item.txnId}</Text>
                   <Text style={[styles.cell, { width: columnWidths.userId }]}>{item.userId}</Text>
+                  <Text style={[styles.cell, { width: columnWidths.planName }]}>{item.planName}</Text>
                   <Text style={[styles.cell, { width: columnWidths.amount }]}>{item.amount}</Text>
-                  <Text style={[styles.cell, { width: columnWidths.screenshot, color: 'blue', textDecorationLine: 'underline' }]}>{item.screenshot}</Text>
-                  <Text style={[styles.cell, { width: columnWidths.status, color: '#E5A400' }]}>{item.status}</Text>
-                  <View style={[styles.cell, { width: columnWidths.actions, flexDirection: 'row' }]}>
-                    <Text style={[styles.link, { color: 'green', textDecorationLine: 'underline' }]}>Approve</Text>
-                    <Text style={[styles.reject, { marginLeft: 10 }]}>Reject</Text>
-                  </View>
+                  <Text style={[styles.cell, { width: columnWidths.roi }]}>{item.roi}</Text>
+                  <Text style={[styles.cell, { width: columnWidths.status }]}>{item.status}</Text>
+                  <Text style={[styles.cell, { width: columnWidths.date }]}>{item.date}</Text>
                 </View>
               ))}
             </View>
@@ -68,7 +68,7 @@ const DepositsScreen = () => {
   )
 }
 
-export default DepositsScreen
+export default InvestmentsScreen
 
 const styles = StyleSheet.create({
   container: {

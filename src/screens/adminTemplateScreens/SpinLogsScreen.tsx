@@ -6,9 +6,10 @@ import {
   Text,
   View
 } from 'react-native'
-import AdminTemplateHeaderPart from '../../../src/components/Header/AdminTemplateHeaderPart'
+
 import { RFValue } from 'react-native-responsive-fontsize'
 import { TextInput } from 'react-native-gesture-handler'
+import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart'
 
 const spinLogs = [
   { date: '1/2/25', userId: 'UU01', result: 'Win', amount: 'Rs.200' },

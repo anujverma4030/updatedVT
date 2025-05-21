@@ -11,8 +11,9 @@ import {
 import React, { useState } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import AdminTemplateHeaderPart from '../../../src/components/Header/AdminTemplateHeaderPart';
+
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart';
 
 const DashBoardScreen = () => {
     const inset = useSafeAreaInsets();
@@ -114,11 +115,11 @@ const DashBoardScreen = () => {
 
                         <View style={[styles.SignupTrendImageContainer, { left: width * 0.01 }]}>
                             <Image
-                                source={require('../assests/signUpTerndImageDays.png')}
+                                source={require('../../assests/signUpTerndImageDays.png')}
                                 style={styles.SignupTrendImageDays}
                             />
                             <Image
-                                source={require('../assests/signUpTrendImage.png')}
+                                source={require('../../assests/signUpTrendImage.png')}
                                 style={styles.SignupTrendImage}
                             />
                             <View style={[styles.TextTimeContainer, { bottom: height * 0.01 }]}>
@@ -164,7 +165,7 @@ const DashBoardScreen = () => {
                         {/* Right Side: Static Pie Chart Image */}
                         <View style={styles.chartImageContainer}>
                             <Image
-                                source={require('../assests/investment_plan_pie_chart.png')}
+                                source={require('../../assests/investment_plan_pie_chart.png')}
                                 style={[styles.chartImage, { right: width * 0.15 }]}
                             />
                         </View>

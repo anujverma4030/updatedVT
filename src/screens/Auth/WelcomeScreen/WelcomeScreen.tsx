@@ -1,6 +1,6 @@
 import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native'
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native';
 
 export default function WelcomeScreen() {

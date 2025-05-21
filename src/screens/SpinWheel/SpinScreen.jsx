@@ -22,7 +22,7 @@ const SpinScreen = () => {
             style={styles.spinWheelImage}
           />
           {/* <Image
-          source={require('../assests/spinPageGiftImage.png')}
+          source={require('../../assests/spinPageGiftImage.png')}
           style={{ width: 20, height: 20, marginBottom: 15 }}
           resizeMode='contain'
           /> */}

@@ -21,7 +21,7 @@ const participants = [
   '%90',
   'FREE',
 ];
-class App extends Component {
+class SpinWheel extends Component {
   constructor(props) {
     super(props);
 
@@ -39,7 +39,6 @@ class App extends Component {
     });
     this.child._onPress();
   };
-
   render() {
     const wheelOptions = {
       rewards: participants,
@@ -55,7 +54,7 @@ class App extends Component {
     };
     return (
       <View style={styles.container}>
-        <StatusBar barStyle={'light-content'} />
+        <StatusBar barStyle={'light-content'} backgroundColor={'transparent'}/>
         <WheelOfFortune
           options={wheelOptions}
           getWinner={(value, index) => {
@@ -90,7 +89,7 @@ class App extends Component {
     );
   }
 }
-export default App;
+export default SpinWheel;
 
 const styles = StyleSheet.create({
   container: {
@@ -103,7 +102,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
   },
   startButton: {
-    backgroundColor: 'rgba(0,0,0,.5)',
+    backgroundColor: 'rgba(0,0,0,0.5)',
     marginTop: 50,
     padding: 5,
   },

@@ -32,7 +32,7 @@ const SignUpScreen = () => {
                     <View style={[styles.loginAndCreateAccountContainer, { top: height * 0.09 }]}>
                         <View style={styles.loginArrowBackContain}>
                             <TouchableOpacity
-                                onPress={() =>navigation.goBack()}
+                                onPress={() => navigation.goBack()}
 
                             >
                                 <Icon style={styles.BackIcon} name='arrow-back' size={20} color="#000000" />
@@ -40,10 +40,8 @@ const SignUpScreen = () => {
                             <Text style={styles.loginText}>Sign Up</Text>
                         </View>
                         <View style={styles.loginArrowBackContain}>
-                            <TouchableOpacity 
-                            
-                            
-                            style={styles.createAccountButton}>
+                            <TouchableOpacity
+                                style={styles.createAccountButton}>
                                 <Text style={styles.createNewText}>Create New Account</Text>
                             </TouchableOpacity>
                         </View>
@@ -104,13 +102,9 @@ const SignUpScreen = () => {
                         />
                     </TouchableOpacity>
                 </View>
-
-                <Text style={styles.signUpPrompt}>
-                    Already Have an Account?
-                    <TouchableOpacity>
-                        <Text style={styles.signInLink}> Log In</Text>
-                    </TouchableOpacity>
-                </Text>
+                <TouchableOpacity style={styles.dontHaveView}>
+                    <Text style={styles.signInLink}>Already Have an Account? Log In</Text>
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     )
@@ -171,7 +165,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         borderTopLeftRadius: 25,
         borderTopRightRadius: 25,
-        marginTop: -100
+        marginTop: -100,
+
     },
     welcomeText: {
         fontSize: RFValue(20),
@@ -195,6 +190,8 @@ const styles = StyleSheet.create({
     passwordContainer: {
         display: 'flex',
         flexDirection: 'row',
+        // justifyContent:"center",
+        // alignItems:"center",
     },
     inputPassword: {
         borderWidth: 1,
@@ -203,14 +200,18 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 8,
         marginBottom: 15,
-        width: "100%"
+        width: "100%",
+        flex: 1,
     },
     icon: {
         position: 'absolute',
+        marginRight: 5,
+
+
     },
     forgotPassword: {
         alignItems: 'flex-end',
-        marginVertical: 5,
+        // marginVertical: 5,
     },
     forgotPasswordText: {
         fontSize: RFValue(10),
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
     dividerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginVertical: 15,
+        marginVertical: 5,
     },
     divider: {
         flex: 1,
@@ -267,15 +268,22 @@ const styles = StyleSheet.create({
         resizeMode: 'contain',
     },
     signUpPrompt: {
-        marginTop: 60,
+        marginTop: 20,
         marginBottom: 20,
         textAlign: 'center',
         fontSize: RFValue(12),
         color: '#000',
     },
     signInLink: {
+        textAlign: 'center',
         color: "green",
-        fontWeight: 600
+        fontWeight: '600',
+    },
+    dontHaveView: {
+        marginTop: 20,
+        marginBottom: 20,
+        justifyContent: "center",
+        alignItems: "center",
     }
 
 });

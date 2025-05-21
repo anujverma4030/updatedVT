@@ -6,13 +6,14 @@ import { RFValue } from 'react-native-responsive-fontsize';
 const ReferralPageUpparPart = () => {
     const insets = useSafeAreaInsets();
     const { height } = Dimensions.get('window');
+    console.log(height * 0.03);
     return (
         <SafeAreaView style={styles.MainContainer}>
             <ScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
                 showsVerticalScrollIndicator={false}
             >
-                <View style={{ height: 525 }}>
+                <View style={{ height: 525,}}>
                     <ImageBackground
                         source={require('../../../assests/refferalPageBGImage.png')}
                         style={styles.BGImage}
@@ -22,10 +23,10 @@ const ReferralPageUpparPart = () => {
 
                         <Image
                             source={require('../../../assests/refferalPageBoyGirlImage.png')}
-                            style={[styles.refferralImage, { bottom: height * 0.03 }]}
+                            style={[styles.refferralImage, { bottom: height * 0.05 }]}
                         />
 
-                        <View style={[styles.wrapper, { bottom: height * 0.03 }]}>
+                        <View style={[styles.wrapper, { bottom: height * 0.06 }]}>
                             <View style={styles.couponContainer}>
                                 <View style={styles.codeSection}>
                                     <Text style={styles.codeText}>ROHAN2025</Text>
@@ -36,7 +37,7 @@ const ReferralPageUpparPart = () => {
                             </View>
                             <Text style={styles.shareNow}>SHARE NOW</Text>
                         </View>
-                        <View style={styles.socialIconsContainer}>
+                        <View style={[styles.socialIconsContainer,{ bottom: height * 0.02}]}>
                             <TouchableOpacity style={[styles.IconImage]}>
                                 <Image
                                     source={require('../../../assests/refferalPageWhatsappImage.png')}
@@ -67,19 +68,22 @@ export default ReferralPageUpparPart;
 
 const styles = StyleSheet.create({
     MainContainer: {
-        // flex: 1,
+        flex: 1,
         backgroundColor: '#fff',
     },
     BGImage: {
         width: '100%',
-        height: '100%',
+        height: 550,
+        paddingTop:20,
+        
     },
     ReferHeaderText: {
         fontSize: RFValue(20),
-        fontWeight: 500,
+        fontWeight: '500',
         color: '#fff',
         textAlign: 'center',
-        marginTop: 20
+        marginTop: 20,
+        
     },
     refferralImage: {
         resizeMode: 'contain',

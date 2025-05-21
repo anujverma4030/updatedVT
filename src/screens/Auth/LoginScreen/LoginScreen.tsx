@@ -66,12 +66,10 @@ export default function LoginScreen() {
                         />
                     </TouchableOpacity>
                 </View>
-                <Text style={styles.signUpPrompt}>
-                    Don't Have Account?
-                    <TouchableOpacity>
-                        <Text style={styles.signInLink}>Sign Up</Text>
-                    </TouchableOpacity>
-                </Text>
+                <TouchableOpacity style={styles.dontHaveView}>
+                    <Text style={styles.signInLink}>Don't Have Account? Sign Up</Text>
+                </TouchableOpacity>
+
             </View>
         </SafeAreaView>
     );
@@ -137,7 +135,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
         paddingVertical: 10,
         borderRadius: 5,
-        marginTop: 30
+        marginTop: 20
     },
     loginButtonText: {
         color: '#fff',
@@ -170,8 +168,8 @@ const styles = StyleSheet.create({
     socialIconContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        marginBottom: 20,
-        marginTop: 20
+        marginBottom: 10,
+        marginTop: 10
     },
     button: {
         backgroundColor: "#E7E7E7",
@@ -192,7 +190,13 @@ const styles = StyleSheet.create({
     },
     signInLink: {
         color: "green",
-        fontWeight: 600
+        fontWeight: '600'
+    },
+    dontHaveView:{
+        marginTop: 20,
+        marginBottom: 20,
+        justifyContent: "center",
+        alignItems: "center",
     }
 
 });

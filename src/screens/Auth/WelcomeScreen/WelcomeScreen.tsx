@@ -26,7 +26,7 @@ export default function WelcomeScreen() {
                         />
                     </View>
                 </View>
-                <View style={[styles.buttonContainer, { top: height * 0.82 }]}>
+                <View style={[styles.buttonContainer, { top: height * 0.76 }]}>
                     <View>
                         <TouchableOpacity
                             onPress={() => navigation.navigate('SignUpScreen')}

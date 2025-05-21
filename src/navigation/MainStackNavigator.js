@@ -6,19 +6,17 @@ import PersonalDetails from '../screens/Profile/PersonalDetailsScreen/PersonalDe
 import WalletInfoScreen from '../screens/Profile/WalletScreen/WalletInfoScreen';
 import TransactionHistoryScreen from '../screens/Transactions/TransactionHistoryScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
-
 import WelcomeScreen from '../screens/Auth/WelcomeScreen/WelcomeScreen';
 import SplashScreen from '../screens/Auth/SplashScreen/SplashScreen';
 import { NavigationContainer } from '@react-navigation/native';
-
 import LoginScreen from '../screens/Auth/LoginScreen/LoginScreen';
 import SignUpScreen from '../screens/Auth/OTPVerificationScreen/SignUpScreen';
 import AdminStackNavigator from './AdminStackNavigator';
 import AuthNavigator from './AuthNavigator/AuthNavigator';
+import UserDeposit from '../screens/Deposit/UserDeposit';
+import UserWithdraw from '../screens/Withdraw/UserWithdraw';
 // import AuthNavigator from './AuthNavigator/AuthNavigator';
-
 const Stack = createNativeStackNavigator();
-
 const MainStackNavigator = () => {
   return (
     <NavigationContainer>
@@ -35,6 +33,8 @@ const MainStackNavigator = () => {
         <Stack.Screen name="WalletInfo" component={WalletInfoScreen} />
         <Stack.Screen name="TransactionHistory" component={TransactionHistoryScreen} />
         <Stack.Screen name="Settings" component={SettingsScreen} />
+        <Stack.Screen name='UserDeposit' component={UserDeposit} />
+        <Stack.Screen name='UserWithdraw' component={UserWithdraw} />
       </Stack.Navigator>
     </NavigationContainer>
   );

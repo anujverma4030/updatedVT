@@ -7,7 +7,6 @@ const ProfileScreenUpperside = () => {
     const { height } = Dimensions.get('window');
     return (
         <SafeAreaView style={styles.MainContainer}>
-
             <View style={[styles.profileUppersideContainer, { backgroundColor: '#34A853' }]}>
                 <View style={styles.IconMainContainer}>
                     <TouchableOpacity><Icon name='arrow-back' size={24} color='#fff' /></TouchableOpacity>
@@ -78,6 +77,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginHorizontal: 20,
         marginVertical: 30,
+        padding:10,
     },
     IconSubContainer: {
         flexDirection: 'row',

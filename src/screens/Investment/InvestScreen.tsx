@@ -9,7 +9,7 @@ const InvestScreen = () => {
   const insets = useSafeAreaInsets();
   return (
     <>
-      <StatusBar barStyle={'light-content'} backgroundColor={'transparent'} translucent />
+      <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent />
       <SafeAreaView style={styles.MainContainer}>
         <ScrollView
           contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 100 }}

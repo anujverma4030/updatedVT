@@ -122,11 +122,13 @@ const styles = StyleSheet.create({
         width: "80%",
         flexDirection: 'row',
         justifyContent: 'center',
-        marginBottom: 15
+        marginBottom: 15,
     },
     depositTextBox: {
         width: "50%",
         paddingVertical: 20,
+        justifyContent:'center',
+        alignItems:'center'
 
     },
     depositText: {

@@ -7,13 +7,11 @@ const SplashScreen = () => {
     const navigation = useNavigation();
     const screen = useWindowDimensions();
     useEffect(() => {
-
         const timer = setTimeout(() => {
-            navigation.replace('WelcomeScreen');
+            // navigation.replace('WelcomeScreen');
+            navigation.replace('AdminPanel');
         }, 2000);
-
-
-    }, []) 
+    }, [])
     return (
         <View>
             {/* <Logo width={100} height={100} /> */}

@@ -7,10 +7,12 @@ import {
     TouchableOpacity,
     View,
     SafeAreaView,
+    StatusBar,
 } from 'react-native';
 import React, { useState } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Feather from 'react-native-vector-icons/Feather';
 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart';
@@ -20,159 +22,167 @@ const DashBoardScreen = () => {
     const { height, width } = Dimensions.get('window');
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={[styles.scrollViewContent, { paddingBottom: inset.bottom + 50 }]}
-            >
-                <AdminTemplateHeaderPart name='Hii Rohan,' />
-                <View style={styles.dashboardWrapper}>
-                    <View style={[styles.buttonsContainer, { bottom: height * 0.038 }]}>
-                        <TouchableOpacity style={styles.buttons}>
-                            <Icon name='verified' size={20} color='#34A853' />
-                            <Text style={styles.buttonsText}>Approve{'\n'}Withdrawal</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttons}>
-                            <Icon name='schedule' size={20} color='#FF8800' />
-                            <Text style={styles.buttonsText}>View Today’s{'\n'}Activity</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttons}>
-                            <Icon name='add-box' size={20} color='#FF8800' />
-                            <Text style={styles.buttonsText}>Add New{'\n'}Investment</Text>
-                        </TouchableOpacity>
-                    </View>
+        <>
+            <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
 
-                    <Text style={styles.dashboardTitle}>Dashboard</Text>
+            <SafeAreaView style={{ flex: 1 }}>
+                <ScrollView
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={[styles.scrollViewContent, { paddingBottom: inset.bottom + 50 }]}
+                >
+                    <AdminTemplateHeaderPart name='Hi Rohan,' />
+                    <View style={styles.dashboardWrapper}>
+                        <View style={[styles.buttonsContainer, { bottom: height * 0.038 }]}>
+                            <TouchableOpacity style={styles.buttons}>
+                                <Icon name='verified' size={20} color='#34A853' />
+                                <Text style={styles.buttonsText}>Approve{'\n'}Withdrawal</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.buttons}>
+                                <Icon name='schedule' size={20} color='#FF8800' />
+                                <Text style={styles.buttonsText}>View Today’s{'\n'}Activity</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.buttons}>
+                                <Icon name='add-box' size={20} color='#FF8800' />
+                                <Text style={styles.buttonsText}>Add New{'\n'}Investment</Text>
+                            </TouchableOpacity>
+                        </View>
 
-                    <View style={styles.ongoingDashboardCardMainContainer}>
-                        <View style={styles.ongoingDashboardCardContainer}>
-                            <View style={[styles.ongoingDashboardCard, { backgroundColor: '#ACE6F1' }]}>
-                                <View style={styles.cardContainer}>
-                                    <Icon name="group" size={36} color="#007A8A" />
-                                    <View style={styles.textContainer}>
-                                        <Text style={styles.label}>Total Users</Text>
-                                        <Text style={styles.value}>12,432</Text>
+                        <Text style={styles.dashboardTitle}>Dashboard</Text>
+
+                        <View style={styles.ongoingDashboardCardMainContainer}>
+                            <View style={styles.ongoingDashboardCardContainer}>
+                                <View style={[styles.ongoingDashboardCard, { backgroundColor: '#ACE6F1' }]}>
+                                    <View style={styles.cardContainer}>
+                                        <Icon name="group" size={36} color="#007A8A" />
+                                        <View style={styles.textContainer}>
+                                            <Text style={styles.label}>Total Users</Text>
+                                            <Text style={styles.value}>12,432</Text>
+                                        </View>
+                                    </View>
+                                    <Text style={styles.ongoingDashboardCardText}>● +153 new today</Text>
+                                    <Text style={styles.ongoingDashboardCardText}>● 9,204 active this week (74%)</Text>
+                                    <Text style={styles.ongoingDashboardCardText}>● ↑ 4.2% growth vs last week</Text>
+                                </View>
+
+                                <View style={[styles.ongoingDashboardCard, { backgroundColor: '#FBE7A1' }]}>
+                                    <View style={styles.cardContainer}>
+                                        <Icon name="upload" size={45} color="#D4A800" />
+                                        <View style={styles.textContainer}>
+                                            <Text style={styles.label}>Total Deposits</Text>
+                                            <Text style={styles.value}>$542,100</Text>
+                                        </View>
+                                    </View>
+                                    <Text style={styles.ongoingDashboardCardText}>● +$12,300 today</Text>
+                                    <Text style={styles.ongoingDashboardCardText}>● 1,823 successful deposits this week</Text>
+                                    <Text style={styles.ongoingDashboardCardText}>● ↑ 6.7% growth vs last week</Text>
+                                </View>
+                            </View>
+
+                            <View style={styles.ongoingDashboardCardContainer}>
+                                <View style={[styles.ongoingDashboardCard, { backgroundColor: '#E9D5FF' }]}>
+                                    <View style={styles.cardContainer}>
+                                        <Icon name="download" size={45} color="#8B5CF6" />
+                                        <View style={styles.textContainer}>
+                                            <Text style={styles.label}>Total Withdraws</Text>
+                                            <Text style={styles.value}>$342,100</Text>
+                                        </View>
+                                    </View>
+                                    <Text style={styles.ongoingDashboardCardText}>● $8,100 withdrawn today</Text>
+                                    <Text style={styles.ongoingDashboardCardText}>● Pending: $22,450</Text>
+                                    <Text style={styles.ongoingDashboardCardText}>● ↓ 1.13% vs last week</Text>
+                                </View>
+
+                                <View style={[styles.ongoingDashboardCard, { backgroundColor: '#FBC6C6' }]}>
+                                    <View style={styles.cardContainer}>
+                                        <Icon name="group-add" size={45} color="#D94A4A" />
+                                        <View style={styles.textContainer}>
+                                            <Text style={styles.label}>Total Referrals</Text>
+                                            <Text style={styles.value}>2,100</Text>
+                                        </View>
+                                    </View>
+                                    <Text style={styles.ongoingDashboardCardText}>● +78 new today</Text>
+                                    <Text style={styles.ongoingDashboardCardText}>● 1,560 active referrers</Text>
+                                    <Text style={styles.ongoingDashboardCardText}>● Top earner: User #1023 ($3,200)</Text>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={styles.SignUpTrendView}>
+                            <Text style={styles.SignupTrendText}>Signup Trend</Text>
+                            <Feather name='edit' size={23} color='#000'  />
+                        </View>
+
+
+                        <View style={styles.SignupTrendImageMainContainer}>
+                            <View style={styles.TextContainer}>
+                                <Text style={styles.TextHeader}>Users</Text>
+                                <Text style={styles.TextValues}>80</Text>
+                                <Text style={styles.TextValues}>60</Text>
+                                <Text style={styles.TextValues}>40</Text>
+                                <Text style={styles.TextValues}>20</Text>
+                                <Text style={styles.TextValues}>0</Text>
+                            </View>
+
+                            <View style={[styles.SignupTrendImageContainer, { left: width * 0.01 }]}>
+                                <Image
+                                    source={require('../../assests/signUpTerndImageDays.png')}
+                                    style={styles.SignupTrendImageDays}
+                                />
+                                <Image
+                                    source={require('../../assests/signUpTrendImage.png')}
+                                    style={styles.SignupTrendImage}
+                                />
+                                <View style={[styles.TextTimeContainer, { bottom: height * 0.01 }]}>
+                                    <Text style={styles.TextValues}>11 am</Text>
+                                    <Text style={styles.TextValues}>12 pm</Text>
+                                    <Text style={styles.TextValues}>1 pm</Text>
+                                    <Text style={styles.TextValues}>2 pm</Text>
+                                    <Text style={styles.TextValues}>3 pm</Text>
+                                </View>
+                                <Text style={[styles.TextHeader, { right: width * 0.14 }]}>Time -</Text>
+                            </View>
+                        </View>
+                        <Text style={styles.SignupTrendText}>Investment Plan Usage</Text>
+
+                        <View style={styles.card}>
+                            {/* Left Side: Legend */}
+                            <View style={styles.legendContainer}>
+                                <View style={styles.legendItem}>
+                                    <View style={[styles.colorBox, { backgroundColor: '#34A853' }]} />
+                                    <View>
+                                        <Text style={styles.label}>Basic Plan</Text>
+                                        <Text style={styles.percentage}>45%</Text>
                                     </View>
                                 </View>
-                                <Text style={styles.ongoingDashboardCardText}>● +153 new today</Text>
-                                <Text style={styles.ongoingDashboardCardText}>● 9,204 active this week (74%)</Text>
-                                <Text style={styles.ongoingDashboardCardText}>● ↑ 4.2% growth vs last week</Text>
-                            </View>
 
-                            <View style={[styles.ongoingDashboardCard, { backgroundColor: '#FBE7A1' }]}>
-                                <View style={styles.cardContainer}>
-                                    <Icon name="upload" size={45} color="#D4A800" />
-                                    <View style={styles.textContainer}>
-                                        <Text style={styles.label}>Total Deposits</Text>
-                                        <Text style={styles.value}>$542,100</Text>
+                                <View style={styles.legendItem}>
+                                    <View style={[styles.colorBox, { backgroundColor: '#F4B400' }]} />
+                                    <View>
+                                        <Text style={styles.label}>Gold Plan</Text>
+                                        <Text style={styles.percentage}>20%</Text>
                                     </View>
                                 </View>
-                                <Text style={styles.ongoingDashboardCardText}>● +$12,300 today</Text>
-                                <Text style={styles.ongoingDashboardCardText}>● 1,823 successful deposits this week</Text>
-                                <Text style={styles.ongoingDashboardCardText}>● ↑ 6.7% growth vs last week</Text>
-                            </View>
-                        </View>
 
-                        <View style={styles.ongoingDashboardCardContainer}>
-                            <View style={[styles.ongoingDashboardCard, { backgroundColor: '#E9D5FF' }]}>
-                                <View style={styles.cardContainer}>
-                                    <Icon name="download" size={45} color="#8B5CF6" />
-                                    <View style={styles.textContainer}>
-                                        <Text style={styles.label}>Total Withdraws</Text>
-                                        <Text style={styles.value}>$342,100</Text>
+                                <View style={styles.legendItem}>
+                                    <View style={[styles.colorBox, { backgroundColor: '#A259FF' }]} />
+                                    <View>
+                                        <Text style={styles.label}>Premium Plan</Text>
+                                        <Text style={styles.percentage}>35%</Text>
                                     </View>
                                 </View>
-                                <Text style={styles.ongoingDashboardCardText}>● $8,100 withdrawn today</Text>
-                                <Text style={styles.ongoingDashboardCardText}>● Pending: $22,450</Text>
-                                <Text style={styles.ongoingDashboardCardText}>● ↓ 1.13% vs last week</Text>
                             </View>
 
-                            <View style={[styles.ongoingDashboardCard, { backgroundColor: '#FBC6C6' }]}>
-                                <View style={styles.cardContainer}>
-                                    <Icon name="group-add" size={45} color="#D94A4A" />
-                                    <View style={styles.textContainer}>
-                                        <Text style={styles.label}>Total Referrals</Text>
-                                        <Text style={styles.value}>2,100</Text>
-                                    </View>
-                                </View>
-                                <Text style={styles.ongoingDashboardCardText}>● +78 new today</Text>
-                                <Text style={styles.ongoingDashboardCardText}>● 1,560 active referrers</Text>
-                                <Text style={styles.ongoingDashboardCardText}>● Top earner: User #1023 ($3,200)</Text>
+                            {/* Right Side: Static Pie Chart Image */}
+                            <View style={styles.chartImageContainer}>
+                                <Image
+                                    source={require('../../assests/investment_plan_pie_chart.png')}
+                                    style={[styles.chartImage, { right: width * 0.15 }]}
+                                />
                             </View>
                         </View>
                     </View>
-
-                    <Text style={styles.SignupTrendText}>Signup Trend</Text>
-                    <View style={styles.SignupTrendImageMainContainer}>
-                        <View style={styles.TextContainer}>
-                            <Text style={styles.TextHeader}>Users</Text>
-                            <Text style={styles.TextValues}>80</Text>
-                            <Text style={styles.TextValues}>60</Text>
-                            <Text style={styles.TextValues}>40</Text>
-                            <Text style={styles.TextValues}>20</Text>
-                            <Text style={styles.TextValues}>0</Text>
-                        </View>
-
-                        <View style={[styles.SignupTrendImageContainer, { left: width * 0.01 }]}>
-                            <Image
-                                source={require('../../assests/signUpTerndImageDays.png')}
-                                style={styles.SignupTrendImageDays}
-                            />
-                            <Image
-                                source={require('../../assests/signUpTrendImage.png')}
-                                style={styles.SignupTrendImage}
-                            />
-                            <View style={[styles.TextTimeContainer, { bottom: height * 0.01 }]}>
-                                <Text style={styles.TextValues}>11 am</Text>
-                                <Text style={styles.TextValues}>12 pm</Text>
-                                <Text style={styles.TextValues}>1 pm</Text>
-                                <Text style={styles.TextValues}>2 pm</Text>
-                                <Text style={styles.TextValues}>3 pm</Text>
-                            </View>
-                            <Text style={[styles.TextHeader, { right: width * 0.14 }]}>Time -</Text>
-                        </View>
-                    </View>
-                    <Text style={styles.SignupTrendText}>Investment Plan Usage</Text>
-
-                    <View style={styles.card}>
-                        {/* Left Side: Legend */}
-                        <View style={styles.legendContainer}>
-                            <View style={styles.legendItem}>
-                                <View style={[styles.colorBox, { backgroundColor: '#34A853' }]} />
-                                <View>
-                                    <Text style={styles.label}>Basic Plan</Text>
-                                    <Text style={styles.percentage}>45%</Text>
-                                </View>
-                            </View>
-
-                            <View style={styles.legendItem}>
-                                <View style={[styles.colorBox, { backgroundColor: '#F4B400' }]} />
-                                <View>
-                                    <Text style={styles.label}>Gold Plan</Text>
-                                    <Text style={styles.percentage}>20%</Text>
-                                </View>
-                            </View>
-
-                            <View style={styles.legendItem}>
-                                <View style={[styles.colorBox, { backgroundColor: '#A259FF' }]} />
-                                <View>
-                                    <Text style={styles.label}>Premium Plan</Text>
-                                    <Text style={styles.percentage}>35%</Text>
-                                </View>
-                            </View>
-                        </View>
-
-                        {/* Right Side: Static Pie Chart Image */}
-                        <View style={styles.chartImageContainer}>
-                            <Image
-                                source={require('../../assests/investment_plan_pie_chart.png')}
-                                style={[styles.chartImage, { right: width * 0.15 }]}
-                            />
-                        </View>
-                    </View>
-                </View>
-            </ScrollView>
-        </SafeAreaView>
+                </ScrollView>
+            </SafeAreaView>
+        </>
     );
 };
 
@@ -208,7 +218,7 @@ const styles = StyleSheet.create({
     SignupTrendText: {
         fontSize: RFValue(18),
         fontWeight: 'bold',
-        marginTop: 40
+
     },
     ongoingDashboardCardMainContainer: {},
     ongoingDashboardCardContainer: {
@@ -348,4 +358,11 @@ const styles = StyleSheet.create({
         height: '100%',
         resizeMode: 'contain',
     },
+    SignUpTrendView: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginTop: 40,
+    },
+   
 });

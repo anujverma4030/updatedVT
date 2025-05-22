@@ -50,22 +50,22 @@ const SpinScreen = () => {
         transparent={true}
         visible={showModal}
         onRequestClose={() => setShowModal(false)}
+        hardwareAccelerated={true}
+        statusBarTranslucent={true}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Image
               source={require('../../assests/spinPageGiftImage.png')}
-              style={{ width: 100, height: 100, marginBottom: 15 }}
+              style={{ width: 100, height: 100, bottom: 60 }}
               resizeMode='contain'
             />
-            <Text style={{ fontSize: RFValue(36), fontWeight: 'bold', color: '#FF8800', marginBottom: 10 }}>Lucky Spin Star!</Text>
-            <Text style={{ fontSize: RFValue(22), fontWeight: '400', marginBottom: 10 }}>You’ve Won A Gift Pack</Text>
+            <Text style={{ fontSize: RFValue(30), fontWeight: 'bold', color: '#FF8800', bottom: 40 }}>Lucky Spin Star!</Text>
+            <Text style={{ fontSize: RFValue(20), fontWeight: '400', marginBottom: 10 }}>You’ve Won A Gift Pack</Text>
             <Text style={{ fontSize: RFValue(12), marginBottom: 10 }}>Spin Now For Another Win!</Text>
-
             <Icon name='keyboard-double-arrow-down' size={24} color="orange" style={{ marginBottom: 10 }} />
 
             <View style={{ flex: 1 }} />
-
             <TouchableOpacity style={[styles.signInButton, { top: height * 0.31 }]} onPress={() => setShowModal(false)}>
               <Text style={styles.signInButtonText}>Spin Now</Text>
             </TouchableOpacity>

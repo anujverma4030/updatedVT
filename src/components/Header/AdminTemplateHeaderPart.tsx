@@ -9,6 +9,7 @@ import {
     TouchableWithoutFeedback,
     Dimensions,
     Image,
+    StatusBar,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -27,7 +28,8 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
 
     return (
         <SafeAreaView>
-            <View style={[styles.headerContainer, { paddingBottom }]}>
+             <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
+            <View style={[styles.headerContainer, { paddingBottom , bottom:45, }]}>
                 <Text style={styles.greetingText}>{name}</Text>
 
                 <View style={styles.iconGroup}>
@@ -49,7 +51,12 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
             </View>
 
             {/* Menu Modal */}
-            <Modal transparent visible={menuVisible} animationType="fade">
+            <Modal 
+            transparent 
+            visible={menuVisible} 
+            animationType="fade"
+            statusBarTranslucent={true}
+            >
                 <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
                     <View style={styles.overlay}>
                         <TouchableWithoutFeedback>
@@ -104,9 +111,14 @@ export default AdminTemplateHeaderPart;
 
 const styles = StyleSheet.create({
     headerContainer: {
+        
         backgroundColor: '#34A853',
         paddingHorizontal: 16,
         paddingTop: 40,
+        height:250,
+        width:'100%',
+        justifyContent:"center"
+
     },
     greetingText: {
         fontSize: RFValue(20),
@@ -144,9 +156,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
-        paddingTop: 60,
+        paddingTop: 60, 
         paddingRight: 10,
-        backgroundColor: 'rgba(0,0,0,0.3)',
+        backgroundColor: 'rgba(0,0,0,0.5)',
     },
     menu: {
         backgroundColor: '#fff',

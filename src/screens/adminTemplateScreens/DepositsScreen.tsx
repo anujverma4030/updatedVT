@@ -2,6 +2,7 @@ import React from 'react'
 import {
   SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   View
@@ -30,6 +31,7 @@ const columnWidths = {
 const DepositsScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+       <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
       <ScrollView>
         <AdminTemplateHeaderPart name='Deposits' paddingBottom={20}/>
         <View style={styles.container}>

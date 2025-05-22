@@ -5,7 +5,8 @@ import {
   StyleSheet,
   Text,
   View,
-  TextInput
+  TextInput,
+  StatusBar
 } from 'react-native'
 
 import { RFValue } from 'react-native-responsive-fontsize'
@@ -31,6 +32,7 @@ const columnWidths = {
 const UsersScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+       <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
       <ScrollView>
         <AdminTemplateHeaderPart name='Users' paddingBottom={20}/>
         <View style={styles.container}>

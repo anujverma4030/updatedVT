@@ -28,7 +28,7 @@ const ProfileScreenDownrside = () => {
                     <Icon name="description" size={24} color="#000" style={styles.icon} />
                     <Text style={styles.label}>Agreement</Text>
                 </TouchableOpacity>
-                <View style={styles.separator} />
+                <View style={styles.separator}/>
                 <TouchableOpacity onPress={() => { navigation.navigate('TransactionHistory') }} style={styles.option}>
                     <Icon name="history" size={24} color="#000" style={styles.icon} />
                     <Text style={styles.label}>Transaction History</Text>
@@ -52,7 +52,7 @@ export default ProfileScreenDownrside
 const styles = StyleSheet.create({
     cardContainer: {
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     card: {
         backgroundColor: '#fff',
@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
         elevation: 4,
         paddingVertical: 8,
         paddingHorizontal: 12,
-        width: "90%"
+        width: "90%",
+        shadowColor:'blue'
     },
     option: {
         flexDirection: 'row',
@@ -86,6 +87,8 @@ const styles = StyleSheet.create({
         marginTop: 40,
         alignSelf: 'center',
         paddingHorizontal: 60,
+        elevation:2,
+        shadowColor:'#000'
     },
     signOutText: {
         color: '#fff',

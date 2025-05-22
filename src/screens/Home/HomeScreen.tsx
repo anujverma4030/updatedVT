@@ -99,8 +99,8 @@ const HomeScreen: React.FC = () => {
                             <Text style={styles.IconText}>WITHDRAW</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
-                        onPress={()=>navigation.navigate('Spin')}
-                        style={styles.IconContaineer}>
+                            onPress={() => navigation.navigate('Spin')}
+                            style={styles.IconContaineer}>
                             <Icon name='radar' size={26} color='#FFFFFF' />
                             <Text style={styles.IconText}>SPIN NOW</Text>
                         </TouchableOpacity>
@@ -411,9 +411,11 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-evenly',
-        gap: 20
+        gap: 20,
+        overflow: 'hidden'
     },
     activityTextContainer: {
+
 
     },
     recentText: {
@@ -428,6 +430,7 @@ const styles = StyleSheet.create({
     recentContainerImageContainer: {
         width: 80,
         height: 80,
+
     },
     recentContainerImage: {
         width: '100%',

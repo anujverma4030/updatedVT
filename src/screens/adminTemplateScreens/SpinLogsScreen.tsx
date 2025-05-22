@@ -2,6 +2,7 @@ import React from 'react'
 import {
   SafeAreaView,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   View
@@ -28,6 +29,7 @@ const columnWidths = {
 const SpinLogsScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+       <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
       <ScrollView>
         <AdminTemplateHeaderPart name='Spin Logs' paddingBottom={20}/>
         <View style={styles.container}>

@@ -14,7 +14,10 @@ const Stack = createNativeStackNavigator();
 
 const AdminStackNavigator = () => {
     return (
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator screenOptions={{
+            headerShown: false,
+            animation: 'fade_from_bottom'
+        }}>
             <Stack.Screen name="Home" component={DashBoardScreen} />
             <Stack.Screen name="Users" component={UsersScreen} />
             <Stack.Screen name="Investments" component={InvestmentsScreen} />

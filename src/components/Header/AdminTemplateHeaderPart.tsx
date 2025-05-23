@@ -1,17 +1,8 @@
 import React, { useState } from 'react';
 import {
-    View,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    Modal,
-    StyleSheet,
-    TouchableWithoutFeedback,
-    Dimensions,
-    Image,
-    StatusBar,
+    View, Text, TextInput, TouchableOpacity, Modal, StyleSheet, TouchableWithoutFeedback, Dimensions, Image, StatusBar,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
@@ -20,16 +11,15 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
     const [menuVisible, setMenuVisible] = useState(false);
     const navigation = useNavigation();
     const { height } = Dimensions.get('window');
-
+    const inset = useSafeAreaInsets();
     const handleNavigate = (screen) => {
         setMenuVisible(false);
         navigation.navigate(screen);
     };
-
     return (
         <SafeAreaView>
-             <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
-            <View style={[styles.headerContainer, { paddingBottom , bottom:45, }]}>
+            <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
+            <View style={[styles.headerContainer, { paddingBottom, bottom: inset.bottom + 10 }]}>
                 <Text style={styles.greetingText}>{name}</Text>
 
                 <View style={styles.iconGroup}>
@@ -51,11 +41,11 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
             </View>
 
             {/* Menu Modal */}
-            <Modal 
-            transparent 
-            visible={menuVisible} 
-            animationType="fade"
-            statusBarTranslucent={true}
+            <Modal
+                transparent
+                visible={menuVisible}
+                animationType="fade"
+                statusBarTranslucent={true}
             >
                 <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
                     <View style={styles.overlay}>
@@ -111,13 +101,14 @@ export default AdminTemplateHeaderPart;
 
 const styles = StyleSheet.create({
     headerContainer: {
-        
+
         backgroundColor: '#34A853',
         paddingHorizontal: 16,
         paddingTop: 40,
-        height:250,
-        width:'100%',
-        justifyContent:"center"
+        height: 250,
+        width: '100%',
+        justifyContent: "center",
+
 
     },
     greetingText: {
@@ -156,7 +147,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'flex-end',
-        paddingTop: 60, 
+        paddingTop: 60,
         paddingRight: 10,
         backgroundColor: 'rgba(0,0,0,0.5)',
     },

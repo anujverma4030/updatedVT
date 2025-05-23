@@ -11,6 +11,9 @@ const SplashScreen = () => {
             // navigation.replace('WelcomeScreen');
             navigation.replace('AdminPanel');
         }, 2000);
+        if (timer) {
+            return () => clearTimeout(timer);
+        }
     }, [])
     return (
         <View>

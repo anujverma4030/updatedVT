@@ -20,7 +20,9 @@ const Stack = createNativeStackNavigator();
 const MainStackNavigator = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator screenOptions={{ headerShown: false,
+        animation:'fade_from_bottom'
+       }}>
         <Stack.Screen name='SplashScreen' component={SplashScreen} />
         <Stack.Screen name='AdminPanel' component={AdminStackNavigator} />
         <Stack.Screen name='WelcomeScreen' component={WelcomeScreen} />

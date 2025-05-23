@@ -52,6 +52,7 @@ const SpinScreen = () => {
         onRequestClose={() => setShowModal(false)}
         hardwareAccelerated={true}
         statusBarTranslucent={true}
+        // navigationBarTranslucent={true}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -66,8 +67,8 @@ const SpinScreen = () => {
             <Icon name='keyboard-double-arrow-down' size={24} color="orange" style={{ marginBottom: 10 }} />
 
             <View style={{ flex: 1 }} />
-            <TouchableOpacity style={[styles.signInButton, { top: height * 0.31 }]} onPress={() => setShowModal(false)}>
-              <Text style={styles.signInButtonText}>Spin Now</Text>
+            <TouchableOpacity style={[styles.signInButton, { top: height * 0.29 }]} onPress={() => setShowModal(false)}>
+              <Text style={styles.signInButtonText}>Spin Again</Text>
             </TouchableOpacity>
           </View>
         </View>

@@ -48,7 +48,6 @@ const DashBoardScreen = () => {
                         </View>
 
                         <Text style={styles.dashboardTitle}>Dashboard</Text>
-
                         <View style={styles.ongoingDashboardCardMainContainer}>
                             <View style={styles.ongoingDashboardCardContainer}>
                                 <View style={[styles.ongoingDashboardCard, { backgroundColor: '#ACE6F1' }]}>
@@ -202,7 +201,8 @@ const styles = StyleSheet.create({
         padding: 10,
         borderRadius: 6,
         elevation: 6,
-        width: 90
+        width: '30%',
+        height:85
     },
     buttonsText: {
         textAlign: 'center'
@@ -226,13 +226,14 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around'
     },
     ongoingDashboardCard: {
-        width: 160,
+        width: '45%',
         borderRadius: 6,
         padding: 15,
         marginVertical: 10,
         shadowRadius: 4,
         elevation: 5,
         shadowColor: '#000',
+        marginHorizontal:5
     },
     cardContainer: {
         flexDirection: 'row',

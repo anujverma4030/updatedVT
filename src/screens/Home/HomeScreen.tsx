@@ -12,7 +12,8 @@ import {
     FlatList,
     NativeSyntheticEvent,
     NativeScrollEvent,
-    Pressable
+    Pressable,
+    Alert
 } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -38,7 +39,9 @@ const HomeScreen: React.FC = () => {
     const navigation = useNavigation();
 
     return (
-        <ScrollView contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom + 100 }]}>
+        <ScrollView contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom + 100 }]}
+        showsVerticalScrollIndicator={false}
+        >
             <SafeAreaView>
                 <View>
                     <View style={styles.headerContent}>
@@ -71,7 +74,8 @@ const HomeScreen: React.FC = () => {
                             scrollEventThrottle={16}
                             contentContainerStyle={{ paddingHorizontal: Dimensions.get('window').width * 0.04 }}
                             renderItem={({ item }) => (
-                                <Pressable style={styles.imageContainer}>
+                                <Pressable 
+                                style={styles.imageContainer}>
                                     <Image source={item.uri} style={styles.image} />
                                 </Pressable>
                             )}
@@ -213,19 +217,25 @@ const HomeScreen: React.FC = () => {
                     >
                         <View style={styles.card}>
                             <Image source={require('../../assests/homepageBigWinImage.png')} style={styles.cardImage} />
-                            <TouchableOpacity style={[styles.playButton, { top: height * 0.11, left: width * 0.13 }]}>
+                            <TouchableOpacity 
+                              activeOpacity={0.8}
+                            style={[styles.playButton, { top: height * 0.11, left: width * 0.13 }]}>
                                 <Text style={styles.playButtonText}>Play Now</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.card}>
                             <Image source={require('../../assests/homepageGirlScrollImage.png')} style={styles.cardImage} />
-                            <TouchableOpacity style={[styles.playButton, { top: height * 0.11, left: width * 0.13 }]}>
+                            <TouchableOpacity 
+                              activeOpacity={0.8}
+                            style={[styles.playButton, { top: height * 0.11, left: width * 0.13 }]}>
                                 <Text style={styles.playButtonText}>Play Now</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.card}>
                             <Image source={require('../../assests/homepageLuckySpinImage.png')} style={styles.cardImage} />
-                            <TouchableOpacity style={[styles.playButton, { top: height * 0.11, left: width * 0.13 }]}>
+                            <TouchableOpacity 
+                              activeOpacity={0.8}
+                            style={[styles.playButton, { top: height * 0.11, left: width * 0.13 }]}>
                                 <Text style={styles.playButtonText}>Play Now</Text>
                             </TouchableOpacity>
                         </View>
@@ -285,18 +295,20 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         marginTop: 10,
+        alignItems:"center",
     },
     dot: {
         height: 8,
         width: 8,
-        borderRadius: 4,
+        borderRadius:20,
         backgroundColor: '#ccc',
         marginHorizontal: 4,
     },
     activeDot: {
         backgroundColor: '#34A853',
-        width: 10,
-        height: 10,
+        width: 11,
+        height: 11,
+        borderRadius:20,
     },
     IconMainContaineer: {
         display: 'flex',

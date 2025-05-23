@@ -15,8 +15,8 @@ const InvestScreen = () => {
           contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 100 }}
           showsVerticalScrollIndicator={false}
         >
-          <View style={{ paddingTop: insets.top }}>
-            <View style={styles.headerContainer}>
+          <View style={{}}>
+            <View style={[styles.headerContainer, { paddingTop: insets.top + 40, bottom: insets.bottom + 10 }]}>
               <Text style={styles.headerText}>Choose Your Investment Plan</Text>
               <TouchableOpacity>
                 <Icon name='notifications' size={20} color='#fff' />
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: '#34A853',
     width: "100%",
-    height: 80,
+    height: 160,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-evenly',

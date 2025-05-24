@@ -8,8 +8,8 @@ const SplashScreen = () => {
     const screen = useWindowDimensions();
     useEffect(() => {
         const timer = setTimeout(() => {
-            // navigation.replace('WelcomeScreen');
-            navigation.replace('AdminPanel');
+            navigation.replace('WelcomeScreen');
+            // navigation.replace('AdminPanel');
         }, 2000);
         if (timer) {
             return () => clearTimeout(timer);

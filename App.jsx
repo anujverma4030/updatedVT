@@ -6,12 +6,17 @@ import MainStackNavigator from './src/navigation/MainStackNavigator'
 // import AdminSettingsScreen from './src/screens/adminTemplateScreens/AdminSettingsScreen'
 import AppNavigators from './src/navigation/AppNavigator/AppNavigator'
 import SpinWheel from './src/screens/SpinWheel/spinwheele'
+import Loader from './src/components/Loader/Loader'
+import {  AuthProvider } from './src/context/AuthContext'
 const App = () => {
   return (
     <SafeAreaProvider>
-      <MainStackNavigator />
-      {/* <AdminSettingsScreen/> */}
-      {/* <SpinWheel/> */}
+      <AuthProvider>
+        <MainStackNavigator />
+        {/* <AdminSettingsScreen/> */}
+        {/* <SpinWheel/> */}
+        {/* <Loader/> */}
+      </AuthProvider>
     </SafeAreaProvider>
   )
 }

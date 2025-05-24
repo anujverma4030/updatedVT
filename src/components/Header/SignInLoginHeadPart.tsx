@@ -5,7 +5,7 @@ import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 
-export default function SignInLoginHeadPart() {
+const SignUpLoginHeadPart = () => {
     const { height, width } = Dimensions.get('window');
     const navigation = useNavigation();
     return (
@@ -38,8 +38,8 @@ export default function SignInLoginHeadPart() {
                     </View>
                     <View style={styles.loginArrowBackContain}>
                         <TouchableOpacity
-                         onPress={() => navigation.navigate('SignUpScreen')}
-                        style={styles.createAccountButton}>
+                            onPress={() => navigation.navigate('SignUpScreen')}
+                            style={styles.createAccountButton}>
                             <Text style={styles.createNewText}>Create New Account</Text>
                         </TouchableOpacity>
                     </View>
@@ -94,3 +94,4 @@ const styles = StyleSheet.create({
         fontSize: RFValue(9),
     }
 })
+export default SignUpLoginHeadPart

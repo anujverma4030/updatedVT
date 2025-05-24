@@ -2,15 +2,15 @@ import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TextInput, Touchable
 import React from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import SignInLoginHeadPart from '../../../components/Header/SignInLoginHeadPart';
 import { useNavigation } from '@react-navigation/native';
+import SignUpLoginHeadPart from '../../../components/Header/SignInLoginHeadPart';
 
 export default function LoginScreen() {
     const { height, width } = Dimensions.get('window');
     const navigation = useNavigation();
     return (
         <SafeAreaView style={styles.container}>
-            <SignInLoginHeadPart />
+           <SignUpLoginHeadPart/>
             <View style={styles.body}>
                 <Text style={styles.welcomeText}>WelCome Back!</Text>
 
@@ -66,7 +66,9 @@ export default function LoginScreen() {
                         />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.dontHaveView}>
+                <TouchableOpacity 
+                onPress={()=>navigation.navigate('SignUpScreen')}
+                style={styles.dontHaveView}>
                     <Text style={styles.signInLink}>Don't Have Account? Sign Up</Text>
                 </TouchableOpacity>
 

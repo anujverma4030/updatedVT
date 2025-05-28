@@ -21,11 +21,11 @@ const filterTabs = [
 ] as const;
 
 const transactions = [
-    { date: '1 May 2025', type: 'Deposit', amount: '₹1,000', status: 'Completed' },
-    { date: '2 May 2025', type: 'Withdraw', amount: '₹520', status: 'Pending' },
-    { date: '2 May 2025', type: 'Bonus', amount: '₹1,000', status: 'Completed' },
-    { date: '3 May 2025', type: 'Deposit', amount: '₹1,000', status: 'Completed' },
-    { date: '4 May 2025', type: 'Bonus', amount: '₹1,000', status: 'Completed' },
+    { date: '1 May 2025', type: 'Deposit', amount: '$1,000', status: 'Completed' },
+    { date: '2 May 2025', type: 'Withdraw', amount: '$520', status: 'Pending' },
+    { date: '2 May 2025', type: 'Bonus', amount: '$1,000', status: 'Completed' },
+    { date: '3 May 2025', type: 'Deposit', amount: '$1,000', status: 'Completed' },
+    { date: '4 May 2025', type: 'Bonus', amount: '$1,000', status: 'Completed' },
 ];
 
 const TransactionHistoryScreen = () => {

@@ -98,7 +98,10 @@ const HomeScreen: React.FC = () => {
                             <Icon name='upload' size={26} color='#FFFFFF' />
                             <Text style={styles.IconText}>DEPOSIT</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.IconContaineer}>
+                        <TouchableOpacity 
+                        onPress={()=>navigation.navigate('UserWithdraw')}
+                        
+                        style={styles.IconContaineer}>
                             <Icon name='download' size={26} color='#FFFFFF' />
                             <Text style={styles.IconText}>WITHDRAW</Text>
                         </TouchableOpacity>
@@ -113,12 +116,12 @@ const HomeScreen: React.FC = () => {
                     <View style={styles.summaryCard}>
                         <View style={styles.summaryItem}>
                             <Text style={styles.label}>Today's Earnings</Text>
-                            <Text style={[styles.value, { color: '#007BFF' }]}>₹120</Text>
+                            <Text style={[styles.value, { color: '#007BFF' }]}>$120</Text>
                         </View>
                         <View style={styles.divider} />
                         <View style={styles.summaryItem}>
                             <Text style={styles.label}>Balance</Text>
-                            <Text style={[styles.value, { color: '#fbc02d' }]}>₹3500.45</Text>
+                            <Text style={[styles.value, { color: '#fbc02d' }]}>$3500.45</Text>
                         </View>
                         <View style={styles.divider} />
                         <View style={styles.summaryItem}>
@@ -136,7 +139,7 @@ const HomeScreen: React.FC = () => {
                         <View style={styles.recentContainer}>
                             <View style={styles.recentCard}>
                                 <View style={styles.activityTextContainer}>
-                                    <Text style={styles.recentText}>Deposited{"\n"}Rs.500</Text>
+                                    <Text style={styles.recentText}>Deposited{"\n"}$500</Text>
                                     <Text style={styles.recentTime}>2h Ago</Text>
                                 </View>
                                 <View style={styles.recentContainerImageContainer}>
@@ -150,7 +153,7 @@ const HomeScreen: React.FC = () => {
 
                             <View style={styles.recentCard}>
                                 <View style={styles.activityTextContainer}>
-                                    <Text style={styles.recentText}>Spin & Win{"\n"}Rs.100</Text>
+                                    <Text style={styles.recentText}>Spin & Win{"\n"}$100</Text>
                                     <Text style={styles.recentTime}>2h Ago</Text>
                                 </View>
                                 <View style={styles.recentContainerImageContainer}>
@@ -164,7 +167,7 @@ const HomeScreen: React.FC = () => {
 
                             <View style={styles.recentCard}>
                                 <View style={styles.activityTextContainer}>
-                                    <Text style={styles.recentText}>Withdraw{"\n"}Rs.200</Text>
+                                    <Text style={styles.recentText}>Withdraw{"\n"}$200</Text>
                                     <Text style={styles.recentTime}>3h Ago</Text>
                                 </View>
                                 <View style={styles.recentContainerImageContainer}>
@@ -188,7 +191,7 @@ const HomeScreen: React.FC = () => {
                             <Icon name='radar' size={30} color='red' />
                             <View>
                                 <Text style={styles.todayLabel}>Latest Spin Reward</Text>
-                                <Text>Rs.500</Text>
+                                <Text>$500</Text>
                             </View>
                         </View>
                         <View style={styles.separator} />

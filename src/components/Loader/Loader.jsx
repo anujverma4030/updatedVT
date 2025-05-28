@@ -7,7 +7,7 @@ const Loader = ({ visible }) => {
     return (
         <SafeAreaView>
             <Modal
-                animationType="fade"
+                animationType='none'
                 transparent={true}
                 visible={visible}
                 hardwareAccelerated={true}

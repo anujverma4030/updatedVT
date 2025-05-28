@@ -9,14 +9,25 @@ import {
     TouchableOpacity,
     View,
 } from 'react-native';
-import React from 'react';
+import React, { useId } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
-
+import { useSelector } from 'react-redux';
 const PersonalDetails = () => {
     const navigation = useNavigation();
     const { height, width } = Dimensions.get('window');
+    const { userInfo } = useSelector((state) => state.auth);
+    console.log('user details:', userInfo);
+
+    // if (!userInfo) {
+    //     return (
+    //         <SafeAreaView style={styles.MainContainer}>
+    //             <Text style={{ textAlign: 'center', marginTop: 20 }}>No user information available</Text>
+    //         </SafeAreaView>
+    //     );
+    // }
+
 
     return (
         <SafeAreaView style={styles.MainContainer}>
@@ -50,7 +61,15 @@ const PersonalDetails = () => {
                     </TouchableOpacity>
                     <View>
                         <Text style={styles.UserIdText}>UserID</Text>
-                        <Text style={styles.IdText}>EMP12345</Text>
+                        <Text style={styles.IdText}>{userInfo.userId}</Text>
+                        {/* {
+                            userInfo ? (
+                                <Text style={styles.IdText}>{userInfo.userId}</Text>
+                            ) : (
+                                <Text style={styles.IdText}>No User ID</Text>
+                            )
+                        } */}
+
                     </View>
                 </View>
 
@@ -114,8 +133,8 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: '#34A853',
-        paddingVertical: 30,
-        paddingHorizontal: 30,
+        paddingVertical: 35,
+        paddingHorizontal: 10,
     },
     headerTextContainer: {
         flexDirection: 'row',
@@ -160,14 +179,14 @@ const styles = StyleSheet.create({
         color: '#000',
     },
     inputsMainContainer: {
-        padding: 20, 
+        padding: 20,
     },
     label: {
         fontWeight: 'bold',
         fontSize: 12,
         color: '#999',
         marginBottom: 5,
-        marginTop: 5, 
+        marginTop: 5,
     },
     input: {
         borderWidth: 1,

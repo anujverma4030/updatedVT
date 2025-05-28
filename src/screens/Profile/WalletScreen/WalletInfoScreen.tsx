@@ -35,11 +35,11 @@ const WalletInfoScreen = () => {
 
                 <View style={styles.depositAndWithdrawContainer}>
                     <TouchableOpacity style={[styles.depositTextBox, { backgroundColor: '#FDBE00', borderTopLeftRadius: 6, borderBottomLeftRadius: 6 }]}>
-                        <Text style={styles.depositText}>Pending Withdrawals ₹100 (processing)</Text>
+                        <Text style={styles.depositText}>Pending Withdrawals $100 (processing)</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.depositTextBox, { backgroundColor: '#2E7D32', borderTopRightRadius: 6, borderBottomRightRadius: 6 }]}>
                         <Text style={styles.depositText}>Total Withdrawn{'\n'}
-                            <Text>₹1,150</Text>
+                            <Text>$1,150</Text>
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -48,10 +48,10 @@ const WalletInfoScreen = () => {
 
                 <View style={styles.card}>
                     <View style={styles.cardTextContainer}>
-                        <Text style={styles.cardText}>Main Balance: ₹3500.45</Text>
-                        <Text style={styles.cardText}>Locked Balance: ₹200.00</Text>
+                        <Text style={styles.cardText}>Main Balance: $3500.45</Text>
+                        <Text style={styles.cardText}>Locked Balance: $200.00</Text>
                         <Text style={styles.cardText}>Binance Wallet: 0x****1234</Text>
-                        <Text style={styles.cardText}>Bonus Cash: ₹50 (expires on 2025-05-1)</Text>
+                        <Text style={styles.cardText}>Bonus Cash: $50 (expires on 2025-05-1)</Text>
                     </View>
                     <TouchableOpacity style={styles.Button}>
                         <Text style={styles.ButtonText}>Add/Update Wallet</Text>

@@ -1,11 +1,30 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useNavigation } from '@react-navigation/native';
-
-
+import { useDispatch } from 'react-redux';
+import { logout } from '../../../redux/slices/authSlice';
 const ProfileScreenDownrside = () => {
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const [loading, setLoading] = useState(false);
+    const handleLogout = async () => {
+
+        setLoading(true);
+        try {
+            await dispatch(logout());
+            setTimeout(() => {
+                setLoading(false);
+                navigation.replace('AuthStack');
+            }, 2000);
+            // navigation.replace('AuthStack');
+        } catch (error) {
+            console.error('Logout Error:', error.message);
+
+        }
+     
+
+    };
     return (
         <View style={styles.cardContainer}>
             <View style={styles.card}>
@@ -28,7 +47,7 @@ const ProfileScreenDownrside = () => {
                     <Icon name="description" size={24} color="#000" style={styles.icon} />
                     <Text style={styles.label}>Agreement</Text>
                 </TouchableOpacity>
-                <View style={styles.separator}/>
+                <View style={styles.separator} />
                 <TouchableOpacity onPress={() => { navigation.navigate('TransactionHistory') }} style={styles.option}>
                     <Icon name="history" size={24} color="#000" style={styles.icon} />
                     <Text style={styles.label}>Transaction History</Text>
@@ -40,8 +59,18 @@ const ProfileScreenDownrside = () => {
                 </TouchableOpacity>
             </View>
 
-            <TouchableOpacity style={styles.signOutButton}>
-                <Text style={styles.signOutText}>Sign Out</Text>
+            <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={handleLogout}
+                style={styles.signOutButton}
+                disabled={loading}
+             
+            >
+                {loading ?
+                    <ActivityIndicator size='small' color="#fff" />
+                    : (<Text style={styles.signOutText}>Log Out</Text>)
+                }
+
             </TouchableOpacity>
         </View>
     )
@@ -61,7 +90,7 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         paddingHorizontal: 12,
         width: "90%",
-        shadowColor:'blue'
+        shadowColor: 'blue'
     },
     option: {
         flexDirection: 'row',
@@ -87,12 +116,14 @@ const styles = StyleSheet.create({
         marginTop: 40,
         alignSelf: 'center',
         paddingHorizontal: 60,
-        elevation:2,
-        shadowColor:'#000'
+        elevation: 2,
+        shadowColor: '#000',
+        width: '50%',
     },
     signOutText: {
         color: '#fff',
-        fontSize: 16,
+        fontSize: 15,
         fontWeight: '500',
+        textAlign: 'center',
     },
 })

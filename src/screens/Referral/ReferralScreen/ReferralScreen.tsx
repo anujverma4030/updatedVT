@@ -55,7 +55,7 @@ const ReferralScreen = () => {
           </View>
           <View style={[styles.teamBox, { backgroundColor: '#10B981' }]}>
             <Text style={styles.teamBoxText}>Earnings</Text>
-            <Text style={styles.teamBoxNumber}>₹700</Text>
+            <Text style={styles.teamBoxNumber}>$700</Text>
           </View>
           <View style={[styles.teamBox, { backgroundColor: '#FF8632' }]}>
             <Text style={styles.teamBoxText}>Active Investors</Text>
@@ -73,17 +73,17 @@ const ReferralScreen = () => {
           </View>
           <View style={[styles.dataRow, { backgroundColor: '#84D299' }]}>
             <Text style={[styles.cellText, { color: '#fff' }]}>20 April, 2025</Text>
-            <Text style={[styles.cellText, { color: '#fff' }]}>₹100</Text>
+            <Text style={[styles.cellText, { color: '#fff' }]}>$100</Text>
             <Text style={[styles.cellText, { color: '#fff' }]}>1</Text>
           </View>
           <View style={[styles.dataRow, { backgroundColor: '#84D299' }]}>
             <Text style={[styles.cellText, { color: '#fff' }]}>10 April, 2025</Text>
-            <Text style={[styles.cellText, { color: '#fff' }]}>₹50</Text>
+            <Text style={[styles.cellText, { color: '#fff' }]}>$50</Text>
             <Text style={[styles.cellText, { color: '#fff' }]}>2</Text>
           </View>
           <View style={[styles.dataRow, { backgroundColor: '#84D299' }]}>
             <Text style={[styles.cellText, { color: '#fff' }]}>10 April, 2025</Text>
-            <Text style={[styles.cellText, { color: '#fff' }]}>₹20</Text>
+            <Text style={[styles.cellText, { color: '#fff' }]}>$20</Text>
             <Text style={[styles.cellText, { color: '#fff' }]}>3</Text>
           </View>
         </View>

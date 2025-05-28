@@ -1,25 +1,114 @@
-import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import { Alert, Dimensions, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useContext, useState } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useNavigation } from '@react-navigation/native';
 import SignUpLoginHeadPart from '../../../components/Header/SignInLoginHeadPart';
+// import { AuthContext } from '../../../context/AuthContext';
+import Loader from '../../../components/Loader/Loader';
+import { useDispatch, useSelector } from 'react-redux';
+import { login } from '../../../redux/slices/authSlice';
+import { getEmployeeById } from '../../../redux/slices/userSlice';
 
-export default function LoginScreen() {
+const LoginScreen = () => {
     const { height, width } = Dimensions.get('window');
+    // const { login, loading, errorMsg } = useContext(AuthContext);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [badPassword, setBadPassword] = useState('')
+    const [badEmail, setBadEmail] = useState('')
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const loading = useSelector((state) => state.auth.loading);
+    const errorMsg = useSelector((state) => state.auth.errorMsg);
+    // const handleLogin = async () => {
+    //     if (!email.trim()) {
+    //         setBadEmail(true)
+    //         Alert.alert('Message', 'Please Enter Email')
+    //         return;
+    //     }
+    //     else if (!password.trim()) {
+    //         setBadPassword(true)
+    //         Alert.alert('Message', 'Please Enter Password')
+    //         return;
+    //     }
+    //     try {
+    //         const result = await login(email, password)
+    //         if (result.success) {
+    //             Alert.alert('Success', 'Login Success');
+    //             setTimeout(() => {
+    //                 navigation.navigate('MainTabs');
+    //             }, 2000);
+    //         }
+    //     } catch (error) {
+    //         console.error('Login Error:', error.message);
+    //         Alert.alert('Login Failed', error.message);
+    //     }
+
+
+    // }
+    const handleLogin = async () => {
+        if (!email.trim()) {
+            setBadEmail(true);
+            Alert.alert('Message', 'Please Enter Email');
+            return;
+        } else if (!password.trim()) {
+            setBadPassword(true);
+            Alert.alert('Message', 'Please Enter Password');
+            return;
+        }
+
+        try {
+            const resultAction = await dispatch(login({ email, password }));
+            if (login.fulfilled.match(resultAction)) {
+                Alert.alert('Success', 'Login Success');
+
+                const userId = resultAction.payload.user._id;
+                dispatch(getEmployeeById(userId)); // Auto-fetch after login
+                
+                setTimeout(() => {
+                    navigation.navigate('MainTabs');
+                }, 2000);
+            } else {
+                Alert.alert('Login Failed', resultAction.payload || 'Unknown error');
+            }
+        } catch (error) {
+            console.error('Login Error:', error.message);
+            Alert.alert('Login Failed', error.message);
+        }
+    };
+    const textFill = (text, fieldName) => {
+        if (fieldName === 'email') {
+            setEmail(text);
+            setBadEmail(false);
+            return;
+        }
+        else if (fieldName === 'password') {
+            setPassword(text);
+            setBadPassword(false);
+            return;
+        }
+
+    }
     return (
         <SafeAreaView style={styles.container}>
-           <SignUpLoginHeadPart/>
+            <SignUpLoginHeadPart />
             <View style={styles.body}>
                 <Text style={styles.welcomeText}>WelCome Back!</Text>
 
                 <Text style={styles.label}>E-Mail Address / Phone Number</Text>
-                <TextInput style={styles.input} />
+                <TextInput style={styles.input}
+                    value={email}
+                    onChangeText={(text) => textFill(text, 'email')}
+
+                />
 
                 <Text style={styles.label}>Password</Text>
                 <View style={styles.passwordContainer}>
-                    <TextInput style={styles.inputPassword} />
+                    <TextInput style={styles.inputPassword}
+                        value={password}
+                        onChangeText={(text) => textFill(text, 'password')}
+                    />
                     <TouchableOpacity>
                         <Icon
                             style={[styles.icon, { right: width * 0.01, top: height * 0.008 }]}
@@ -34,7 +123,8 @@ export default function LoginScreen() {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    onPress={() => navigation.navigate('MainTabs')} // for now
+                    // onPress={() => navigation.navigate('MainTabs')} // for now
+                    onPress={handleLogin}
                     style={styles.loginButton}>
                     <Text style={styles.loginButtonText}>Log In</Text>
                 </TouchableOpacity>
@@ -66,17 +156,17 @@ export default function LoginScreen() {
                         />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity 
-                onPress={()=>navigation.navigate('SignUpScreen')}
-                style={styles.dontHaveView}>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('SignUpScreen')}
+                    style={styles.dontHaveView}>
                     <Text style={styles.signInLink}>Don't Have Account? Sign Up</Text>
                 </TouchableOpacity>
 
             </View>
+            <Loader visible={loading} />
         </SafeAreaView>
     );
 }
-
 const styles = StyleSheet.create({
     container: {
         // flex: 1,
@@ -110,17 +200,26 @@ const styles = StyleSheet.create({
         marginBottom: 15
     },
     passwordContainer: {
-        display: 'flex',
+        // display: 'flex',
         flexDirection: 'row',
-    },
-    inputPassword: {
+        width: "100%",
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
         paddingHorizontal: 10,
-        paddingVertical: 8,
+        //   paddingVertical: 8,
         marginBottom: 15,
-        width: "100%"
+
+    },
+    inputPassword: {
+        // borderWidth: 1,
+        // borderColor: '#ccc',
+        // borderRadius: 5,
+        // paddingHorizontal: 10,
+        // paddingVertical: 8,
+        // marginBottom: 15,
+        // width: "100%"
+        flex: 1
     },
     icon: {
         position: 'absolute',
@@ -194,7 +293,7 @@ const styles = StyleSheet.create({
         color: "green",
         fontWeight: '600'
     },
-    dontHaveView:{
+    dontHaveView: {
         marginTop: 20,
         marginBottom: 20,
         justifyContent: "center",
@@ -202,3 +301,4 @@ const styles = StyleSheet.create({
     }
 
 });
+export default LoginScreen

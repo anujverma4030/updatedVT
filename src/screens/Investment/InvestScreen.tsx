@@ -31,7 +31,7 @@ const InvestScreen = () => {
                     <Text style={styles.title}> Basic Plan</Text>
                   </View>
                   <Text style={styles.text}>ROI: 1.5% Daily</Text>
-                  <Text style={styles.text}>Min Amount: ₹500</Text>
+                  <Text style={styles.text}>Min Amount: $500</Text>
                   <Text style={styles.text}>Duration: 3 Days</Text>
                   <Text style={styles.text}>Payout: Daily</Text>
                 </View>
@@ -57,7 +57,7 @@ const InvestScreen = () => {
                     <Text style={styles.title}> Gold Plan</Text>
                   </View>
                   <Text style={styles.text}>ROI: 2.5% Daily</Text>
-                  <Text style={styles.text}>Min Amount: ₹2000</Text>
+                  <Text style={styles.text}>Min Amount: $2000</Text>
                   <Text style={styles.text}>Duration: 7 Days</Text>
                   <Text style={styles.text}>Payout: Weekly</Text>
                 </View>
@@ -83,7 +83,7 @@ const InvestScreen = () => {
                     <Text style={styles.title}> Premium Plan</Text>
                   </View>
                   <Text style={styles.text}>ROI: 1.5% Daily</Text>
-                  <Text style={styles.text}>Min Amount: ₹500</Text>
+                  <Text style={styles.text}>Min Amount: $500</Text>
                   <Text style={styles.text}>Duration: 3 Days</Text>
                   <Text style={styles.text}>Payout: Daily</Text>
                 </View>
@@ -124,8 +124,8 @@ const InvestScreen = () => {
                   thumbTintColor="#fff"
                 />
 
-                <Text style={styles.detail}>Invested: ₹3000</Text>
-                <Text style={styles.detail}>Earnings: ₹225</Text>
+                <Text style={styles.detail}>Invested: $3000</Text>
+                <Text style={styles.detail}>Earnings: $225</Text>
                 <Text style={styles.detail}>Next Payout: May 10, 2025</Text>
                 <Text style={styles.detail}>End Date: Jun 25, 2025</Text>
               </View>
@@ -147,8 +147,8 @@ const InvestScreen = () => {
                   thumbTintColor="#fff"
                 />
 
-                <Text style={styles.detail}>Invested: ₹3000</Text>
-                <Text style={styles.detail}>Earnings: ₹225</Text>
+                <Text style={styles.detail}>Invested: $3000</Text>
+                <Text style={styles.detail}>Earnings: $225</Text>
                 <Text style={styles.detail}>Next Payout: May 10, 2025</Text>
                 <Text style={styles.detail}>End Date: Jun 25, 2025</Text>
               </View>
@@ -171,8 +171,8 @@ const InvestScreen = () => {
 
                 />
 
-                <Text style={styles.detail}>Invested: ₹3000</Text>
-                <Text style={styles.detail}>Earnings: ₹225</Text>
+                <Text style={styles.detail}>Invested: $3000</Text>
+                <Text style={styles.detail}>Earnings: $225</Text>
                 <Text style={styles.detail}>Next Payout: May 10, 2025</Text>
                 <Text style={styles.detail}>End Date: Jun 25, 2025</Text>
               </View>
@@ -194,8 +194,8 @@ const InvestScreen = () => {
                   thumbTintColor="#fff"
                 />
 
-                <Text style={styles.detail}>Invested: ₹3000</Text>
-                <Text style={styles.detail}>Earnings: ₹225</Text>
+                <Text style={styles.detail}>Invested: $3000</Text>
+                <Text style={styles.detail}>Earnings: $225</Text>
                 <Text style={styles.detail}>Next Payout: May 10, 2025</Text>
                 <Text style={styles.detail}>End Date: Jun 25, 2025</Text>
               </View>
@@ -212,7 +212,7 @@ const InvestScreen = () => {
               {/* Row 1 */}
               <View style={styles.dataRow}>
                 <Text style={[styles.cellText, { color: '#2E7D32' }]}>Basic Plan</Text>
-                <Text style={[styles.cellText, { color: '#2E7D32' }]}>₹1000</Text>
+                <Text style={[styles.cellText, { color: '#2E7D32' }]}>$1000</Text>
                 <Text style={[styles.cellText, { color: '#2E7D32' }]}>Mar 19,2025</Text>
                 <Text style={[styles.cellText, { color: '#2E7D32' }]}>Completed</Text>
               </View>
@@ -221,7 +221,7 @@ const InvestScreen = () => {
               {/* Row 2 */}
               <View style={styles.dataRow}>
                 <Text style={[styles.cellText, { color: '#FDBE00' }]}>Gold Plan</Text>
-                <Text style={[styles.cellText, { color: '#FDBE00' }]}>₹2500</Text>
+                <Text style={[styles.cellText, { color: '#FDBE00' }]}>$2500</Text>
                 <Text style={[styles.cellText, { color: '#FDBE00' }]}>Mar 19,2025</Text>
                 <Text style={[styles.cellText, { color: '#2E7D32' }]}>Completed</Text>
               </View>
@@ -229,7 +229,7 @@ const InvestScreen = () => {
               {/* Row 3 */}
               <View style={styles.dataRow}>
                 <Text style={[styles.cellText, { color: '#2E7D32' }]}>Basic Plan</Text>
-                <Text style={[styles.cellText, { color: '#2E7D32' }]}>₹1000</Text>
+                <Text style={[styles.cellText, { color: '#2E7D32' }]}>$1000</Text>
                 <Text style={[styles.cellText, { color: '#2E7D32' }]}>Mar 19,2025</Text>
                 <Text style={[styles.cellText, { color: '#2E7D32' }]}>Completed</Text>
               </View>
@@ -237,7 +237,7 @@ const InvestScreen = () => {
               {/* Row 4 */}
               <View style={styles.dataRow}>
                 <Text style={[styles.cellText, { color: '#9747FF' }]}>Premium Plan</Text>
-                <Text style={[styles.cellText, { color: '#9747FF' }]}>₹4000</Text>
+                <Text style={[styles.cellText, { color: '#9747FF' }]}>$4000</Text>
                 <Text style={[styles.cellText, { color: '#9747FF' }]}>Mar 19,2025</Text>
                 <Text style={[styles.cellText, { color: '#2E7D32' }]}>Completed</Text>
               </View>

@@ -5,65 +5,107 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
 import Loader from '../../../components/Loader/Loader';
-import { AuthContext } from '../../../context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { signup } from '../../../redux/slices/authSlice';
+// import { AuthContext } from '../../../context/AuthContext';
 const SignUpScreen = () => {
     const { height, width } = Dimensions.get('window');
     const [name, setName] = useState('');
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
-    const [mobile, setMobile] = useState('');
     const [password, setPassword] = useState('');
+    const [mobile, setMobile] = useState('');
     const [badPassword, setBadPassword] = useState('')
     const [badEmail, setBadEmail] = useState('')
     const [badMobile, setBadMobile] = useState('')
     const [badName, setBadName] = useState('')
     const [badUserName, setBadUserName] = useState('')
-    const { signup, loading, errorMsg } = useContext(AuthContext);
+    // const { signup, loading, errorMsg } = useContext(AuthContext);
     console.log(loading);
     const navigation = useNavigation();
- 
+    const dispatch = useDispatch();
+    const { loading, errorMsg } = useSelector((state) => state.auth); // Redux state
+    // const handleSignUp = async () => {
+    //     if (!name.trim()) {
+    //         setBadName(true);
+    //         Alert.alert('Message', 'Please Enter Name')
+    //         return;
+    //     }
+    //     if (!userName.trim()) {
+    //         setUserName(true);
+    //         Alert.alert('Message', 'Please Enter Username')
+    //         return;
+    //     }
+    //     else if (!email.trim()) {
+    //         setBadEmail(true)
+    //         Alert.alert('Message', 'Please Enter Email')
+    //         return;
+    //     }
+    //     else if (!mobile.trim()) {
+    //         setBadMobile(true)
+    //         Alert.alert('Message', 'Please Enter Mobile')
+    //         return;
+    //     }
+    //     else if (!password.trim()) {
+    //         setBadPassword(true)
+    //         Alert.alert('Message', 'Please Enter Password')
+    //         return;
+    //     }
+    //     try {
+    //         const result = await signup(name, userName, email, mobile, password);
+    //         if (result?.success) {
+    //             console.log('Signup Success:', result);
+    //             Alert.alert('Success', result.message || 'Account created');
+    //             resetForm();
+    //             setTimeout(() => {
+    //                 navigation.replace('LoginScreen');
+    //             }, 2000);
+    //         }
+    //     } catch (error) {
+    //         console.error('Signup Error:', error.message);
+    //         Alert.alert('Signup Failed', error.message);
+    //     }
+
+    // }
     const handleSignUp = async () => {
         if (!name.trim()) {
             setBadName(true);
-            Alert.alert('Message', 'Please Enter Name')
+            Alert.alert('Message', 'Please Enter Name');
             return;
         }
         if (!userName.trim()) {
             setUserName(true);
-            Alert.alert('Message', 'Please Enter Username')
+            Alert.alert('Message', 'Please Enter Username');
             return;
         }
-        else if (!email.trim()) {
-            setBadEmail(true)
-            Alert.alert('Message', 'Please Enter Email')
+        if (!email.trim()) {
+            setBadEmail(true);
+            Alert.alert('Message', 'Please Enter Email');
             return;
         }
-        else if (!mobile.trim()) {
-            setBadMobile(true)
-            Alert.alert('Message', 'Please Enter Mobile')
+        if (!mobile.trim()) {
+            setBadMobile(true);
+            Alert.alert('Message', 'Please Enter Mobile');
             return;
         }
-        else if (!password.trim()) {
-            setBadPassword(true)
-            Alert.alert('Message', 'Please Enter Password')
+        if (!password.trim()) {
+            setBadPassword(true);
+            Alert.alert('Message', 'Please Enter Password');
             return;
-        }
-        try {
-            const result = await signup(name, userName, email, mobile, password);
-            if (result?.success) {
-                console.log('Signup Success:', result);
-                Alert.alert('Success', result.message || 'Account created');
-                resetForm();
-                setTimeout(() => {
-                    navigation.replace('LoginScreen');
-                }, 2000);
-            }
-        } catch (error) {
-            console.error('Signup Error:', error.message);
-            Alert.alert('Signup Failed', error.message);
         }
 
-    }
+        const resultAction = await dispatch(signup({ name, username: userName, email, mobile, password }));
+
+        if (signup.fulfilled.match(resultAction)) {
+            Alert.alert('Success', 'Account created successfully');
+            resetForm();
+            setTimeout(() => {
+                navigation.replace('LoginScreen');
+            }, 2000);
+        } else if (signup.rejected.match(resultAction)) {
+            Alert.alert('Signup Failed', resultAction.payload || 'Something went wrong');
+        }
+    };
     const textFill = (text, fieldName) => {
 
         if (fieldName === 'name') {
@@ -170,7 +212,11 @@ const SignUpScreen = () => {
                     <TextInput style={styles.input}
                         value={mobile}
                         onChangeText={(text) => textFill(text, 'mobile')}
-                        keyboardType="phone-pad" />
+                        keyboardType="phone-pad"
+
+                        maxLength={10} // Assuming a 10-digit mobile number
+                    />
+
 
                     <Text style={styles.label}>Password</Text>
                     <View style={styles.passwordContainer}>

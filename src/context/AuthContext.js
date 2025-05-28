@@ -18,11 +18,12 @@ export const AuthProvider = ({ children }) => {
         setErrorMsg(null);
         try {
             const response = await axiosInstance.post('/auth/login', { email, password });
-
-            if (response.status === 200 && response.data.token) {
-                const token = response.data.token;
+            const result = response.data;
+            if (result.success && result.token) {
+                const token = result.token;
                 await AsyncStorage.setItem('userToken', token);
                 setUserToken(token);
+                return result;
             } else {
                 setErrorMsg('Login failed: Invalid response');
             }
@@ -30,7 +31,7 @@ export const AuthProvider = ({ children }) => {
             console.error('Login error:', error.response?.data || error.message);
             setErrorMsg(error.response?.data?.message || 'Login failed. Please try again.');
         } finally {
-            // setLoading(false);
+            setLoading(false);
         }
     };
 
@@ -39,7 +40,7 @@ export const AuthProvider = ({ children }) => {
         setLoading(true);
         setErrorMsg(null);
         console.log(`Name: ${name} username: ${userName} mobile: ${mobile} email: ${email} password: ${password}`);
-     
+
         try {
             const response = await axiosInstance.post('/auth/signup', {
                 name: name,
@@ -62,10 +63,10 @@ export const AuthProvider = ({ children }) => {
             setErrorMsg(msg);
             Alert.alert('Message', msg);
         } finally {
-        
-                setLoading(false);
-           
-          
+
+            setLoading(false);
+
+
         }
     };
 

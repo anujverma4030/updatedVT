@@ -21,18 +21,18 @@ const levels = [
 
 const data: Record<LevelKey, { name: string; referredBy?: string; date: string; earnings: string }[]> = {
   level1: [
-    { name: 'Aman Singh', date: '2025-04-15', earnings: '₹50' },
-    { name: 'Aman Singh', date: '2025-04-15', earnings: '₹50' },
+    { name: 'Aman Singh', date: '2025-04-15', earnings: '$50' },
+    { name: 'Aman Singh', date: '2025-04-15', earnings: '$50' },
   ],
   level2: [
-    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '₹90' },
-    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '₹90' },
+    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '$90' },
+    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '$90' },
   ],
   level3: [
-    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '₹90' },
-    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '₹90' },
-    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '₹90' },
-    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '₹90' },
+    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '$90' },
+    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '$90' },
+    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '$90' },
+    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '$90' },
   ],
 };
 

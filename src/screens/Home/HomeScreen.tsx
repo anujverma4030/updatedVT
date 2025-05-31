@@ -1,5 +1,5 @@
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
     View,
     Text,
@@ -13,12 +13,16 @@ import {
     NativeSyntheticEvent,
     NativeScrollEvent,
     Pressable,
-    Alert
+    Alert,
+    ActivityIndicator
 } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { getEmployeeById } from '../../redux/slices/userSlice';
+import Loader from '../../components/Loader/Loader';
 
 interface ImageItem {
     id: string;
@@ -37,214 +41,239 @@ const HomeScreen: React.FC = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const flatListRef = useRef<FlatList<ImageItem>>(null);
     const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const { userDetails, loading } = useSelector((state: any) => state.user);
+    const { userId, } = useSelector((state) => state.auth);
+    useEffect(() => {
+        if (userId) {
+            dispatch(getEmployeeById(userId));
+        }
+    }, [userId]);
 
     return (
+
         <ScrollView contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom + 100 }]}
-        showsVerticalScrollIndicator={false}
+            showsVerticalScrollIndicator={false}
+
         >
-            <SafeAreaView>
-                <View>
-                    <View style={styles.headerContent}>
-                        <View>
-                            <Text style={styles.welcomeText}>Welcome, Rohan!</Text>
-                            <Text style={styles.subText}>Get Ready To Spin</Text>
-                        </View>
-                        <TouchableOpacity style={styles.notificationIcon}>
-                            <Icon name='notifications' size={20} color="#FF8800" />
-                        </TouchableOpacity>
-                    </View>
+            {
+                loading ? (
 
-                    <View style={styles.imageMainContainer}>
-                        <FlatList
-                            ref={flatListRef}
-                            data={images}
-                            keyExtractor={(item) => item.id}
-                            horizontal
-                            showsHorizontalScrollIndicator={false}
-                            snapToInterval={Dimensions.get('window').width * 0.8 + 65}
-                            snapToAlignment='start'
-                            decelerationRate="fast"
-                            onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
-                                const slide = Math.round(
-                                    event.nativeEvent.contentOffset.x /
-                                    (Dimensions.get('window').width * 0.9 + 20)
-                                );
-                                setCurrentIndex(slide);
-                            }}
-                            scrollEventThrottle={16}
-                            contentContainerStyle={{ paddingHorizontal: Dimensions.get('window').width * 0.04 }}
-                            renderItem={({ item }) => (
-                                <Pressable 
-                                style={styles.imageContainer}>
-                                    <Image source={item.uri} style={styles.image} />
-                                </Pressable>
-                            )}
-                        />
-                        <View style={styles.dotContainer}>
-                            {images.map((_, index) => (
-                                <View
-                                    key={index}
-                                    style={[
-                                        styles.dot,
-                                        currentIndex === index && styles.activeDot
-                                    ]}
-                                />
-                            ))}
-                        </View>
-                    </View>
+                    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <ActivityIndicator size="large" color="#34A853" />
+                    </SafeAreaView>
 
-                    <View style={styles.IconMainContaineer}>
-                        <TouchableOpacity style={styles.IconContaineer}>
-                            <Icon name='upload' size={26} color='#FFFFFF' />
-                            <Text style={styles.IconText}>DEPOSIT</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity 
-                        onPress={()=>navigation.navigate('UserWithdraw')}
-                        
-                        style={styles.IconContaineer}>
-                            <Icon name='download' size={26} color='#FFFFFF' />
-                            <Text style={styles.IconText}>WITHDRAW</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => navigation.navigate('Spin')}
-                            style={styles.IconContaineer}>
-                            <Icon name='radar' size={26} color='#FFFFFF' />
-                            <Text style={styles.IconText}>SPIN NOW</Text>
-                        </TouchableOpacity>
-                    </View>
+                ) : (
+                    <>
+                        <SafeAreaView>
 
-                    <View style={styles.summaryCard}>
-                        <View style={styles.summaryItem}>
-                            <Text style={styles.label}>Today's Earnings</Text>
-                            <Text style={[styles.value, { color: '#007BFF' }]}>$120</Text>
-                        </View>
-                        <View style={styles.divider} />
-                        <View style={styles.summaryItem}>
-                            <Text style={styles.label}>Balance</Text>
-                            <Text style={[styles.value, { color: '#fbc02d' }]}>$3500.45</Text>
-                        </View>
-                        <View style={styles.divider} />
-                        <View style={styles.summaryItem}>
-                            <Text style={styles.label}>Frozen Amount</Text>
-                            <Text style={[styles.value, { color: 'red' }]}>0</Text>
-                        </View>
-                    </View>
-
-                    <Text style={styles.recentTitle}>Recent Activity</Text>
-                    <ScrollView
-                        horizontal={true}
-                        showsHorizontalScrollIndicator={false}
-                        contentContainerStyle={{ paddingHorizontal: 15, marginBottom: 20 }} // adds space on both sides
-                    >
-                        <View style={styles.recentContainer}>
-                            <View style={styles.recentCard}>
-                                <View style={styles.activityTextContainer}>
-                                    <Text style={styles.recentText}>Deposited{"\n"}$500</Text>
-                                    <Text style={styles.recentTime}>2h Ago</Text>
-                                </View>
-                                <View style={styles.recentContainerImageContainer}>
-                                    <Image
-                                        source={require('../../assests/homepageDepositedImage.png')}
-                                        resizeMode="contain"
-                                        style={styles.recentContainerImage}
-                                    />
-                                </View>
-                            </View>
-
-                            <View style={styles.recentCard}>
-                                <View style={styles.activityTextContainer}>
-                                    <Text style={styles.recentText}>Spin & Win{"\n"}$100</Text>
-                                    <Text style={styles.recentTime}>2h Ago</Text>
-                                </View>
-                                <View style={styles.recentContainerImageContainer}>
-                                    <Image
-                                        source={require('../../assests/homepageSipnAndWinImage.png')}
-                                        resizeMode="contain"
-                                        style={styles.recentContainerImage}
-                                    />
-                                </View>
-                            </View>
-
-                            <View style={styles.recentCard}>
-                                <View style={styles.activityTextContainer}>
-                                    <Text style={styles.recentText}>Withdraw{"\n"}$200</Text>
-                                    <Text style={styles.recentTime}>3h Ago</Text>
-                                </View>
-                                <View style={styles.recentContainerImageContainer}>
-                                    <Image
-                                        source={require('../../assests/homepageWithdrawImage.png')}
-                                        resizeMode="contain"
-                                        style={styles.recentContainerImage}
-                                    />
-                                </View>
-                            </View>
-                        </View>
-                    </ScrollView>
-
-                    <View style={styles.sectionHeader}>
-                        <Text style={styles.sectionTitle}>Today</Text>
-                        <Text style={styles.seeAll}>See All</Text>
-                    </View>
-
-                    <View style={styles.todayCard}>
-                        <View style={styles.todayRow}>
-                            <Icon name='radar' size={30} color='red' />
                             <View>
-                                <Text style={styles.todayLabel}>Latest Spin Reward</Text>
-                                <Text>$500</Text>
-                            </View>
-                        </View>
-                        <View style={styles.separator} />
-                        <View style={styles.todayRow}>
-                            <Icon name='attach-money' size={30} color='skyblue' />
-                            <View>
-                                <Text style={styles.todayLabel}>Active Investment</Text>
-                                <Text>Gold Plan | 2.5% Daily | Active</Text>
-                            </View>
-                        </View>
-                        <View style={styles.separator} />
-                        <View style={styles.todayRow}>
-                            <Icon name='schedule' size={30} color='lightgreen' />
-                            <View>
-                                <Text style={styles.todayLabel}>Next Payout</Text>
-                                <Text>12:45:30</Text>
-                            </View>
-                        </View>
-                    </View>
 
-                    <Text style={styles.recentTitle}>Play and Win Gift Hampers</Text>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        style={styles.horizontalScrollContainer}
-                    >
-                        <View style={styles.card}>
-                            <Image source={require('../../assests/homepageBigWinImage.png')} style={styles.cardImage} />
-                            <TouchableOpacity 
-                              activeOpacity={0.8}
-                            style={[styles.playButton, { top: height * 0.11, left: width * 0.13 }]}>
-                                <Text style={styles.playButtonText}>Play Now</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.card}>
-                            <Image source={require('../../assests/homepageGirlScrollImage.png')} style={styles.cardImage} />
-                            <TouchableOpacity 
-                              activeOpacity={0.8}
-                            style={[styles.playButton, { top: height * 0.11, left: width * 0.13 }]}>
-                                <Text style={styles.playButtonText}>Play Now</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.card}>
-                            <Image source={require('../../assests/homepageLuckySpinImage.png')} style={styles.cardImage} />
-                            <TouchableOpacity 
-                              activeOpacity={0.8}
-                            style={[styles.playButton, { top: height * 0.11, left: width * 0.13 }]}>
-                                <Text style={styles.playButtonText}>Play Now</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </ScrollView>
-                </View>
-            </SafeAreaView>
+                                <View style={styles.headerContent}>
+                                    <View>
+                                        <Text style={styles.welcomeText}>Welcome, {userDetails ? userDetails.name : 'User'}</Text>
+                                        <Text style={styles.subText}>Get Ready To Spin</Text>
+                                    </View>
+                                    <TouchableOpacity style={styles.notificationIcon}>
+                                        <Icon name='notifications' size={20} color="#FF8800" />
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={styles.imageMainContainer}>
+                                    <FlatList
+                                        ref={flatListRef}
+                                        data={images}
+                                        keyExtractor={(item) => item.id}
+                                        horizontal
+                                        showsHorizontalScrollIndicator={false}
+                                        snapToInterval={Dimensions.get('window').width * 0.8 + 65}
+                                        snapToAlignment='start'
+                                        decelerationRate="fast"
+                                        onScroll={(event: NativeSyntheticEvent<NativeScrollEvent>) => {
+                                            const slide = Math.round(
+                                                event.nativeEvent.contentOffset.x /
+                                                (Dimensions.get('window').width * 0.9 + 20)
+                                            );
+                                            setCurrentIndex(slide);
+                                        }}
+                                        scrollEventThrottle={16}
+                                        contentContainerStyle={{ paddingHorizontal: Dimensions.get('window').width * 0.04 }}
+                                        renderItem={({ item }) => (
+                                            <Pressable
+                                                style={styles.imageContainer}>
+                                                <Image source={item.uri} style={styles.image} />
+                                            </Pressable>
+                                        )}
+                                    />
+                                    <View style={styles.dotContainer}>
+                                        {images.map((_, index) => (
+                                            <View
+                                                key={index}
+                                                style={[
+                                                    styles.dot,
+                                                    currentIndex === index && styles.activeDot
+                                                ]}
+                                            />
+                                        ))}
+                                    </View>
+                                </View>
+
+                                <View style={styles.IconMainContaineer}>
+                                    <TouchableOpacity style={styles.IconContaineer}>
+                                        <Icon name='upload' size={26} color='#FFFFFF' />
+                                        <Text style={styles.IconText}>DEPOSIT</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('UserWithdraw')}
+
+                                        style={styles.IconContaineer}>
+                                        <Icon name='download' size={26} color='#FFFFFF' />
+                                        <Text style={styles.IconText}>WITHDRAW</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        onPress={() => navigation.navigate('Spin')}
+                                        style={styles.IconContaineer}>
+                                        <Icon name='radar' size={26} color='#FFFFFF' />
+                                        <Text style={styles.IconText}>SPIN NOW</Text>
+                                    </TouchableOpacity>
+                                </View>
+
+                                <View style={styles.summaryCard}>
+                                    <View style={styles.summaryItem}>
+                                        <Text style={styles.label}>Today's Earnings</Text>
+                                        <Text style={[styles.value, { color: '#007BFF' }]}>$120</Text>
+                                    </View>
+                                    <View style={styles.divider} />
+                                    <View style={styles.summaryItem}>
+                                        <Text style={styles.label}>Balance</Text>
+                                        <Text style={[styles.value, { color: '#fbc02d' }]}>$3500.45</Text>
+                                    </View>
+                                    <View style={styles.divider} />
+                                    <View style={styles.summaryItem}>
+                                        <Text style={styles.label}>Frozen Amount</Text>
+                                        <Text style={[styles.value, { color: 'red' }]}>0</Text>
+                                    </View>
+                                </View>
+
+                                <Text style={styles.recentTitle}>Recent Activity</Text>
+                                <ScrollView
+                                    horizontal={true}
+                                    showsHorizontalScrollIndicator={false}
+                                    contentContainerStyle={{ paddingHorizontal: 15, marginBottom: 20 }} // adds space on both sides
+                                >
+                                    <View style={styles.recentContainer}>
+                                        <View style={styles.recentCard}>
+                                            <View style={styles.activityTextContainer}>
+                                                <Text style={styles.recentText}>Deposited{"\n"}$500</Text>
+                                                <Text style={styles.recentTime}>2h Ago</Text>
+                                            </View>
+                                            <View style={styles.recentContainerImageContainer}>
+                                                <Image
+                                                    source={require('../../assests/homepageDepositedImage.png')}
+                                                    resizeMode="contain"
+                                                    style={styles.recentContainerImage}
+                                                />
+                                            </View>
+                                        </View>
+
+                                        <View style={styles.recentCard}>
+                                            <View style={styles.activityTextContainer}>
+                                                <Text style={styles.recentText}>Spin & Win{"\n"}$100</Text>
+                                                <Text style={styles.recentTime}>2h Ago</Text>
+                                            </View>
+                                            <View style={styles.recentContainerImageContainer}>
+                                                <Image
+                                                    source={require('../../assests/homepageSipnAndWinImage.png')}
+                                                    resizeMode="contain"
+                                                    style={styles.recentContainerImage}
+                                                />
+                                            </View>
+                                        </View>
+
+                                        <View style={styles.recentCard}>
+                                            <View style={styles.activityTextContainer}>
+                                                <Text style={styles.recentText}>Withdraw{"\n"}$200</Text>
+                                                <Text style={styles.recentTime}>3h Ago</Text>
+                                            </View>
+                                            <View style={styles.recentContainerImageContainer}>
+                                                <Image
+                                                    source={require('../../assests/homepageWithdrawImage.png')}
+                                                    resizeMode="contain"
+                                                    style={styles.recentContainerImage}
+                                                />
+                                            </View>
+                                        </View>
+                                    </View>
+                                </ScrollView>
+
+                                <View style={styles.sectionHeader}>
+                                    <Text style={styles.sectionTitle}>Today</Text>
+                                    <Text style={styles.seeAll}>See All</Text>
+                                </View>
+
+                                <View style={styles.todayCard}>
+                                    <View style={styles.todayRow}>
+                                        <Icon name='radar' size={30} color='red' />
+                                        <View>
+                                            <Text style={styles.todayLabel}>Latest Spin Reward</Text>
+                                            <Text>$500</Text>
+                                        </View>
+                                    </View>
+                                    <View style={styles.separator} />
+                                    <View style={styles.todayRow}>
+                                        <Icon name='attach-money' size={30} color='skyblue' />
+                                        <View>
+                                            <Text style={styles.todayLabel}>Active Investment</Text>
+                                            <Text>Gold Plan | 2.5% Daily | Active</Text>
+                                        </View>
+                                    </View>
+                                    <View style={styles.separator} />
+                                    <View style={styles.todayRow}>
+                                        <Icon name='schedule' size={30} color='lightgreen' />
+                                        <View>
+                                            <Text style={styles.todayLabel}>Next Payout</Text>
+                                            <Text>12:45:30</Text>
+                                        </View>
+                                    </View>
+                                </View>
+
+                                <Text style={styles.recentTitle}>Play and Win Gift Hampers</Text>
+                                <ScrollView
+                                    horizontal
+                                    showsHorizontalScrollIndicator={false}
+                                    style={styles.horizontalScrollContainer}
+                                >
+                                    <View style={styles.card}>
+                                        <Image source={require('../../assests/homepageBigWinImage.png')} style={styles.cardImage} />
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={[styles.playButton, { top: height * 0.11, left: width * 0.13 }]}>
+                                            <Text style={styles.playButtonText}>Play Now</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.card}>
+                                        <Image source={require('../../assests/homepageGirlScrollImage.png')} style={styles.cardImage} />
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={[styles.playButton, { top: height * 0.11, left: width * 0.13 }]}>
+                                            <Text style={styles.playButtonText}>Play Now</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={styles.card}>
+                                        <Image source={require('../../assests/homepageLuckySpinImage.png')} style={styles.cardImage} />
+                                        <TouchableOpacity
+                                            activeOpacity={0.8}
+                                            style={[styles.playButton, { top: height * 0.11, left: width * 0.13 }]}>
+                                            <Text style={styles.playButtonText}>Play Now</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </ScrollView>
+                            </View>
+                        </SafeAreaView>
+                    </>
+                )
+            }
+
         </ScrollView>
     );
 };
@@ -298,12 +327,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'center',
         marginTop: 10,
-        alignItems:"center",
+        alignItems: "center",
     },
     dot: {
         height: 8,
         width: 8,
-        borderRadius:20,
+        borderRadius: 20,
         backgroundColor: '#ccc',
         marginHorizontal: 4,
     },
@@ -311,7 +340,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#34A853',
         width: 11,
         height: 11,
-        borderRadius:20,
+        borderRadius: 20,
     },
     IconMainContaineer: {
         display: 'flex',

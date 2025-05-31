@@ -1,10 +1,16 @@
 // redux/store.js
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
-import userReducer from './slices/userSlice'; // ✅ import userSlice
+import userReducer from './slices/userSlice'; 
+import investmentReducer from './slices/investmentSlice';
+import walletReducer from './slices/walletSlice';
+import referralReducer from './slices/referralSlice';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
     user: userReducer,
+    investment: investmentReducer,
+    wallet: walletReducer,
+    referral: referralReducer,
   },
 });

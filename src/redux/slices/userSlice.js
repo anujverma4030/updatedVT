@@ -6,7 +6,10 @@ export const getEmployeeById = createAsyncThunk(
     'user/getEmployeeById',
     async (employeeId, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.get(`/user/${employeeId}`);
+            console.log('Fetching user with ID:', employeeId);
+            const response = await axiosInstance.get(`/profile/${employeeId}`);
+            console.log('User fetched successfully:', response.data.user);
+            
             return response.data.user;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Failed to fetch user');
@@ -19,7 +22,7 @@ export const updateUser = createAsyncThunk(
     'user/updateUser',
     async (updateData, { rejectWithValue }) => {
         try {
-            const response = await axiosInstance.put('/user/update', updateData);
+            const response = await axiosInstance.put('/profile/update', updateData);
             return response.data.user;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Failed to update user');
@@ -32,7 +35,7 @@ export const uploadAvatar = createAsyncThunk(
         try {
             const token = getState().auth.userToken;
 
-            const response = await axiosInstance.post('/user/avatar', formData, {
+            const response = await axiosInstance.post('/profile/avatar', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     Authorization: `Bearer ${token}`,
@@ -69,11 +72,17 @@ const userSlice = createSlice({
                 state.loading = true;
                 state.errorMsg = null;
             })
+            // .addCase(getEmployeeById.fulfilled, (state, action) => {
+            //     state.userDetails = action.payload;
+            //     state.wallet = action.payload.wallet || null;
+            //     state.loading = false;
+            // })
             .addCase(getEmployeeById.fulfilled, (state, action) => {
+                console.log('Reducer fulfilled action payload:', action.payload);
                 state.userDetails = action.payload;
                 state.wallet = action.payload.wallet || null;
                 state.loading = false;
-            })
+              })
             .addCase(getEmployeeById.rejected, (state, action) => {
                 state.loading = false;
                 state.errorMsg = action.payload;

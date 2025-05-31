@@ -5,18 +5,19 @@ import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getEmployeeById } from '../../../redux/slices/userSlice';
+import jwtDecode from 'jwt-decode';
+import Loader from '../../../components/Loader/Loader';
+
 
 const ProfileScreenUpperside = () => {
     const { height } = Dimensions.get('window');
     const navigation = useNavigation()
-    const dispatch = useDispatch();
-    const { userInfo } = useSelector((state) => state.auth); // from authSlice
-    const { userDetails, wallet, loading, errorMsg } = useSelector((state) => state.user);
-    useEffect(() => {
-        if (userInfo?._id) {
-            dispatch(getEmployeeById(userInfo._id));
-        }
-    }, [userInfo]);
+    // const dispatch = useDispatch();
+    const { userId } = useSelector((state) => state.auth);
+    const { userDetails, wallet, loading } = useSelector((state) => state.user);
+    // console.log('User ID:', userId);
+    // console.log('User Details:', userDetails);
+
     return (
         <SafeAreaView style={styles.MainContainer}>
             <View style={[styles.profileUppersideContainer, { backgroundColor: '#34A853' }]}>
@@ -25,26 +26,32 @@ const ProfileScreenUpperside = () => {
                         onPress={() => navigation.goBack()}
                         activeOpacity={0.7}
                     ><Icon name='arrow-back' size={24} color='#fff' /></TouchableOpacity>
-                    <View style={styles.IconSubContainer}>
+                    {/* <View style={styles.IconSubContainer}>
                         <TouchableOpacity
                             activeOpacity={0.7}
                         ><Icon name='edit-square' size={24} color='#fff' /></TouchableOpacity>
                         <TouchableOpacity
                             activeOpacity={0.7}
                         ><Icon name='settings' size={24} color='#fff' /></TouchableOpacity>
-                    </View>
+                    </View> */}
                 </View>
 
                 <View style={[styles.profileImageAndTextContainer, { bottom: height * 0.06 }]}>
                     <Image
-                        source={require('../../../assests/profileScreeenProfileImage.png')}
+                        source={{
+                            uri: userDetails.avatarUrl
+                                ? userDetails.avatarUrl
+                                : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzBwdXILD8UEHD_k8M2d-fvNLi9yBMMO3KXQ&s',
+                            resizeMode: 'cover',
+
+                        }}
+
                         style={styles.profileImage}
-                        resizeMode='contain'
                     />
-                    <Text style={styles.profileName}> {userDetails?.name || 'Rohan Sharma'}</Text>
+                    <Text style={styles.profileName}> {userDetails.name || 'User'}</Text>
                     <Text style={styles.profileID}>ID:EMP12345</Text>
                     <View style={styles.balanceBox}>
-                        <Text style={styles.BalanceText}>{wallet?.balance || '0.00'}$3500.45 Balance </Text>
+                        <Text style={styles.BalanceText}>Balance: ${wallet.balance || '0.00'}</Text>
                     </View>
                     <Icon style={styles.doubleArrowIcon}
                         color='#FFFFFF'
@@ -86,9 +93,11 @@ const ProfileScreenUpperside = () => {
                     activeOpacity={1}
                     style={styles.levelItem}>
                     <Icon name='radar' size={22} color='#DB0004' />
-                    <Text style={styles.levelText}>Spin Left {'\n'}Today:2/5</Text>
+                    {/* <Text style={styles.levelText}>Spin Left {'\n'}Today:2/5</Text> */}
+                    <Text style={styles.levelText}>Spin Left Today:{userDetails.spinCount}/3</Text>
                 </TouchableOpacity>
             </View>
+            {/* <Loader visible={loading} /> */}
         </SafeAreaView>
     )
 }
@@ -116,6 +125,12 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     profileImage: {
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        borderWidth: 0.5,
+        borderColor: '#000',
+        overflow: 'hidden',
 
     },
     profileName: {
@@ -157,7 +172,7 @@ const styles = StyleSheet.create({
         width: "50%",
         paddingVertical: 20,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
 
     },
     depositText: {

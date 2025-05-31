@@ -1,12 +1,88 @@
-import { Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import { Alert, Image, SafeAreaView, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Slider from '@react-native-community/slider';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchInvestmentHistory, fetchInvestmentPlans, subscribeInvestment, subscribeToPlan } from '../../redux/slices/investmentSlice';
+import { FlatList } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import Loader from '../../components/Loader/Loader';
 
 const InvestScreen = () => {
   const insets = useSafeAreaInsets();
+  const { plans, activeInvestments, history, loading, error } = useSelector(state => state.investment);
+  console.log('Investment Plans:', plans);
+  console.log('Active Investments:', activeInvestments);
+  console.log('Investment History:', history);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(fetchInvestmentPlans());
+    dispatch(fetchInvestmentPlans());
+    dispatch(fetchInvestmentHistory());
+  }, []);
+
+
+  const renderPlan = ({ item }) => (
+
+    <View style={styles.card}>
+      <View style={[styles.borderBar, { backgroundColor: item.name === "Starter Plan" ? '#2E7D32' : 'blue', }]} />
+      <View style={styles.content}>
+        <View style={styles.textSection}>
+          <View style={styles.titleRow}>
+            <Icon name="schedule" size={RFValue(14)} color="#2E7D32" />
+            <Text style={styles.title}>{item.name}</Text>
+          </View>
+          <Text style={styles.text}>ROI: {item.roiPercent}%</Text>
+          <Text style={styles.text}>Min Amount: ${item.minAmount}</Text>
+          <Text style={styles.text}>Duration: {item.durationDays} Days</Text>
+          <Text style={styles.text}>Auto Payout: {item.autoPayout ? 'Yes' : 'No'}</Text>
+        </View>
+        <View style={styles.imageContainer}>
+          <Image
+            source={require('../../assests/investMan.png')}
+            style={styles.image}
+          />
+        </View>
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          style={[styles.button, { backgroundColor: '#2E7D32' }]}
+          onPress={() => handleSubscribeInvestment(item._id, {
+            amount: item.minAmount,
+            startDate: new Date().toISOString(),
+            endDate: new Date(Date.now() + item.durationDays * 24 * 60 * 60 * 1000).toISOString()
+          })}
+        >
+          <Text style={styles.buttonText}>Invest Now</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+
+  );
+  const handleSubscribeInvestment = async (planId, payload) => {
+    try {
+      console.log('Subscribing to plan:', planId, payload);
+      const resultAction = await dispatch(subscribeToPlan({ id: planId, payload }));
+
+      if (subscribeToPlan.fulfilled.match(resultAction)) {
+        console.log('Subscribed Successfully:', resultAction.payload);
+        Alert.alert("Success", "You have successfully subscribed to the investment plan.");
+      } else {
+        const error = typeof resultAction.payload === 'string'
+          ? resultAction.payload
+          : resultAction.payload?.message || 'Subscription failed';
+        console.error('Subscription Failed:', error);
+        Alert.alert('Error', error);
+      }
+    } catch (error) {
+      console.error('Subscription Error:', error);
+      Alert.alert('Error', error.message || 'Unexpected error occurred.');
+    }
+  };
   return (
     <>
       <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent />
@@ -15,14 +91,26 @@ const InvestScreen = () => {
           contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 100 }}
           showsVerticalScrollIndicator={false}
         >
-          <View style={{}}>
-            <View style={[styles.headerContainer, { paddingTop: insets.top + 40, bottom: insets.bottom + 10 }]}>
+          <View>
+            <View style={[styles.headerContainer, { paddingTop: insets.top + 50, bottom: insets.bottom + 10 }]}>
               <Text style={styles.headerText}>Choose Your Investment Plan</Text>
               <TouchableOpacity>
                 <Icon name='notifications' size={20} color='#fff' />
               </TouchableOpacity>
             </View>
-            <View style={styles.card}>
+            <FlatList
+              data={plans}
+              scrollEnabled={false}
+              keyExtractor={(item) => item._id}
+              renderItem={renderPlan}
+              contentContainerStyle={styles.container}
+              showsVerticalScrollIndicator={false}
+              ListEmptyComponent={() => (
+                <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 15 }}>No investment plans available</Text>
+              )}
+            />
+            {/* Plans Card */}
+            {/* <View style={styles.card}>
               <View style={[styles.borderBar, { backgroundColor: '#2E7D32', }]} />
               <View style={styles.content}>
                 <View style={styles.textSection}>
@@ -99,7 +187,7 @@ const InvestScreen = () => {
                   <Text style={styles.buttonText}>Invest Now</Text>
                 </TouchableOpacity>
               </View>
-            </View>
+            </View> */}
             <Text style={styles.investmentHeaderText}>Ongoing Investments</Text>
             <ScrollView
               horizontal
@@ -122,6 +210,7 @@ const InvestScreen = () => {
                   minimumTrackTintColor="#fff"
                   maximumTrackTintColor="#444"
                   thumbTintColor="#fff"
+
                 />
 
                 <Text style={styles.detail}>Invested: $3000</Text>
@@ -245,6 +334,7 @@ const InvestScreen = () => {
             </View>
           </View>
         </ScrollView>
+        <Loader visible={loading} />
       </SafeAreaView>
     </>
 
@@ -283,6 +373,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     position: 'relative',
+    gap: 10,
   },
   borderBar: {
     width: 6,
@@ -307,6 +398,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 10,
+    gap: 5,
+    justifyContent: 'flex-start'
   },
   title: {
     fontSize: RFValue(14),
@@ -344,7 +437,7 @@ const styles = StyleSheet.create({
   investmentHeaderText: {
     margin: 15,
     fontSize: RFValue(20),
-    fontWeight: 500
+    fontWeight: '500'
   },
   horizontalScrollContainer: {
 
@@ -363,6 +456,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 6,
+
   },
   planTitle: {
     color: '#fff',

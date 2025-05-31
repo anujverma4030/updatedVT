@@ -4,21 +4,15 @@ import { Image, useWindowDimensions, View } from 'react-native'
 // import Logo from '../assests/landing.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import { loadToken } from '../../../redux/slices/authSlice';
+import jwtDecode from 'jwt-decode';
+import { getEmployeeById } from '../../../redux/slices/userSlice';
 const SplashScreen = () => {
     const dispatch = useDispatch();
     const navigation = useNavigation();
     const screen = useWindowDimensions();
     const { userToken, loading } = useSelector((state) => state.auth);
-    useEffect(() => {
-        dispatch(loadToken());
-    }, []);
-    // useEffect(() => {
-    //      setTimeout(() => {
-    //         navigation.replace('WelcomeScreen');
-    //         // navigation.replace('AdminPanel');
-    //     }, 2000);
-  
-    // }, [])
+    console.log('User Token:', userToken, 'Loading:', loading);
+   
     useEffect(() => {
         // if (loading) return;
         let timer;
@@ -38,6 +32,7 @@ const SplashScreen = () => {
         }
 
     }, [userToken, loading]);
+   
 
     console.log('Token:', userToken, 'Loading:', loading);
 

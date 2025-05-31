@@ -17,23 +17,21 @@ import UserDeposit from '../screens/Deposit/UserDeposit';
 import UserWithdraw from '../screens/Withdraw/UserWithdraw';
 import UserWithdrawOTP from '../screens/Withdraw/UserWithdrawOTP';
 import { SafeAreaProvider } from 'react-native-safe-area-context'
-import { useDispatch } from 'react-redux';
-import { loadUserFromStorage } from '../redux/slices/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { loadToken, loadUserFromStorage } from '../redux/slices/authSlice';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import jwtDecode from 'jwt-decode';
+import { getEmployeeById } from '../redux/slices/userSlice';
 
 const Stack = createNativeStackNavigator();
 const MainStackNavigator = () => {
   const dispatch = useDispatch();
-
+  const { userToken, loading } = useSelector((state) => state.auth);
+  console.log('User Token:', userToken, 'Loading:', loading);
   useEffect(() => {
-    const loadUser = async () => {
-      const token = await AsyncStorage.getItem('userToken');
-      const userInfo = await AsyncStorage.getItem('userInfo');
-      if (token && userInfo) {
-        dispatch(loadUserFromStorage({ token, user: JSON.parse(userInfo) }));
-      }
-    };
-    loadUser();
+    dispatch(loadToken());
   }, []);
+
   return (
     <NavigationContainer>
       <SafeAreaProvider>

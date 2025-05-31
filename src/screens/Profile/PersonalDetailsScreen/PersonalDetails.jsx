@@ -1,34 +1,62 @@
-import {
-    Dimensions,
-    Image,
-    SafeAreaView,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from 'react-native';
-import React, { useId } from 'react';
+import { Alert, Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { updateUser } from '../../../redux/slices/userSlice';
+import { API_BASE_URL } from '../../../api/axiosInstance';
+
 const PersonalDetails = () => {
-    const navigation = useNavigation();
+    const inputRef = useRef(null);
     const { height, width } = Dimensions.get('window');
-    const { userInfo } = useSelector((state) => state.auth);
-    console.log('user details:', userInfo);
+    const { userDetails, wallet, loading } = useSelector((state) => state.user);
+    // const [userId, setUserId] = useState();
+    const [fullName, setFullName] = useState(userDetails?.name || 'User');
+    const [userName, setUserName] = useState(userDetails?.username || 'Username');
+    const [dateOfBirth, setDateOfBirth] = useState('');
+    const [gender, setGender] = useState('');
+    const [email, setEmail] = useState(userDetails?.email || 'Not Provided');
+    const [mobileNumber, setMobile] = useState(userDetails.mobile || 'Not Provided');
+    const [referralCode, setReferralCode] = useState(userDetails.code || 'Not Provided');
+    const [accountVerified, setAccountVerified] = useState(false);
+    const [editMode, setEditMode] = useState(false);
+    const { userId } = useSelector((state) => state.auth);
+    const navigation = useNavigation();
+    const dispatch = useDispatch();
+    const focusInput = () => {
+        if (inputRef.current) {
+            inputRef.current.focus();
+        }
+    };
+    const copyToClipboardReferralCode = (item) => {
+        Clipboard.setString(item);
+        Alert.alert('Copied to Clipboard', `Referral Code: ${item}`);
+    };
+    const handleEditToggle = () => {
+        setEditMode(!editMode);
+        if (!editMode) {
+            // If entering edit mode, focus on the full name input
+            focusInput();
+        }
+    }
+    const updateData = {
+        name: fullName,
+        email,
+        mobile: mobileNumber,
 
-    // if (!userInfo) {
-    //     return (
-    //         <SafeAreaView style={styles.MainContainer}>
-    //             <Text style={{ textAlign: 'center', marginTop: 20 }}>No user information available</Text>
-    //         </SafeAreaView>
-    //     );
-    // }
+    }
+    const handleUpdateUser = async () => {
+        try {
+            await dispatch(updateUser(updateData));
+            Alert.alert('Success', 'User details updated successfully');
+            setEditMode(false);
 
-
+        } catch (error) {
+            Alert.alert('Error', error.message || 'Failed to update user details');
+        }
+    }
     return (
         <SafeAreaView style={styles.MainContainer}>
             <ScrollView>
@@ -40,8 +68,17 @@ const PersonalDetails = () => {
                         <Text style={styles.headerText}>Personal Details</Text>
                     </View>
                     <View style={styles.IconSubContainer}>
-                        <TouchableOpacity>
-                            <Icon name="edit-square" size={24} color="#fff" />
+                        <TouchableOpacity
+                            onPress={handleEditToggle}
+                        >
+                            {
+                                editMode ? (
+                                    <Icon name="close" size={24} color="#fff" />
+                                ) : (
+                                    <Icon name="edit" size={24} color="#fff" />
+                                )
+                            }
+
                         </TouchableOpacity>
                         <TouchableOpacity>
                             <Icon name="settings" size={24} color="#fff" />
@@ -51,8 +88,14 @@ const PersonalDetails = () => {
 
                 <View style={styles.profileImageAndTextContainer}>
                     <Image
-                        source={require('../../../assests/profileScreeenProfileImage.png')}
+                        source={{
+                            uri: userDetails.avatarUrl
+                                ? userDetails.avatarUrl
+                                : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzBwdXILD8UEHD_k8M2d-fvNLi9yBMMO3KXQ&s',
+                                resizeMode: 'cover',
+                        }}
                         style={styles.Image}
+
                     />
                     <TouchableOpacity
                         style={[styles.carmeraIcon, { right: width * 0.08, top: height * 0.09 }]}
@@ -60,29 +103,27 @@ const PersonalDetails = () => {
                         <Icon name="add-a-photo" size={14} />
                     </TouchableOpacity>
                     <View>
-                        <Text style={styles.UserIdText}>UserID</Text>
-                        <Text style={styles.IdText}>{userInfo.userId}</Text>
-                        {/* {
-                            userInfo ? (
-                                <Text style={styles.IdText}>{userInfo.userId}</Text>
-                            ) : (
-                                <Text style={styles.IdText}>No User ID</Text>
-                            )
-                        } */}
+                        {/* <Text style={styles.UserIdText}>UserID : {}</Text> */}
+                        <Text style={styles.IdText}>User Id:{userId ? userId : "N/A"}</Text>
+
 
                     </View>
                 </View>
-
                 <View style={styles.inputsMainContainer}>
                     <Text style={styles.label}>Full Name</Text>
-                    <TextInput style={styles.input} value="Rohan Sharma" editable={false} />
+                    <TextInput style={styles.input}
+                        ref={inputRef}
+                        value={fullName}
+                        editable={editMode}
+                        onChangeText={(text) => setFullName(text)}
+
+                    />
 
                     <Text style={styles.label}>Date Of Birth</Text>
                     <View style={styles.dateInput}>
                         <Text style={styles.dateText}>13 May , 2000</Text>
                         <Icon name="calendar-today" size={20} color="#4CAF50" />
                     </View>
-
                     <Text style={styles.label}>Gender</Text>
                     <View style={styles.genderContainer}>
                         <TouchableOpacity style={[styles.genderButton, styles.genderSelected]}>
@@ -92,30 +133,55 @@ const PersonalDetails = () => {
                             <Text style={styles.genderText}>Female</Text>
                         </TouchableOpacity>
                     </View>
-
                     <Text style={styles.label}>E-Mail</Text>
-                    <TextInput style={styles.input} value="rohan@example.com" editable={false} />
+                    <TextInput style={styles.input}
+                        value={email}
+                        editable={editMode}
+                        onChangeText={(text) => setEmail(text)}
+                        keyboardType='email-address'
+                    />
 
                     <Text style={styles.label}>Phone Number</Text>
-                    <TextInput style={styles.input} value="9876543210" editable={false} />
+                    <TextInput style={styles.input}
+                        value={mobileNumber}
+                        editable={editMode}
+                        onChangeText={(text) => setMobile(text)}
+                        keyboardType='phone-pad'
+                        maxLength={10}
+
+                    />
 
                     <Text style={styles.label}>Referral Code</Text>
                     <View style={styles.referralContainer}>
-                        <TextInput style={styles.referralInput} value="Rohan2025" editable={false} />
-                        <TouchableOpacity style={styles.copyButton}>
+                        <TextInput style={styles.referralInput} value={referralCode} editable={false} />
+                        <TouchableOpacity
+                            onPress={() => copyToClipboardReferralCode(referralCode)}
+                            style={styles.copyButton}>
                             <Text style={styles.copyText}>Copy</Text>
                         </TouchableOpacity>
                     </View>
-
-                    <TouchableOpacity style={styles.verifiedButton}>
-                        <Text style={styles.verifiedText}>Account Verified</Text>
-                        {/* <Icon name="check-circle" size={36} color="#FF9800" /> */}
-                    </TouchableOpacity>
-
+                    {
+                        editMode ? (
+                            <TouchableOpacity
+                                onPress={handleUpdateUser}
+                                style={styles.verifiedButton}>
+                                <Text style={styles.verifiedText}>Update User</Text>
+                                {/* <Icon name="check-circle" size={36} color="#FF9800" /> */}
+                            </TouchableOpacity>
+                        ) : (
+                            <TouchableOpacity
+                                activeOpacity={1}
+                                style={styles.verifiedButton}>
+                                <Text style={styles.verifiedText}>Account Verified</Text>
+                                <Icon name="check-circle" size={20} color="#FF9800" />
+                            </TouchableOpacity>
+                        )
+                    }
                     <View style={styles.checkIconContainer}>
-                        <Icon name="check-circle" size={36} color="#FF9800" />
+                        {/* <Icon name="check-circle" size={36} color="#FF9800" /> */}
                     </View>
                 </View>
+
             </ScrollView>
         </SafeAreaView>
     );
@@ -156,7 +222,13 @@ const styles = StyleSheet.create({
         margin: 25,
     },
     Image: {
-        resizeMode: 'contain',
+      
+        width: 100,
+        height: 100,
+        borderRadius: 50,
+        borderWidth: 0.5,
+        borderColor: '#000',
+        overflow: 'hidden',
     },
     carmeraIcon: {
         backgroundColor: '#FFFFFF',
@@ -260,8 +332,10 @@ const styles = StyleSheet.create({
         borderRadius: 6,
         marginTop: 30,
         alignItems: 'center',
-        // flexDirection:'row',
-        // justifyContent:"center",
+        flexDirection: 'row',
+        justifyContent: "center",
+        gap: 10,
+        height: 50,
     },
     verifiedText: {
         color: '#fff',

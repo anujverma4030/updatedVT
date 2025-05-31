@@ -57,15 +57,10 @@ const LoginScreen = () => {
             Alert.alert('Message', 'Please Enter Password');
             return;
         }
-
         try {
             const resultAction = await dispatch(login({ email, password }));
             if (login.fulfilled.match(resultAction)) {
                 Alert.alert('Success', 'Login Success');
-
-                const userId = resultAction.payload.user._id;
-                dispatch(getEmployeeById(userId)); // Auto-fetch after login
-                
                 setTimeout(() => {
                     navigation.navigate('MainTabs');
                 }, 2000);

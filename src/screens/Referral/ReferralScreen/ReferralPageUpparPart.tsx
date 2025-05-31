@@ -1,19 +1,27 @@
-import { Dimensions, Image, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Dimensions, Image, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RFValue } from 'react-native-responsive-fontsize';
+import Clipboard from '@react-native-clipboard/clipboard';
+import { useSelector } from 'react-redux';
 
 const ReferralPageUpparPart = () => {
     const insets = useSafeAreaInsets();
     const { height } = Dimensions.get('window');
     console.log(height * 0.03);
+    const { referralCode, } = useSelector(state => state.referral);
+    // console.log(referralCode);
+    const copyToClipboardReferralCode = (itemCopy) => {
+        Clipboard.setString(itemCopy);
+        Alert.alert('Alert', 'Referral code copied to clipboard');
+    };
     return (
         <SafeAreaView style={styles.MainContainer}>
             <ScrollView
                 contentContainerStyle={{ flexGrow: 1 }}
                 showsVerticalScrollIndicator={false}
             >
-                <View style={{ height: 525,}}>
+                <View style={{ height: 525, }}>
                     <ImageBackground
                         source={require('../../../assests/refferalPageBGImage.png')}
                         style={styles.BGImage}
@@ -29,15 +37,17 @@ const ReferralPageUpparPart = () => {
                         <View style={[styles.wrapper, { bottom: height * 0.06 }]}>
                             <View style={styles.couponContainer}>
                                 <View style={styles.codeSection}>
-                                    <Text style={styles.codeText}>ROHAN2025</Text>
+                                    <Text style={styles.codeText}>{referralCode}</Text>
                                 </View>
-                                <TouchableOpacity style={styles.copySection}>
+                                <TouchableOpacity
+                                    onPress={() => copyToClipboardReferralCode(referralCode)}
+                                    style={styles.copySection}>
                                     <Text style={styles.copyText}>COPY</Text>
                                 </TouchableOpacity>
                             </View>
                             <Text style={styles.shareNow}>SHARE NOW</Text>
                         </View>
-                        <View style={[styles.socialIconsContainer,{ bottom: height * 0.02}]}>
+                        <View style={[styles.socialIconsContainer, { bottom: height * 0.02 }]}>
                             <TouchableOpacity style={[styles.IconImage]}>
                                 <Image
                                     source={require('../../../assests/refferalPageWhatsappImage.png')}
@@ -74,8 +84,8 @@ const styles = StyleSheet.create({
     BGImage: {
         width: '100%',
         height: 550,
-        paddingTop:20,
-        
+        paddingTop: 20,
+
     },
     ReferHeaderText: {
         fontSize: RFValue(20),
@@ -83,7 +93,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         textAlign: 'center',
         marginTop: 20,
-        
+
     },
     refferralImage: {
         resizeMode: 'contain',

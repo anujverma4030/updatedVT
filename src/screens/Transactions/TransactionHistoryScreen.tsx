@@ -6,10 +6,13 @@ import {
     TouchableOpacity,
     View
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import Loader from '../../components/Loader/Loader';
+import { getTransactions } from '../../redux/slices/walletSlice';
 
 type TransactionType = 'all' | 'deposit' | 'withdraw' | 'bonus';
 
@@ -20,17 +23,24 @@ const filterTabs = [
     { label: 'Bonus', key: 'bonus' },
 ] as const;
 
-const transactions = [
-    { date: '1 May 2025', type: 'Deposit', amount: '$1,000', status: 'Completed' },
-    { date: '2 May 2025', type: 'Withdraw', amount: '$520', status: 'Pending' },
-    { date: '2 May 2025', type: 'Bonus', amount: '$1,000', status: 'Completed' },
-    { date: '3 May 2025', type: 'Deposit', amount: '$1,000', status: 'Completed' },
-    { date: '4 May 2025', type: 'Bonus', amount: '$1,000', status: 'Completed' },
-];
+// const transactions = [
+//     { date: '1 May 2025', type: 'Deposit', amount: '$1,000', status: 'Completed' },
+//     { date: '2 May 2025', type: 'Withdraw', amount: '$520', status: 'Pending' },
+//     { date: '2 May 2025', type: 'Bonus', amount: '$1,000', status: 'Completed' },
+//     { date: '3 May 2025', type: 'Deposit', amount: '$1,000', status: 'Completed' },
+//     { date: '4 May 2025', type: 'Bonus', amount: '$1,000', status: 'Completed' },
+// ];
 
 const TransactionHistoryScreen = () => {
     const navigation = useNavigation();
     const [selectedType, setSelectedType] = useState<TransactionType>('all');
+    const dispatch = useDispatch();
+    const { transactions, loading } = useSelector((state) => state.wallet);
+    console.log('Transactions:', transactions);
+    
+    useEffect(() => {
+        dispatch(getTransactions());
+    }, []);
 
     const filteredTransactions = selectedType === 'all'
         ? transactions
@@ -49,55 +59,63 @@ const TransactionHistoryScreen = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-            <View style={styles.header}>
-                <View style={styles.headerLeft}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <Icon name='arrow-back' size={24} color='#fff' />
-                    </TouchableOpacity>
-                    <Text style={styles.headerText}>Transaction History</Text>
-                </View>
-                <TouchableOpacity>
-                    <Icon name='settings' size={24} color='#fff' />
-                </TouchableOpacity>
-            </View>
-            <Text style={styles.sectionTitle}>All Transactions</Text>
-            <View style={styles.container}>
-                <View style={styles.tabs}>
-                    {filterTabs.map(tab => (
-                        <View style={styles.tabButtonContainer}>
-                            <TouchableOpacity
-                                key={tab.key}
-                                style={[
-                                    styles.tabButton,
-                                    selectedType === tab.key && styles.activeTabButton,
-                                ]}
-                                onPress={() => setSelectedType(tab.key)}
-                            >
-                                <Text style={[
-                                    styles.tabText,
-                                    selectedType === tab.key && styles.activeTabText,
-                                ]}>
-                                    {tab.label}
-                                </Text>
+            {
+                loading ? (
+                    <Loader visible={true} />
+                ) : (
+                    <>
+                        <View style={styles.header}>
+                            <View style={styles.headerLeft}>
+                                <TouchableOpacity onPress={() => navigation.goBack()}>
+                                    <Icon name='arrow-back' size={24} color='#fff' />
+                                </TouchableOpacity>
+                                <Text style={styles.headerText}>Transaction History</Text>
+                            </View>
+                            <TouchableOpacity>
+                                <Icon name='settings' size={24} color='#fff' />
                             </TouchableOpacity>
                         </View>
-                    ))}
-                </View>
+                        <Text style={styles.sectionTitle}>All Transactions</Text>
+                        <View style={styles.container}>
+                            <View style={styles.tabs}>
+                                {filterTabs.map(tab => (
+                                    <View style={styles.tabButtonContainer}>
+                                        <TouchableOpacity
+                                            key={tab.key}
+                                            style={[
+                                                styles.tabButton,
+                                                selectedType === tab.key && styles.activeTabButton,
+                                            ]}
+                                            onPress={() => setSelectedType(tab.key)}
+                                        >
+                                            <Text style={[
+                                                styles.tabText,
+                                                selectedType === tab.key && styles.activeTabText,
+                                            ]}>
+                                                {tab.label}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ))}
+                            </View>
+                            <View style={styles.tableHeader}>
+                                <Text style={styles.headerCell}>Date</Text>
+                                <Text style={styles.headerCell}>Type</Text>
+                                <Text style={styles.headerCell}>Amount</Text>
+                                <Text style={styles.headerCell}>Status</Text>
+                            </View>
 
-                <View style={styles.tableHeader}>
-                    <Text style={styles.headerCell}>Date</Text>
-                    <Text style={styles.headerCell}>Type</Text>
-                    <Text style={styles.headerCell}>Amount</Text>
-                    <Text style={styles.headerCell}>Status</Text>
-                </View>
+                            <FlatList
+                                data={filteredTransactions}
+                                keyExtractor={(_, index) => index.toString()}
+                                renderItem={renderItem}
+                                contentContainerStyle={{ paddingBottom: 30 }}
+                            />
+                        </View>
+                    </>
+                )
+            }
 
-                <FlatList
-                    data={filteredTransactions}
-                    keyExtractor={(_, index) => index.toString()}
-                    renderItem={renderItem}
-                    contentContainerStyle={{ paddingBottom: 30 }}
-                />
-            </View>
         </SafeAreaView>
     );
 };
@@ -108,7 +126,7 @@ const styles = StyleSheet.create({
     header: {
         backgroundColor: '#34A853',
         paddingVertical: 30,
-        paddingHorizontal: 30,
+        paddingHorizontal: 10,
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
@@ -144,10 +162,10 @@ const styles = StyleSheet.create({
         padding: 8,
         marginBottom: 10,
     },
-    tabButtonContainer:{
-        backgroundColor:'#fff',
-        elevation:4,
-        borderRadius:4,
+    tabButtonContainer: {
+        backgroundColor: '#fff',
+        elevation: 4,
+        borderRadius: 4,
     },
     tabButton: {
         paddingVertical: 6,

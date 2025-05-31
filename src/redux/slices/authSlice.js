@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../../api/axiosInstance';
-
+import jwtDecode from 'jwt-decode';
 
 // Async thunk for login
 export const login = createAsyncThunk(
@@ -13,12 +13,8 @@ export const login = createAsyncThunk(
 
             if (result.success && result.token) {
                 const token = result.token;
-                const user = result.user || {}; // Avoid destructuring error
-
                 await AsyncStorage.setItem('userToken', token);
-                await AsyncStorage.setItem('userInfo', JSON.stringify(user));
-
-                return { token, user };
+                return token;
             } else {
                 return rejectWithValue(result.message || 'Login failed');
             }
@@ -58,10 +54,11 @@ export const loadToken = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const token = await AsyncStorage.getItem('userToken');
-            const user = await AsyncStorage.getItem('userInfo');
-            return { token, user: user ? JSON.parse(user) : null };
-        } catch (error) {
-            return rejectWithValue('Failed to load token');
+            // console.log('Loaded token from storage:', token);
+           
+            return token;
+        } catch (err) {
+            return rejectWithValue('No token found');
         }
     }
 );
@@ -79,16 +76,15 @@ const authSlice = createSlice({
     name: 'auth',
     initialState: {
         userToken: null,
-        userInfo: null,
+        userId: null,
         loading: false,
         errorMsg: null,
     },
     reducers: {
         logout: (state) => {
-            AsyncStorage.removeItem('userToken');
-            AsyncStorage.removeItem('userInfo');
             state.userToken = null;
-            state.userInfo = null;
+            state.userId = null;
+            AsyncStorage.removeItem('userToken');
         },
         loadUserFromStorage: (state, action) => {
             state.userToken = action.payload.token;
@@ -103,8 +99,8 @@ const authSlice = createSlice({
                 state.errorMsg = null;
             })
             .addCase(login.fulfilled, (state, action) => {
-                state.userToken = action.payload.token;
-                state.userInfo = action.payload.user;
+                state.userToken = action.payload;
+                state.userId = jwtDecode(action.payload).id;
                 state.loading = false;
             })
             .addCase(login.rejected, (state, action) => {
@@ -127,9 +123,9 @@ const authSlice = createSlice({
 
             // Load token
             .addCase(loadToken.fulfilled, (state, action) => {
-                state.userToken = action.payload.token;
-                state.userInfo = action.payload.user;
-              })
+                state.userToken = action.payload; // ✅ it's just the token string
+                state.userId = jwtDecode(action.payload).id;
+            })
 
             // Logout
             .addCase(logout.fulfilled, (state) => {

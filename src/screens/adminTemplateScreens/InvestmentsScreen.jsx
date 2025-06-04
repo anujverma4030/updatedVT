@@ -9,49 +9,48 @@ import {
 } from 'react-native'
 
 import { RFValue } from 'react-native-responsive-fontsize'
+import { TextInput } from 'react-native-gesture-handler'
 import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchAllWithdrawals } from '../../redux/slices/adminSlice'
+import { fetchAllInvestmentPlans } from '../../redux/slices/adminSlice'
 import Loader from '../../components/Loader/Loader'
 
-// const depositRequests = [
-//   { REQId: 'REQ21', userId: 'UU01', amount: 'Rs.200', RequestTime: '5/09/2025', status: 'Pending' },
-//   { REQId: 'REQ21', userId: 'UU01', amount: 'Rs.300', RequestTime: '5/09/2025', status: 'Pending' },
-//   { REQId: 'REQ21', userId: 'UU01', amount: 'Rs.200', RequestTime: '5/09/2025', status: 'Pending' },
-//   { REQId: 'REQ21', userId: 'UU01', amount: 'Rs.400', RequestTime: '5/09/2025', status: 'Pending' },
-// ]
-
+// const investments = new Array(5).fill({
+//   userId: 'UU01',
+//   planName: 'Gold',
+//   amount: 'Rs.500',
+//   roi: '2.5%',
+//   status: 'Active',
+//   date: '1/25–15/25',
+// })
 
 const columnWidths = {
-  REQId: 100,
   userId: 80,
+  planName: 100,
   amount: 100,
-  RequestTime: 120,
+  roi: 100,
   status: 100,
-  actions: 100,
+  date: 100,
 }
 
-const WithdrawalsScreen = () => {
+const InvestmentsScreen = () => {
+
   const dispatch = useDispatch();
-  const { withdrawals, loading } = useSelector((state) => state.admin);
-  // console.log('withdrawals', withdrawals);
-
+  const { investmentPlans, loading } = useSelector((state) => state.admin);
+  console.log('investmentPlans', investmentPlans);
   useEffect(() => {
-    dispatch(fetchAllWithdrawals());
+    dispatch(fetchAllInvestmentPlans());
   }, [dispatch]);
-
   return (
     <>
       <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
       {
         loading ? (
-
           <Loader visible={loading} />
         ) : (
           <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-
             <ScrollView>
-              <AdminTemplateHeaderPart name='Withdrawals' paddingBottom={20} />
+              <AdminTemplateHeaderPart name='Investments' paddingBottom={20} />
               <View style={styles.container}>
                 <ScrollView
                   horizontal
@@ -60,23 +59,22 @@ const WithdrawalsScreen = () => {
                 >
                   <View style={styles.TableContainer}>
                     <View style={[styles.row, styles.headerRow]}>
-                      <Text style={[styles.headerCell, { width: columnWidths.REQId }]}>Request ID</Text>
                       <Text style={[styles.headerCell, { width: columnWidths.userId }]}>User ID</Text>
+                      <Text style={[styles.headerCell, { width: columnWidths.planName }]}>Plan Name</Text>
                       <Text style={[styles.headerCell, { width: columnWidths.amount }]}>Amount</Text>
-                      <Text style={[styles.headerCell, { width: columnWidths.RequestTime }]}>Request Time</Text>
+                      <Text style={[styles.headerCell, { width: columnWidths.roi }]}>R.O.I</Text>
                       <Text style={[styles.headerCell, { width: columnWidths.status }]}>Status</Text>
-                      <Text style={[styles.headerCell, { width: columnWidths.actions }]}>Actions</Text>
+                      <Text style={[styles.headerCell, { width: columnWidths.date }]}>Dates</Text>
                     </View>
-                    {withdrawals.map((item, index) => (
+
+                    {investmentPlans.map((item, index) => (
                       <View style={styles.row} key={index}>
-                        <Text style={[styles.cell, { width: columnWidths.REQId }]}>{item._id}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.userId }]}>{item.userId?._id}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.amount }]}>{item.amount}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.RequestTime, color: 'blue', textDecorationLine: 'underline' }]}>{new Date(item.createdAt).toLocaleDateString('en-GB')}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.status, color: '#E5A400' }]}>{item.status}</Text>
-                        <View style={[styles.cell, { width: columnWidths.actions, flexDirection: 'row' }]}>
-                          <Text style={[styles.link, { color: 'green', textDecorationLine: 'underline' }]}>Approve</Text>
-                        </View>
+                        <Text style={[styles.cell, { width: columnWidths.userId }]}>{item._id}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.planName }]}>{item.name}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.amount }]}>{item.minAmount}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.roi }]}>{item.roiPercent}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.status }]}>{item.status}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.date }]}>{item.date}</Text>
                       </View>
                     ))}
                   </View>
@@ -91,7 +89,7 @@ const WithdrawalsScreen = () => {
   )
 }
 
-export default WithdrawalsScreen
+export default InvestmentsScreen
 
 const styles = StyleSheet.create({
   container: {

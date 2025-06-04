@@ -22,43 +22,47 @@ import { loadToken, loadUserFromStorage } from '../redux/slices/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwtDecode from 'jwt-decode';
 import { getEmployeeById } from '../redux/slices/userSlice';
+import ScreenWrapper from '../components/ScreenWrapper';
 
 const Stack = createNativeStackNavigator();
 const MainStackNavigator = () => {
   const dispatch = useDispatch();
-  const { userToken, loading } = useSelector((state) => state.auth);
-  console.log('User Token:', userToken, 'Loading:', loading);
-  useEffect(() => {
-    dispatch(loadToken());
-  }, []);
+  // const { userToken, loading } = useSelector((state) => state.auth);
+  // console.log('User Token in MainStack:', userToken, 'Loading:', loading);
+  // useEffect(() => {
+  //   dispatch(loadToken());
+  // }, []);
+
 
   return (
     <NavigationContainer>
       <SafeAreaProvider>
-        <Stack.Navigator screenOptions={{
-          headerShown: false,
-          animation: 'fade_from_bottom'
+        <ScreenWrapper>
+          <Stack.Navigator screenOptions={{
+            headerShown: false,
+            animation: 'fade_from_bottom'
 
-        }}
-        //  initialRouteName='UserWithdraw'
-        >
-          <Stack.Screen name='SplashScreen' component={SplashScreen} />
-          <Stack.Screen name='AdminPanel' component={AdminStackNavigator} />
-          <Stack.Screen name='WelcomeScreen' component={WelcomeScreen} />
-          <Stack.Screen name='AuthStack' component={AuthNavigator} />
-          <Stack.Screen name='LoginScreen' component={LoginScreen} />
-          <Stack.Screen name='SignUpScreen' component={SignUpScreen} />
-          <Stack.Screen name="MainTabs" component={TabNavigator} />
-          <Stack.Screen name="ReferralDetails" component={ReferralDetailsScreen} />
-          <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
-          <Stack.Screen name="WalletInfo" component={WalletInfoScreen} />
-          <Stack.Screen name="TransactionHistory" component={TransactionHistoryScreen} />
-          <Stack.Screen name="Settings" component={SettingsScreen} />
-          <Stack.Screen name='UserDeposit' component={UserDeposit} />
-          <Stack.Screen name='UserWithdraw' component={UserWithdraw} />
-          <Stack.Screen name='UserWithdrawalOTP' component={UserWithdrawOTP} />
+          }}
+          //  initialRouteName='AdminPanel'
+          >
+            <Stack.Screen name='SplashScreen' component={SplashScreen} />
+            <Stack.Screen name='AdminPanel' component={AdminStackNavigator} />
+            <Stack.Screen name='WelcomeScreen' component={WelcomeScreen} />
+            <Stack.Screen name='AuthStack' component={AuthNavigator} />
+            <Stack.Screen name='LoginScreen' component={LoginScreen} />
+            <Stack.Screen name='SignUpScreen' component={SignUpScreen} />
+            <Stack.Screen name="MainTabs" component={TabNavigator} />
+            <Stack.Screen name="ReferralDetails" component={ReferralDetailsScreen} />
+            <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
+            <Stack.Screen name="WalletInfo" component={WalletInfoScreen} />
+            <Stack.Screen name="TransactionHistory" component={TransactionHistoryScreen} />
+            <Stack.Screen name="Settings" component={SettingsScreen} />
+            <Stack.Screen name='UserDeposit' component={UserDeposit} />
+            <Stack.Screen name='UserWithdraw' component={UserWithdraw} />
+            <Stack.Screen name='UserWithdrawalOTP' component={UserWithdrawOTP} />
 
-        </Stack.Navigator>
+          </Stack.Navigator>
+        </ScreenWrapper>
       </SafeAreaProvider>
     </NavigationContainer>
   );

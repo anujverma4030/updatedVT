@@ -1,23 +1,29 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SettingsScreen = () => {
     const navigation = useNavigation();
 
     return (
-        <View style={styles.cardContainer}>
+        <SafeAreaView style={styles.cardContainer}>
+             <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent/>
             {/* Header */}
             <View style={styles.headerContentContainer}>
                 <View style={styles.headerTextContainer}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <TouchableOpacity 
+                    activeOpacity={0.7}
+                    onPress={() => navigation.goBack()}>
                         <Icon name="arrow-back" size={20} color="#fff" />
                     </TouchableOpacity>
                     <Text style={styles.headerText}>Settings</Text>
                 </View>
-                <TouchableOpacity>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                >
                     <Icon name="notifications" size={20} color="#fff" />
                 </TouchableOpacity>
             </View>
@@ -26,13 +32,17 @@ const SettingsScreen = () => {
             <View style={styles.card}>
                 {/* Account Setting */}
                 <View style={styles.option}>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                    >
                         <View style={styles.labelContainer}>
                             <Icon name="person" size={24} color="#000" style={styles.icon} />
                             <Text style={styles.label}>Account Setting</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                    >
                         <Icon name="chevron-right" size={24} color="#000" />
                     </TouchableOpacity>
                 </View>
@@ -40,13 +50,17 @@ const SettingsScreen = () => {
 
                 {/* Notifications */}
                 <View style={styles.option}>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                    >
                         <View style={styles.labelContainer}>
                             <Icon name="notifications" size={24} color="#000" style={styles.icon} />
                             <Text style={styles.label}>Notifications</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                    >
                         <Icon name="chevron-right" size={24} color="#000" />
                     </TouchableOpacity>
                 </View>
@@ -54,13 +68,17 @@ const SettingsScreen = () => {
 
                 {/* App Preference */}
                 <View style={styles.option}>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                    >
                         <View style={styles.labelContainer}>
                             <Icon name="tune" size={24} color="#000" style={styles.icon} />
                             <Text style={styles.label}>App Preference</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                    >
                         <Icon name="chevron-right" size={24} color="#000" />
                     </TouchableOpacity>
                 </View>
@@ -68,13 +86,17 @@ const SettingsScreen = () => {
 
                 {/* Help & FAQ */}
                 <View style={styles.option}>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                    >
                         <View style={styles.labelContainer}>
                             <Icon name="help" size={24} color="#000" style={styles.icon} />
                             <Text style={styles.label}>Help & FAQ</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                    >
                         <Icon name="chevron-right" size={24} color="#000" />
                     </TouchableOpacity>
                 </View>
@@ -82,13 +104,17 @@ const SettingsScreen = () => {
 
                 {/* Legal */}
                 <View style={styles.option}>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                    >
                         <View style={styles.labelContainer}>
                             <Icon name="gavel" size={24} color="#000" style={styles.icon} />
                             <Text style={styles.label}>Legal</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                    >
                         <Icon name="chevron-right" size={24} color="#000" />
                     </TouchableOpacity>
                 </View>
@@ -96,18 +122,22 @@ const SettingsScreen = () => {
 
                 {/* Others */}
                 <View style={styles.option}>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                    >
                         <View style={styles.labelContainer}>
                             <Icon name="more-horiz" size={24} color="#000" style={styles.icon} />
                             <Text style={styles.label}>Others</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                    >
                         <Icon name="chevron-right" size={24} color="#000" />
                     </TouchableOpacity>
                 </View>
             </View>
-        </View>
+        </SafeAreaView>
     );
 };
 
@@ -124,7 +154,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: '#34A853',
         paddingVertical: 30,
-        paddingHorizontal: 30,
+        paddingHorizontal: 10,
     },
     headerTextContainer: {
         flexDirection: 'row',

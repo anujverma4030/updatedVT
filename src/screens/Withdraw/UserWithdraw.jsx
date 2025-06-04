@@ -3,9 +3,11 @@ import React from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
+import { useSelector } from 'react-redux';
 
 const UserWithdraw = () => {
     const navigation = useNavigation();
+    const { userDetails, loading } = useSelector((state) => state.user);
 
     const paymentOptions = [
         {
@@ -18,7 +20,7 @@ const UserWithdraw = () => {
             image: require('../../assests/UPI.png'),
             onPress: () => console.log('UPI selected'),
         },
-        { 
+        {
             name: 'Crypto',
             image: require('../../assests/Crypto.png'),
             onPress: () => console.log('Crypto selected'),
@@ -26,7 +28,7 @@ const UserWithdraw = () => {
     ]
     return (
         <>
-            <StatusBar barStyle={'dark-content'} backgroundColor={'#34A853'} />
+            <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent/>
 
             <SafeAreaView style={styles.mainContainer}>
                 {/* Header Container */}
@@ -56,7 +58,7 @@ const UserWithdraw = () => {
                     </View>
                     {/* Balance and Image */}
                     <View style={styles.headerIcons}>
-                        <Text style={styles.balanceText}>Balance : $5,250</Text>
+                        <Text style={styles.balanceText}>Balance : ${userDetails ? userDetails?.wallet?.balance : '0'}</Text>
                         <Image
                             source={require('../../assests/WithdrawImage.png')}
                             resizeMode='cover'
@@ -118,12 +120,14 @@ export default UserWithdraw
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
-        gap: 30
+        gap: 30,
+
     },
     headerContainer: {
         width: '100%',
         height: Dimensions.get('window').height * 0.3,
         backgroundColor: '#34A853',
+
 
     },
     headerIcons: {

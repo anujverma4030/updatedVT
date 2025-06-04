@@ -5,8 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 const Loader = ({ visible }) => {
 
     return (
-        <SafeAreaView>
-            <Modal
+        <SafeAreaView style={styles.mainView}>
+            {/* <Modal
                 animationType='none'
                 transparent={true}
                 visible={visible}
@@ -25,8 +25,16 @@ const Loader = ({ visible }) => {
 
 
                 </View>
-            </Modal>
+            </Modal> */}
+            {
+                visible && (
+                    <ActivityIndicator
+                        size={60}
+                        color={'#fff'}
 
+                    />
+                )
+            }
         </SafeAreaView>
     )
 }
@@ -36,7 +44,7 @@ export default Loader
 const styles = StyleSheet.create({
     mainView: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.3)',
         justifyContent: 'center',
         alignItems: 'center',
     }

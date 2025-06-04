@@ -5,6 +5,7 @@ import userReducer from './slices/userSlice';
 import investmentReducer from './slices/investmentSlice';
 import walletReducer from './slices/walletSlice';
 import referralReducer from './slices/referralSlice';
+import adminReducer from './slices/adminSlice';
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -12,5 +13,6 @@ export const store = configureStore({
     investment: investmentReducer,
     wallet: walletReducer,
     referral: referralReducer,
+    admin: adminReducer,
   },
 });

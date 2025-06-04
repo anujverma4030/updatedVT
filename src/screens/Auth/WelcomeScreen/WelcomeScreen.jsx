@@ -29,6 +29,7 @@ export default function WelcomeScreen() {
                 <View style={[styles.buttonContainer, { top: height * 0.76 }]}>
                     <View>
                         <TouchableOpacity
+                            activeOpacity={1}
                             onPress={() => navigation.navigate('SignUpScreen')}
                             style={styles.button}>
                             <Text style={styles.signupText}>Sign Up</Text>
@@ -36,6 +37,7 @@ export default function WelcomeScreen() {
                     </View>
                     <View>
                         <TouchableOpacity
+                            activeOpacity={1}
                             onPress={() => navigation.navigate('LoginScreen')}
                             style={styles.loginbutton}>
                             <Text style={styles.loginText}>Log In</Text>

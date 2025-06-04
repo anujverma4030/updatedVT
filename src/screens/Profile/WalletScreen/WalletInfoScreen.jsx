@@ -4,6 +4,7 @@ import {
     Image,
     SafeAreaView,
     ScrollView,
+    StatusBar,
     StyleSheet,
     Text,
     TextInput,
@@ -23,81 +24,88 @@ const WalletInfoScreen = () => {
     const { height, width } = Dimensions.get('window');
     const { wallet, loading } = useSelector((state) => state.wallet);
     const dispatch = useDispatch();
-   
+
     const walletFetched = useRef(false);
- 
+
     useEffect(() => {
         // dispatch(getWalletBalance());
         if (!walletFetched.current) {
             dispatch(getWalletBalance());
             walletFetched.current = true;
         }
-        console.log('Wallet Balance:', wallet, 'Loading:', loading);
+        // console.log('Wallet Balance:', wallet, 'Loading:', loading);
     }, []);
     return (
+        <>
+            <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent />
+            {
+                loading ? (
 
-        <SafeAreaView style={styles.MainContainer}>
-            {loading ? (
-                // <ActivityIndicator size="large" color="#34A853" style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} />
-                <Loader visible={true} />
-            ) : (<>
-                <ScrollView>
-                    <View style={styles.headerContentContainer}>
-                        <View style={styles.headerTextContainer}>
-                            <TouchableOpacity onPress={() => navigation.goBack()}>
-                                <Icon name="arrow-back" size={20} color="#fff" />
-                            </TouchableOpacity>
-                            <Text style={styles.headerText}>Wallet Info</Text>
-                        </View>
-                        <TouchableOpacity>
-                            <Icon name="settings" size={24} color="#fff" />
-                        </TouchableOpacity>
-                    </View>
+                    <Loader visible={loading} />
+                ) : (
+                    <SafeAreaView style={styles.MainContainer}>
 
-                    <View style={styles.depositAndWithdrawContainer}>
-                        <TouchableOpacity style={[styles.depositTextBox, { backgroundColor: '#FDBE00', borderTopLeftRadius: 6, borderBottomLeftRadius: 6 }]}>
-                            <Text style={styles.depositText}>Pending Withdrawals $100 (processing)</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[styles.depositTextBox, { backgroundColor: '#2E7D32', borderTopRightRadius: 6, borderBottomRightRadius: 6 }]}>
-                            <Text style={styles.depositText}>Total Withdrawn{'\n'}
-                                <Text>$1,150</Text>
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                    <Text style={{ fontSize: RFValue(20), marginLeft: 20 }}>Wallet</Text>
-                    <View style={styles.card}>
-                        <View style={styles.cardTextContainer}>
-                            <Text style={styles.cardText}>Main Balance: ${wallet?.balance}</Text>
-                            <Text style={styles.cardText}>Locked Balance: ${wallet?.balance?.toFixed(2) ?? '0.00'}</Text>
-                            <Text style={styles.cardText}>Commission: ${wallet?.commission?.toFixed(2) ?? '0.00'}</Text>
-                            <Text style={styles.cardText}>Binance Wallet: 0x****1234</Text>
-                            <Text style={styles.cardText}>Bonus Cash: $50 (expires on 2025-05-1)</Text>
-                        </View>
-                        <TouchableOpacity style={styles.Button}>
-                            <Text style={styles.ButtonText}>Add/Update Wallet</Text>
-                        </TouchableOpacity>
-                    </View>
+                        <ScrollView>
+                            <View style={styles.headerContentContainer}>
+                                <View style={styles.headerTextContainer}>
+                                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                                        <Icon name="arrow-back" size={20} color="#fff" />
+                                    </TouchableOpacity>
+                                    <Text style={styles.headerText}>Wallet Info</Text>
+                                </View>
+                                <TouchableOpacity>
+                                    <Icon name="settings" size={24} color="#fff" />
+                                </TouchableOpacity>
+                            </View>
 
-                    <Text style={{ fontSize: RFValue(20), marginLeft: 20, marginTop: 10 }}>Coupons Available:  2</Text>
+                            <View style={styles.depositAndWithdrawContainer}>
+                                <TouchableOpacity style={[styles.depositTextBox, { backgroundColor: '#FDBE00', borderTopLeftRadius: 6, borderBottomLeftRadius: 6 }]}>
+                                    <Text style={styles.depositText}>Pending Withdrawals $100 (processing)</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={[styles.depositTextBox, { backgroundColor: '#2E7D32', borderTopRightRadius: 6, borderBottomRightRadius: 6 }]}>
+                                    <Text style={styles.depositText}>Total Withdrawn{'\n'}
+                                        <Text>$1,150</Text>
+                                    </Text>
+                                </TouchableOpacity>
+                            </View>
+                            <Text style={{ fontSize: RFValue(20), marginLeft: 20 }}>Wallet</Text>
+                            <View style={styles.card}>
+                                <View style={styles.cardTextContainer}>
+                                    <Text style={styles.cardText}>Main Balance: ${wallet?.balance}</Text>
+                                    <Text style={styles.cardText}>Locked Balance: ${wallet?.balance?.toFixed(2) ?? '0.00'}</Text>
+                                    <Text style={styles.cardText}>Commission: ${wallet?.commission?.toFixed(2) ?? '0.00'}</Text>
+                                    <Text style={styles.cardText}>Binance Wallet: 0x****1234</Text>
+                                    <Text style={styles.cardText}>Bonus Cash: $50 (expires on 2025-05-1)</Text>
+                                </View>
+                                <TouchableOpacity style={styles.Button}>
+                                    <Text style={styles.ButtonText}>Add/Update Wallet</Text>
+                                </TouchableOpacity>
+                            </View>
 
-                    <View style={styles.CuponCardContainer}>
-                        <View style={styles.cuponCard}>
-                            <Image source={require('../../../assests/homepageBigWinImage.png')} style={styles.cardImage} />
-                            <TouchableOpacity style={[styles.playButton, { top: height * 0.08, left: width * 0.1 }]}>
-                                <Text style={styles.playButtonText}>Clam Now</Text>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.cuponCard}>
-                            <Image source={require('../../../assests/homepageGirlScrollImage.png')} style={styles.cardImage} />
-                            <TouchableOpacity style={[styles.playButton, { top: height * 0.08, left: width * 0.1 }]}>
-                                <Text style={styles.playButtonText}>Claimed</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </ScrollView>
-            </>)}
+                            <Text style={{ fontSize: RFValue(20), marginLeft: 20, marginTop: 10 }}>Coupons Available:  2</Text>
 
-        </SafeAreaView>
+                            <View style={styles.CuponCardContainer}>
+                                <View style={styles.cuponCard}>
+                                    <Image source={require('../../../assests/homepageBigWinImage.png')} style={styles.cardImage} />
+                                    <TouchableOpacity style={[styles.playButton, { top: height * 0.08, left: width * 0.1 }]}>
+                                        <Text style={styles.playButtonText}>Clam Now</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.cuponCard}>
+                                    <Image source={require('../../../assests/homepageGirlScrollImage.png')} style={styles.cardImage} />
+                                    <TouchableOpacity style={[styles.playButton, { top: height * 0.08, left: width * 0.1 }]}>
+                                        <Text style={styles.playButtonText}>Claimed</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </ScrollView>
+
+
+                    </SafeAreaView>
+                )
+            }
+
+        </>
     );
 };
 

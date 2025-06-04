@@ -8,12 +8,13 @@ const SpinScreen = () => {
   const { height, width } = Dimensions.get('window');
   const [showModal, setShowModal] = useState(false);
   return (
-    <SafeAreaView style={styles.container}>
-      <ImageBackground
-        source={require('../../assests/spinPageBGImage.png')}
-        style={styles.BGImage}
-        resizeMode="cover"
-      >
+    <ImageBackground
+      source={require('../../assests/spinPageBGImage.png')}
+      style={styles.BGImage}
+      resizeMode="cover"
+    >
+      <SafeAreaView style={styles.container}>
+
         <SpinPageBackSide />
 
         <View style={[styles.spinWheelImageContainer, { bottom: height * 0.07, left: width * 0.02 }]}>
@@ -44,36 +45,37 @@ const SpinScreen = () => {
             Daily 3 Spins Free More spins via referral
           </Text>
         </View>
-      </ImageBackground>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showModal}
-        onRequestClose={() => setShowModal(false)}
-        hardwareAccelerated={true}
-        statusBarTranslucent={true}
-        // navigationBarTranslucent={true}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Image
-              source={require('../../assests/spinPageGiftImage.png')}
-              style={{ width: 100, height: 100, bottom: 60 }}
-              resizeMode='contain'
-            />
-            <Text style={{ fontSize: RFValue(30), fontWeight: 'bold', color: '#FF8800', bottom: 40 }}>Lucky Spin Star!</Text>
-            <Text style={{ fontSize: RFValue(20), fontWeight: '400', marginBottom: 10 }}>You’ve Won A Gift Pack</Text>
-            <Text style={{ fontSize: RFValue(12), marginBottom: 10 }}>Spin Now For Another Win!</Text>
-            <Icon name='keyboard-double-arrow-down' size={24} color="orange" style={{ marginBottom: 10 }} />
 
-            <View style={{ flex: 1 }} />
-            <TouchableOpacity style={[styles.signInButton, { top: height * 0.29 }]} onPress={() => setShowModal(false)}>
-              <Text style={styles.signInButtonText}>Spin Again</Text>
-            </TouchableOpacity>
+        <Modal
+          animationType='fade'
+          transparent={true}
+          visible={showModal}
+          onRequestClose={() => setShowModal(false)}
+          hardwareAccelerated={true}
+          statusBarTranslucent={true}
+        navigationBarTranslucent={true}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Image
+                source={require('../../assests/spinPageGiftImage.png')}
+                style={{ width: 100, height: 100, bottom: 60 }}
+                resizeMode='contain'
+              />
+              <Text style={{ fontSize: RFValue(30), fontWeight: 'bold', color: '#FF8800', bottom: 40 }}>Lucky Spin Star!</Text>
+              <Text style={{ fontSize: RFValue(20), fontWeight: '400', marginBottom: 10 }}>You’ve Won A Gift Pack</Text>
+              <Text style={{ fontSize: RFValue(12), marginBottom: 10 }}>Spin Now For Another Win!</Text>
+              <Icon name='keyboard-double-arrow-down' size={24} color="orange" style={{ marginBottom: 10 }} />
+
+              <View style={{ flex: 1 }} />
+              <TouchableOpacity style={[styles.signInButton, { top: height * 0.29 }]} onPress={() => setShowModal(false)}>
+                <Text style={styles.signInButtonText}>Spin Again</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      </Modal>
-    </SafeAreaView>
+        </Modal>
+      </SafeAreaView>
+    </ImageBackground>
   );
 };
 

@@ -106,7 +106,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: '#34A853',
     paddingVertical: 30,
-    paddingHorizontal: 30
+    paddingHorizontal: 10
   },
   headerTextContainer: {
     flexDirection: 'row',

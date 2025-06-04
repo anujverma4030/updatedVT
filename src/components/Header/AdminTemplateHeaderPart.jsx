@@ -1,20 +1,42 @@
 import React, { useState } from 'react';
 import {
     View, Text, TextInput, TouchableOpacity, Modal, StyleSheet, TouchableWithoutFeedback, Dimensions, Image, StatusBar,
+    ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { logout } from '../../redux/slices/authSlice';
 
 const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
     const [menuVisible, setMenuVisible] = useState(false);
     const navigation = useNavigation();
     const { height } = Dimensions.get('window');
+    const [loading, setLoading] = useState(false);
     const inset = useSafeAreaInsets();
+    const dispatch = useDispatch();
     const handleNavigate = (screen) => {
         setMenuVisible(false);
         navigation.navigate(screen);
+    };
+    const handleLogout = async () => {
+
+        setLoading(true);
+        try {
+            await dispatch(logout());
+            setTimeout(() => {
+                setLoading(false);
+                navigation.replace('AuthStack');
+            }, 2000);
+
+        } catch (error) {
+            console.error('Logout Error:', error.message);
+
+        }
+
+
     };
     return (
         <SafeAreaView>
@@ -46,6 +68,7 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
                 visible={menuVisible}
                 animationType="fade"
                 statusBarTranslucent={true}
+                onRequestClose={() => setMenuVisible(false)}
             >
                 <TouchableWithoutFeedback onPress={() => setMenuVisible(false)}>
                     <View style={styles.overlay}>
@@ -85,8 +108,18 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
                                     <Icon name='settings' size={24} color='#8F8F8F' />
                                     <Text style={styles.menuItem}>Settings</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.menuLogoutButton} onPress={() => console.log('Log Out')}>
-                                    <Text style={styles.menuLogoutButtonText}>Log Out</Text>
+
+                                <TouchableOpacity
+                                    activeOpacity={0.7}
+                                    onPress={handleLogout}
+                                    style={styles.menuLogoutButton}
+                                    disabled={loading}
+                                >
+                                    {loading ?
+                                        <ActivityIndicator size={23} color="#000" />
+                                        : (<Text style={styles.menuLogoutButtonText}>Log Out</Text>)
+                                    }
+
                                 </TouchableOpacity>
                             </View>
                         </TouchableWithoutFeedback>
@@ -183,11 +216,13 @@ const styles = StyleSheet.create({
     menuLogoutButton: {
         marginVertical: 15,
         backgroundColor: '#D9D9D9',
-        borderRadius: 6
+        borderRadius: 6,
+        paddingVertical: 12,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     menuLogoutButtonText: {
         fontSize: 16,
-        paddingVertical: 10,
         color: '#000',
         textAlign: 'center',
         fontWeight: '500'

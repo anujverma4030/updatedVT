@@ -122,9 +122,20 @@ const authSlice = createSlice({
             })
 
             // Load token
+            .addCase(loadToken.pending, (state) => {
+                state.loading = true;
+                state.errorMsg = null;
+            })
             .addCase(loadToken.fulfilled, (state, action) => {
-                state.userToken = action.payload; // ✅ it's just the token string
-                state.userId = jwtDecode(action.payload).id;
+                state.userToken = action.payload;
+                state.userId = action.payload ? jwtDecode(action.payload).id : null;
+                state.loading = false;
+            })
+            .addCase(loadToken.rejected, (state, action) => {
+                state.userToken = null;
+                state.userId = null;
+                state.loading = false;
+                state.errorMsg = action.payload;
             })
 
             // Logout

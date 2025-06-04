@@ -12,6 +12,7 @@ export const getEmployeeById = createAsyncThunk(
             
             return response.data.user;
         } catch (error) {
+            console.log(error.response?.data?.message);
             return rejectWithValue(error.response?.data?.message || 'Failed to fetch user');
         }
     }
@@ -78,7 +79,7 @@ const userSlice = createSlice({
             //     state.loading = false;
             // })
             .addCase(getEmployeeById.fulfilled, (state, action) => {
-                console.log('Reducer fulfilled action payload:', action.payload);
+                // console.log('Reducer fulfilled action payload:', action.payload);
                 state.userDetails = action.payload;
                 state.wallet = action.payload.wallet || null;
                 state.loading = false;

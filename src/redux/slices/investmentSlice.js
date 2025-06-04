@@ -17,17 +17,19 @@ export const fetchInvestmentPlans = createAsyncThunk(
 // Subscribe to plan
 export const subscribeToPlan = createAsyncThunk(
     'investment/subscribe',
-    async ({ id, payload }, { rejectWithValue ,getState }) => {
+    async ({ id, payload }, { rejectWithValue, getState, dispatch }) => {
         try {
             // const token = getState().auth.userToken;
             console.log('Subscribing to plan with ID:', id, 'and payload:', payload);
             const res = await axiosInstance.post(`/invest/subscribe/${id}`, payload);
+
             console.log('Subscription Response:', res.data);
             return res.data.investment;
-            // console.log('Subscription successful:', res.data.investment);
+
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Subscription failed');
         }
+
     }
 );
 
@@ -37,7 +39,9 @@ export const fetchActiveInvestments = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const res = await axiosInstance.get('/invest/active');
+            // console.log('Active investment fetched',res.data.investments);
             return res.data.investments;
+
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Failed to fetch active investments');
         }
@@ -50,7 +54,9 @@ export const fetchInvestmentHistory = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const res = await axiosInstance.get('/invest/history');
+            // console.log('Investment History Response:', res.data.investments);
             return res.data.investments;
+
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Failed to fetch investment history');
         }
@@ -65,8 +71,11 @@ const investmentSlice = createSlice({
         investmentHistory: [],
         loading: false,
         error: null,
+        investPlanLoading: false,
+
     },
-    reducers: {},
+    reducers: {
+    },
     extraReducers: (builder) => {
         builder
             // Plans
@@ -84,13 +93,13 @@ const investmentSlice = createSlice({
 
             // Subscribe
             .addCase(subscribeToPlan.pending, (state) => {
-                state.loading = true;
+                state.investPlanLoading = true;
             })
             .addCase(subscribeToPlan.fulfilled, (state, action) => {
-                state.loading = false;
+                state.investPlanLoading = false;
             })
             .addCase(subscribeToPlan.rejected, (state, action) => {
-                state.loading = false;
+                state.investPlanLoading = false;
                 state.error = action.payload;
             })
 

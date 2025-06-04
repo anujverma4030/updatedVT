@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity, Dimensions, Image, Alert, ScrollView, KeyboardAvoidingView } from 'react-native'
+import { View, Text, StyleSheet, SafeAreaView, TextInput, TouchableOpacity, Dimensions, Image, Alert, ScrollView, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -21,7 +21,7 @@ const SignUpScreen = () => {
     const [badName, setBadName] = useState('')
     const [badUserName, setBadUserName] = useState('')
     // const { signup, loading, errorMsg } = useContext(AuthContext);
-    console.log(loading);
+    // console.log(loading);
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const { loading, errorMsg } = useSelector((state) => state.auth); // Redux state
@@ -240,8 +240,10 @@ const SignUpScreen = () => {
 
                     <TouchableOpacity
                         onPress={handleSignUp}
+                        disabled={loading}
+                        activeOpacity={0.7}
                         style={styles.loginButton}>
-                        <Text style={styles.loginButtonText}>Sign Up</Text>
+                       <Text style={styles.loginButtonText}>{loading ? (<ActivityIndicator size={24} color={'#fff'}/>) : 'Sign Up'}</Text>
                     </TouchableOpacity>
 
                     <Text style={styles.orText}>Or</Text>

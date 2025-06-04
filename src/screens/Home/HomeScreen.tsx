@@ -14,7 +14,8 @@ import {
     NativeScrollEvent,
     Pressable,
     Alert,
-    ActivityIndicator
+    ActivityIndicator,
+    StatusBar
 } from 'react-native';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -44,6 +45,8 @@ const HomeScreen: React.FC = () => {
     const dispatch = useDispatch();
     const { userDetails, loading } = useSelector((state: any) => state.user);
     const { userId, } = useSelector((state) => state.auth);
+    // console.log(userDetails);
+
     useEffect(() => {
         if (userId) {
             dispatch(getEmployeeById(userId));
@@ -51,20 +54,16 @@ const HomeScreen: React.FC = () => {
     }, [userId]);
 
     return (
-
-        <ScrollView contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom + 100 }]}
-            showsVerticalScrollIndicator={false}
-
-        >
+        <>
+            <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent />
             {
                 loading ? (
-
-                    <SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <ActivityIndicator size="large" color="#34A853" />
-                    </SafeAreaView>
-
+                    <Loader visible={loading} />
                 ) : (
-                    <>
+                    <ScrollView contentContainerStyle={[styles.scrollViewContent, { paddingBottom: insets.bottom + 100 }]}
+                        showsVerticalScrollIndicator={false}
+
+                    >
                         <SafeAreaView>
 
                             <View>
@@ -146,7 +145,7 @@ const HomeScreen: React.FC = () => {
                                     <View style={styles.divider} />
                                     <View style={styles.summaryItem}>
                                         <Text style={styles.label}>Balance</Text>
-                                        <Text style={[styles.value, { color: '#fbc02d' }]}>$3500.45</Text>
+                                        <Text style={[styles.value, { color: '#fbc02d' }]}>${userDetails ? userDetails.wallet.balance : '0'}</Text>
                                     </View>
                                     <View style={styles.divider} />
                                     <View style={styles.summaryItem}>
@@ -270,11 +269,11 @@ const HomeScreen: React.FC = () => {
                                 </ScrollView>
                             </View>
                         </SafeAreaView>
-                    </>
+                    </ScrollView >
                 )
             }
 
-        </ScrollView>
+        </>
     );
 };
 

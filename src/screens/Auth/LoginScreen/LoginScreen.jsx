@@ -1,4 +1,4 @@
-import { Alert, Dimensions, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Image, SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import React, { useContext, useState } from 'react';
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -9,6 +9,7 @@ import Loader from '../../../components/Loader/Loader';
 import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../../redux/slices/authSlice';
 import { getEmployeeById } from '../../../redux/slices/userSlice';
+import jwtDecode from 'jwt-decode';
 
 const LoginScreen = () => {
     const { height, width } = Dimensions.get('window');
@@ -21,32 +22,7 @@ const LoginScreen = () => {
     const dispatch = useDispatch();
     const loading = useSelector((state) => state.auth.loading);
     const errorMsg = useSelector((state) => state.auth.errorMsg);
-    // const handleLogin = async () => {
-    //     if (!email.trim()) {
-    //         setBadEmail(true)
-    //         Alert.alert('Message', 'Please Enter Email')
-    //         return;
-    //     }
-    //     else if (!password.trim()) {
-    //         setBadPassword(true)
-    //         Alert.alert('Message', 'Please Enter Password')
-    //         return;
-    //     }
-    //     try {
-    //         const result = await login(email, password)
-    //         if (result.success) {
-    //             Alert.alert('Success', 'Login Success');
-    //             setTimeout(() => {
-    //                 navigation.navigate('MainTabs');
-    //             }, 2000);
-    //         }
-    //     } catch (error) {
-    //         console.error('Login Error:', error.message);
-    //         Alert.alert('Login Failed', error.message);
-    //     }
-
-
-    // }
+    const { userDetails, } = useSelector((state) => state.user);
     const handleLogin = async () => {
         if (!email.trim()) {
             setBadEmail(true);
@@ -61,9 +37,26 @@ const LoginScreen = () => {
             const resultAction = await dispatch(login({ email, password }));
             if (login.fulfilled.match(resultAction)) {
                 Alert.alert('Success', 'Login Success');
+                //  load token and userId
+                const token = resultAction.payload?.token || resultAction.payload;
+                const decoded = jwtDecode(token);
+                const userId = decoded?.id;
+
+                //  Fetch user details
+                const userResult = await dispatch(getEmployeeById(userId));
+                const user = userResult.payload;
+                // Navigate based on role
+                const role = user?.role?.toLowerCase();
+
                 setTimeout(() => {
-                    navigation.navigate('MainTabs');
-                }, 2000);
+                    if (role === 'admin') {
+                        navigation.replace('AdminPanel');
+                    } else if (role === 'user') {
+                        navigation.replace('MainTabs');
+                    } else {
+                        navigation.navigate('WelcomeScreen');
+                    }
+                }, 1000);
             } else {
                 Alert.alert('Login Failed', resultAction.payload || 'Unknown error');
             }
@@ -118,10 +111,11 @@ const LoginScreen = () => {
                 </TouchableOpacity>
 
                 <TouchableOpacity
-                    // onPress={() => navigation.navigate('MainTabs')} // for now
                     onPress={handleLogin}
+                    disabled={loading}
+                    activeOpacity={0.7}
                     style={styles.loginButton}>
-                    <Text style={styles.loginButtonText}>Log In</Text>
+                    <Text style={styles.loginButtonText}>{loading ? (<ActivityIndicator size={24} color={'#fff'} />) : 'Log In'}</Text>
                 </TouchableOpacity>
 
                 <Text style={styles.orText}>Or</Text>
@@ -158,7 +152,7 @@ const LoginScreen = () => {
                 </TouchableOpacity>
 
             </View>
-            <Loader visible={loading} />
+          
         </SafeAreaView>
     );
 }

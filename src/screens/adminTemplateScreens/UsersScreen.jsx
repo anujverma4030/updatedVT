@@ -2,80 +2,95 @@ import React, { useEffect } from 'react'
 import {
   SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  View
+  View,
+  TextInput,
+  StatusBar
 } from 'react-native'
 
 import { RFValue } from 'react-native-responsive-fontsize'
 import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart'
+import { fetchAllUsers, } from '../../redux/slices/adminSlice'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchAllWithdrawals } from '../../redux/slices/adminSlice'
 import Loader from '../../components/Loader/Loader'
 
-// const depositRequests = [
-//   { REQId: 'REQ21', userId: 'UU01', amount: 'Rs.200', RequestTime: '5/09/2025', status: 'Pending' },
-//   { REQId: 'REQ21', userId: 'UU01', amount: 'Rs.300', RequestTime: '5/09/2025', status: 'Pending' },
-//   { REQId: 'REQ21', userId: 'UU01', amount: 'Rs.200', RequestTime: '5/09/2025', status: 'Pending' },
-//   { REQId: 'REQ21', userId: 'UU01', amount: 'Rs.400', RequestTime: '5/09/2025', status: 'Pending' },
-// ]
-
+// const users = new Array(8).fill({
+//   userId: 'UU01',
+//   name: 'Aman',
+//   email: 'Amandeep@Gmail.Com',
+//   balance: 'Rs.500',
+//   status: 'Active'
+// })
 
 const columnWidths = {
-  REQId: 100,
   userId: 80,
-  amount: 100,
-  RequestTime: 120,
+  name: 100,
+  email: 200,
+  balance: 120,
   status: 100,
-  actions: 100,
+  actions: 200,
 }
 
-const WithdrawalsScreen = () => {
+const UsersScreen = () => {
   const dispatch = useDispatch();
-  const { withdrawals, loading } = useSelector((state) => state.admin);
-  // console.log('withdrawals', withdrawals);
-
+  const { users, loading } = useSelector((state) => state.admin);
+  console.log('Users:', users);
   useEffect(() => {
-    dispatch(fetchAllWithdrawals());
+    dispatch(fetchAllUsers());
   }, [dispatch]);
-
   return (
     <>
       <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
       {
         loading ? (
-
           <Loader visible={loading} />
+
         ) : (
           <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-
-            <ScrollView>
-              <AdminTemplateHeaderPart name='Withdrawals' paddingBottom={20} />
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              contentContainerStyle={{
+                paddingBottom: 40
+              }}
+            >
+              <AdminTemplateHeaderPart name='Users' paddingBottom={20} />
+              <Text style={{
+                fontSize: RFValue(20),
+                fontWeight: 'bold',
+                color: '#333',
+                marginLeft: 10,
+                marginBottom: 10,
+                textAlign: 'center',
+              }}>Total Users : {users.length}</Text>
               <View style={styles.container}>
+
                 <ScrollView
                   horizontal
                   showsHorizontalScrollIndicator={false}
                   contentContainerStyle={styles.HorizentalScrollContainer}
                 >
                   <View style={styles.TableContainer}>
+
                     <View style={[styles.row, styles.headerRow]}>
-                      <Text style={[styles.headerCell, { width: columnWidths.REQId }]}>Request ID</Text>
                       <Text style={[styles.headerCell, { width: columnWidths.userId }]}>User ID</Text>
-                      <Text style={[styles.headerCell, { width: columnWidths.amount }]}>Amount</Text>
-                      <Text style={[styles.headerCell, { width: columnWidths.RequestTime }]}>Request Time</Text>
+                      <Text style={[styles.headerCell, { width: columnWidths.name }]}>Name</Text>
+                      <Text style={[styles.headerCell, { width: columnWidths.email }]}>E-Mail</Text>
+                      <Text style={[styles.headerCell, { width: columnWidths.balance }]}>Wallet Balance</Text>
                       <Text style={[styles.headerCell, { width: columnWidths.status }]}>Status</Text>
                       <Text style={[styles.headerCell, { width: columnWidths.actions }]}>Actions</Text>
                     </View>
-                    {withdrawals.map((item, index) => (
+                    {users.map((user, index) => (
                       <View style={styles.row} key={index}>
-                        <Text style={[styles.cell, { width: columnWidths.REQId }]}>{item._id}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.userId }]}>{item.userId?._id}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.amount }]}>{item.amount}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.RequestTime, color: 'blue', textDecorationLine: 'underline' }]}>{new Date(item.createdAt).toLocaleDateString('en-GB')}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.status, color: '#E5A400' }]}>{item.status}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.userId }]}>{user._id}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.name }]}>{user.name}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.email }]}>{user.email}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.balance }]}>{user.balance}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.status }]}>{user.status}</Text>
                         <View style={[styles.cell, { width: columnWidths.actions, flexDirection: 'row' }]}>
-                          <Text style={[styles.link, { color: 'green', textDecorationLine: 'underline' }]}>Approve</Text>
+                          <Text style={styles.link}>View</Text>
+                          <Text style={[styles.link, { color: '#E5A400' }]}>Suspend</Text>
+                          <Text style={styles.reject}>Reject</Text>
                         </View>
                       </View>
                     ))}
@@ -85,13 +100,13 @@ const WithdrawalsScreen = () => {
             </ScrollView>
           </SafeAreaView>
         )
-      }
 
+      }
     </>
   )
 }
 
-export default WithdrawalsScreen
+export default UsersScreen;
 
 const styles = StyleSheet.create({
   container: {

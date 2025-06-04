@@ -1,6 +1,7 @@
 import {
     FlatList,
     SafeAreaView,
+    StatusBar,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -13,6 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '../../components/Loader/Loader';
 import { getTransactions } from '../../redux/slices/walletSlice';
+import moment from 'moment';
 
 type TransactionType = 'all' | 'deposit' | 'withdraw' | 'bonus';
 
@@ -37,7 +39,7 @@ const TransactionHistoryScreen = () => {
     const dispatch = useDispatch();
     const { transactions, loading } = useSelector((state) => state.wallet);
     console.log('Transactions:', transactions);
-    
+
     useEffect(() => {
         dispatch(getTransactions());
     }, []);
@@ -46,24 +48,35 @@ const TransactionHistoryScreen = () => {
         ? transactions
         : transactions.filter(t => t.type.toLowerCase() === selectedType);
 
-    const renderItem = ({ item }: { item: typeof transactions[number] }) => (
-        <View style={styles.row}>
-            <Text style={styles.cell}>{item.date}</Text>
-            <Text style={styles.cell}>{item.type}</Text>
-            <Text style={styles.cell}>{item.amount}</Text>
-            <Text style={[styles.cell, item.status === 'Pending' ? styles.pending : styles.completed]}>
-                {item.status}
-            </Text>
-        </View>
-    );
+    const renderItem = ({ item }: { item: typeof transactions[number] }) => {
+        const date = moment(item.createdAt).format('D MMM YYYY');
+        const type = item.type.charAt(0).toUpperCase() + item.type.slice(1).toLowerCase();
+        const status = item.status.charAt(0).toUpperCase() + item.status.slice(1)
+        const amount = item.amount.toLocaleString('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        });
+        return (
+            <View style={styles.row}>
+                <Text style={styles.cell}>{date}</Text>
+                <Text style={styles.cell}>{type}</Text>
+                <Text style={styles.cell}>{amount}</Text>
+                <Text style={[styles.cell, status === 'Pending' ? styles.pending : styles.completed]}>
+                    {status}
+                </Text>
+            </View>
+        )
+    };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+        <>
+            <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent />
             {
                 loading ? (
-                    <Loader visible={true} />
+                    <Loader visible={loading} />
                 ) : (
-                    <>
+                    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+
                         <View style={styles.header}>
                             <View style={styles.headerLeft}>
                                 <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -112,11 +125,11 @@ const TransactionHistoryScreen = () => {
                                 contentContainerStyle={{ paddingBottom: 30 }}
                             />
                         </View>
-                    </>
+                    </SafeAreaView>
                 )
             }
 
-        </SafeAreaView>
+        </>
     );
 };
 

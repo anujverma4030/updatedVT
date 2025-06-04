@@ -8,6 +8,7 @@ import DepositsScreen from '../screens/adminTemplateScreens/DepositsScreen';
 import WithdrawalsScreen from '../screens/adminTemplateScreens/WithdrawalsScreen';
 import AdminSettingsScreen from '../screens/adminTemplateScreens/AdminSettingsScreen';
 import InvestmentsScreen from '../screens/adminTemplateScreens/InvestmentsScreen';
+import ApproveWithdrawal from '../screens/adminTemplateScreens/ApproveWithdrawal';
 
 
 const Stack = createNativeStackNavigator();
@@ -25,6 +26,7 @@ const AdminStackNavigator = () => {
             <Stack.Screen name="Deposits" component={DepositsScreen} />
             <Stack.Screen name="Withdrawals" component={WithdrawalsScreen} />
             <Stack.Screen name="Settings" component={AdminSettingsScreen} />
+            <Stack.Screen name='ApproveWithdrawal' component={ApproveWithdrawal} />
         </Stack.Navigator>
     );
 };

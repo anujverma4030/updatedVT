@@ -44,8 +44,8 @@ const HomeScreen: React.FC = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const { userDetails, loading } = useSelector((state: any) => state.user);
-    const { userId, } = useSelector((state) => state.auth);
-    // console.log(userDetails);
+    const { userId, } = useSelector((state: any) => state.auth);
+    // console.log('User Detail in Home Page',userDetails);
 
     useEffect(() => {
         if (userId) {
@@ -145,7 +145,7 @@ const HomeScreen: React.FC = () => {
                                     <View style={styles.divider} />
                                     <View style={styles.summaryItem}>
                                         <Text style={styles.label}>Balance</Text>
-                                        <Text style={[styles.value, { color: '#fbc02d' }]}>${userDetails ? userDetails.wallet.balance : '0'}</Text>
+                                        <Text style={[styles.value, { color: '#fbc02d' }]}>${userDetails ? userDetails?.wallet?.balance : '0'}</Text>
                                     </View>
                                     <View style={styles.divider} />
                                     <View style={styles.summaryItem}>
@@ -294,14 +294,14 @@ const styles = StyleSheet.create({
     },
     welcomeText: {
         color: '#fff',
-        fontSize: RFValue(26),
-        fontWeight: 500,
+        fontSize: RFValue(20),
+        fontWeight: '500',
     },
     subText: {
         color: '#fff',
         fontSize: 14,
         marginTop: 5,
-        fontWeight: 200
+        fontWeight: 400
     },
     notificationIcon: {
         backgroundColor: '#FFFFFF',

@@ -14,7 +14,7 @@ import jwtDecode from 'jwt-decode';
 const App = () => {
   const dispatch = useDispatch();
   const { userToken, loading } = useSelector((state) => state.auth);
-  console.log('User Token in app.js:', userToken, 'Loading:', loading);
+  // console.log('User Token in app.js:', userToken, 'Loading:', loading);
   useEffect(() => {
     dispatch(loadToken());
   }, []);

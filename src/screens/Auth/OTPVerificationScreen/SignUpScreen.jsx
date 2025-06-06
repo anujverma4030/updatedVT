@@ -20,6 +20,7 @@ const SignUpScreen = () => {
     const [badMobile, setBadMobile] = useState('')
     const [badName, setBadName] = useState('')
     const [badUserName, setBadUserName] = useState('')
+    const [showPassword, setShowPassword] = useState(true);
     // const { signup, loading, errorMsg } = useContext(AuthContext);
     // console.log(loading);
     const navigation = useNavigation();
@@ -185,7 +186,7 @@ const SignUpScreen = () => {
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={{
                         paddingBottom: 30,
-                        height: Dimensions.get("window").height * 1.35
+                        height: Dimensions.get("window").height * 1.50
                     }}
                     keyboardShouldPersistTaps="handled"
                 >
@@ -194,11 +195,13 @@ const SignUpScreen = () => {
                     <Text style={styles.label}>Name</Text>
                     <TextInput style={styles.input}
                         value={name}
+                        placeholderTextColor={'#000'}
                         onChangeText={(text) => textFill(text, 'name')}
                     />
-                    <Text style={styles.label}>User Name</Text>
+                    <Text style={styles.label}>Username</Text>
                     <TextInput style={styles.input}
                         value={userName}
+                        placeholderTextColor={'#000'}
                         onChangeText={(text) => textFill(text, 'userName')}
                     />
 
@@ -206,14 +209,15 @@ const SignUpScreen = () => {
                     <TextInput style={styles.input}
                         value={email}
                         onChangeText={(text) => textFill(text, 'email')}
-                        keyboardType="email-address" />
+                        keyboardType="email-address"
+                        placeholderTextColor={'#000'} />
 
                     <Text style={styles.label}>Mobile</Text>
                     <TextInput style={styles.input}
                         value={mobile}
                         onChangeText={(text) => textFill(text, 'mobile')}
                         keyboardType="phone-pad"
-
+                        placeholderTextColor={'#000'}
                         maxLength={10} // Assuming a 10-digit mobile number
                     />
 
@@ -223,10 +227,14 @@ const SignUpScreen = () => {
                         <TextInput style={styles.inputPassword}
                             value={password}
                             onChangeText={(text) => textFill(text, 'password')}
-                            secureTextEntry />
-                        <TouchableOpacity>
+                            secureTextEntry
+                            placeholderTextColor={'#000'}
+                        />
+                        <TouchableOpacity
+                            onPress={() => setShowPassword(!showPassword)}
+                        >
                             <Icon
-                                style={[styles.icon, { right: width * 0.01, top: height * 0.010 }]}
+                                style={[styles.icon, { right: width * 0.01, top: height * 0.012 }]}
                                 name="visibility"
                                 size={18}
                                 color="#000"
@@ -243,7 +251,7 @@ const SignUpScreen = () => {
                         disabled={loading}
                         activeOpacity={0.7}
                         style={styles.loginButton}>
-                       <Text style={styles.loginButtonText}>{loading ? (<ActivityIndicator size={24} color={'#fff'}/>) : 'Sign Up'}</Text>
+                        <Text style={styles.loginButtonText}>{loading ? (<ActivityIndicator size={24} color={'#fff'} />) : 'Sign Up'}</Text>
                     </TouchableOpacity>
 
                     <Text style={styles.orText}>Or</Text>
@@ -365,23 +373,24 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 10,
         paddingVertical: 8,
-        marginBottom: 15
+        marginBottom: 15,
+        color: '#000'
     },
     passwordContainer: {
-        // display: 'flex',
+
         flexDirection: 'row',
-        // justifyContent:"center",
-        // alignItems:"center",
-    },
-    inputPassword: {
+        width: "100%",
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
         paddingHorizontal: 10,
-        paddingVertical: 8,
         marginBottom: 15,
-        width: "100%",
-        flex: 1,
+        justifyContent: 'space-between',
+    },
+    inputPassword: {
+        width: "90%",
+        color: '#000',
+        // flex: 1,
     },
     icon: {
         position: 'absolute',
@@ -399,7 +408,7 @@ const styles = StyleSheet.create({
     },
     loginButton: {
         backgroundColor: 'green',
-        paddingVertical: 10,
+        paddingVertical: 12,
         borderRadius: 5,
         marginTop: 30
     },

@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         position: 'absolute',
         width: "100%",
-        paddingHorizontal: 20
+        paddingHorizontal: 10
     },
     loginArrowBackContain: {
         display: 'flex',

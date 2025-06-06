@@ -59,17 +59,24 @@ const DashBoardScreen = () => {
                             <AdminTemplateHeaderPart name={`Hi ${userDetails ? userDetails?.name : 'User'}`} />
                             <View style={styles.dashboardWrapper}>
                                 <View style={[styles.buttonsContainer, { bottom: height * 0.038 }]}>
-                                    <TouchableOpacity style={styles.buttons} 
+                                    <TouchableOpacity 
+                                    activeOpacity={0.9}
+                                    style={styles.buttons} 
                                     onPress={()=>navigation.navigate('ApproveWithdrawal')}
                                     >
                                         <Icon name='verified' size={20} color='#34A853' />
                                         <Text style={styles.buttonsText}>Approve{'\n'}Withdrawal</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.buttons}>
+                                    <TouchableOpacity 
+                                    activeOpacity={0.9}
+                                    style={styles.buttons}>
                                         <Icon name='schedule' size={20} color='#FF8800' />
                                         <Text style={styles.buttonsText}>View Today’s{'\n'}Activity</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity style={styles.buttons}>
+                                    <TouchableOpacity 
+                                    onPress={()=>navigation.navigate('AddNewInvestment')}
+                                    activeOpacity={0.9}
+                                    style={styles.buttons}>
                                         <Icon name='add-box' size={20} color='#FF8800' />
                                         <Text style={styles.buttonsText}>Add New{'\n'}Investment</Text>
                                     </TouchableOpacity>
@@ -83,7 +90,7 @@ const DashBoardScreen = () => {
                                                 <Icon name="group" size={36} color="#007A8A" />
                                                 <View style={styles.textContainer}>
                                                     <Text style={styles.label}>Total Users</Text>
-                                                    <Text style={styles.value}>{dashboardStats ? dashboardStats?.totalUsers : '0.00'}</Text>
+                                                    <Text style={styles.value}>{dashboardStats ? dashboardStats?.totalUsers : '0'}</Text>
                                                 </View>
                                             </View>
                                             <Text style={styles.ongoingDashboardCardText}>● +153 new today</Text>
@@ -212,9 +219,6 @@ const DashBoardScreen = () => {
                 }
 
             </SafeAreaView>
-
-
-
         </>
     );
 };

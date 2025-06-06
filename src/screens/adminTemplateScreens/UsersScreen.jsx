@@ -6,14 +6,18 @@ import {
   Text,
   View,
   TextInput,
-  StatusBar
+  StatusBar,
+  FlatList,
+  Touchable,
+  TouchableOpacity
 } from 'react-native'
 
 import { RFValue } from 'react-native-responsive-fontsize'
 import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart'
-import { fetchAllUsers, } from '../../redux/slices/adminSlice'
+import { fetchAllUsers, fetchUserById, } from '../../redux/slices/adminSlice'
 import { useDispatch, useSelector } from 'react-redux'
 import Loader from '../../components/Loader/Loader'
+import { useNavigation } from '@react-navigation/native'
 
 // const users = new Array(8).fill({
 //   userId: 'UU01',
@@ -33,12 +37,52 @@ const columnWidths = {
 }
 
 const UsersScreen = () => {
+  const navigation = useNavigation();
   const dispatch = useDispatch();
   const { users, loading } = useSelector((state) => state.admin);
   console.log('Users:', users);
+
   useEffect(() => {
     dispatch(fetchAllUsers());
   }, [dispatch]);
+  const renderItem = ({ item }) => {
+    const status = item ? item.status?.charAt(0).toUpperCase() + item.status.slice(1) : 'N/A';
+
+    return (
+      <View style={styles.row}>
+        <Text style={[styles.cell, { width: columnWidths.userId }]}>{item._id}</Text>
+        <Text style={[styles.cell, { width: columnWidths.name }]}>{item.name}</Text>
+        <Text style={[styles.cell, { width: columnWidths.email }]}>{item.email}</Text>
+        {/* <Text style={[styles.cell, { width: columnWidths.balance }]}>{item.balance}</Text> */}
+        <Text style={[styles.cell, { width: columnWidths.status }]}>{status}</Text>
+        <View style={[styles.cell, { width: columnWidths.actions, flexDirection: 'row' }]}>
+          <TouchableOpacity onPress={() => {
+            navigation.navigate('UserDetailsScreen')
+            handleFetchUserById(item._id)
+          }}
+          >
+            <Text style={styles.link}>View</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.8}
+
+          >
+            <Text style={[styles.link, { color: '#E5A400' }]}>Suspend</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => console.log('Suspend User', item._id)}
+          >
+            <Text style={styles.reject}>Reject</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    )
+  }
+  const handleFetchUserById = (userId) => {
+    dispatch(fetchUserById(userId));
+    // console.log('Fetch User By ID:', userId);
+  }
   return (
     <>
       <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
@@ -76,24 +120,32 @@ const UsersScreen = () => {
                       <Text style={[styles.headerCell, { width: columnWidths.userId }]}>User ID</Text>
                       <Text style={[styles.headerCell, { width: columnWidths.name }]}>Name</Text>
                       <Text style={[styles.headerCell, { width: columnWidths.email }]}>E-Mail</Text>
-                      <Text style={[styles.headerCell, { width: columnWidths.balance }]}>Wallet Balance</Text>
+                      {/* <Text style={[styles.headerCell, { width: columnWidths.balance }]}>Wallet Balance</Text> */}
                       <Text style={[styles.headerCell, { width: columnWidths.status }]}>Status</Text>
                       <Text style={[styles.headerCell, { width: columnWidths.actions }]}>Actions</Text>
                     </View>
-                    {users.map((user, index) => (
-                      <View style={styles.row} key={index}>
-                        <Text style={[styles.cell, { width: columnWidths.userId }]}>{user._id}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.name }]}>{user.name}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.email }]}>{user.email}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.balance }]}>{user.balance}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.status }]}>{user.status}</Text>
-                        <View style={[styles.cell, { width: columnWidths.actions, flexDirection: 'row' }]}>
-                          <Text style={styles.link}>View</Text>
-                          <Text style={[styles.link, { color: '#E5A400' }]}>Suspend</Text>
-                          <Text style={styles.reject}>Reject</Text>
+                    <FlatList
+                      data={users}
+                      keyExtractor={(item) => item._id}
+                      renderItem={renderItem}
+                      scrollEnabled={false}
+                      contentContainerStyle={{ paddingBottom: 20 }}
+                      showsVerticalScrollIndicator={false}
+                      ListEmptyComponent={() => (
+                        <View style={{ padding: 20 }}>
+                          <Text style={{
+                            textAlign: 'center',
+                            fontSize: RFValue(16),
+                            color: '#888',
+                            fontWeight: '500'
+                          }}>No users found</Text>
                         </View>
-                      </View>
-                    ))}
+                      )}
+
+
+
+                    />
+
                   </View>
                 </ScrollView>
               </View>

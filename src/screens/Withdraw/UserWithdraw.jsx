@@ -28,88 +28,86 @@ const UserWithdraw = () => {
     ]
     return (
         <>
-            <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent/>
+            <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent />
 
-            <SafeAreaView style={styles.mainContainer}>
+            <SafeAreaView
+                edges={['left', 'right', 'bottom']}
+                style={styles.mainContainer}>
                 {/* Header Container */}
+                <ScrollView>
+                    <View
+                        style={styles.headerContainer}
+                    >
+                        {/* Header Icon */}
+                        <View style={styles.headerIcons}>
+                            <TouchableOpacity
+                                activeOpacity={0.7}
+                                onPress={() => navigation.goBack()}>
+                                <MaterialIcons name="arrow-back" size={30} color="#fff" />
+                            </TouchableOpacity>
 
-                <View
-                    style={styles.headerContainer}
-                >
-
-                    {/* Header Icon */}
-                    <View style={styles.headerIcons}>
-                        <TouchableOpacity
-                            activeOpacity={0.7}
-                            onPress={() => navigation.goBack()}>
-                            <MaterialIcons name="arrow-back" size={30} color="#fff" />
-                        </TouchableOpacity>
-
-                        <TouchableOpacity
-                            activeOpacity={0.7}
-                        >
-                            <MaterialIcons name="notifications" size={30} color="#fff" />
-                        </TouchableOpacity>
-                    </View>
-                    {/* Header Content */}
-                    <View>
-                        <Text
-                            style={styles.headerText}>Hi rohan sharma, cash out your {'\n'}rewards fast and safe!"</Text>
-                    </View>
-                    {/* Balance and Image */}
-                    <View style={styles.headerIcons}>
-                        <Text style={styles.balanceText}>Balance : ${userDetails ? userDetails?.wallet?.balance : '0'}</Text>
-                        <Image
-                            source={require('../../assests/WithdrawImage.png')}
-                            resizeMode='cover'
-                            style={styles.balanceImage}
-                        />
-                    </View>
-                </View>
-                {/* Withdrawal Container */}
-                <View style={styles.withdrawalContainer}>
-                    <View style={styles.withdrawView}>
-                        <Text style={styles.withdrawalHeaderText}>Withdrawal</Text>
-                        {/* input view */}
-                        <View style={styles.textInput}>
-                            <TextInput
-                                placeholder='Enter amount ($100 min)'
-                                placeholderTextColor={'#8F8F8F'}
-                                style={styles.input}
-
+                            <TouchableOpacity
+                                activeOpacity={0.7}
+                            >
+                                <MaterialIcons name="notifications" size={30} color="#fff" />
+                            </TouchableOpacity>
+                        </View>
+                        {/* Header Content */}
+                        <View>
+                            <Text
+                                style={styles.headerText}>Hi {userDetails? userDetails?.name : 'User'}, cash out your {'\n'}rewards fast and safe!"</Text>
+                        </View>
+                        {/* Balance and Image */}
+                        <View style={styles.headerIcons}>
+                            <Text style={styles.balanceText}>Balance : ${userDetails ? userDetails?.wallet?.balance : '0'}</Text>
+                            <Image
+                                source={require('../../assests/WithdrawImage.png')}
+                                resizeMode='cover'
+                                style={styles.balanceImage}
                             />
                         </View>
-                        <Text style={styles.labelText}>Select ((2% fee, $10 min))</Text>
-                        <View style={styles.paymentOption}>
-                            {
-                                paymentOptions.map((item, index) => (
-                                    <TouchableOpacity
-                                        activeOpacity={0.7}
-                                        key={index}
-                                        onPress={item.onPress}
-                                        style={styles.optionCard}>
-
-                                        <Image source={item.image}
-                                            resizeMode='cover'
-                                            style={styles.image}
-                                        />
-                                        <Text style={styles.text}>{item.name}</Text>
-                                    </TouchableOpacity>
-                                ))
-                            }
-
-                        </View>
-                        <TouchableOpacity
-                            activeOpacity={0.7}
-                            onPress={() => navigation.navigate('UserWithdrawalOTP')}
-                            style={styles.otpBtn}>
-                            <Text style={styles.otpBtnText}>Sent OTP</Text>
-                        </TouchableOpacity>
                     </View>
-                </View>
+                    {/* Withdrawal Container */}
+                    <View style={styles.withdrawalContainer}>
+                        <View style={styles.withdrawView}>
+                            <Text style={styles.withdrawalHeaderText}>Withdrawal</Text>
+                            {/* input view */}
+                            <View style={styles.textInput}>
+                                <TextInput
+                                    placeholder='Enter amount ($100 min)'
+                                    placeholderTextColor={'#8F8F8F'}
+                                    style={styles.input}
+                                />
+                            </View>
+                            <Text style={styles.labelText}>Select ((2% fee, $10 min))</Text>
+                            <View style={styles.paymentOption}>
+                                {
+                                    paymentOptions.map((item, index) => (
+                                        <TouchableOpacity
+                                            activeOpacity={0.7}
+                                            key={index}
+                                            onPress={item.onPress}
+                                            style={styles.optionCard}>
 
+                                            <Image source={item.image}
+                                                resizeMode='cover'
+                                                style={styles.image}
+                                            />
+                                            <Text style={styles.text}>{item.name}</Text>
+                                        </TouchableOpacity>
+                                    ))
+                                }
 
-
+                            </View>
+                            <TouchableOpacity
+                                activeOpacity={0.7}
+                                onPress={() => navigation.navigate('UserWithdrawalOTP')}
+                                style={styles.otpBtn}>
+                                <Text style={styles.otpBtnText}>Sent OTP</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </ScrollView>
             </SafeAreaView >
         </>
     )
@@ -121,14 +119,12 @@ const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         gap: 30,
-
     },
     headerContainer: {
         width: '100%',
-        height: Dimensions.get('window').height * 0.3,
+        height: 300,
         backgroundColor: '#34A853',
-
-
+        paddingTop: 30,
     },
     headerIcons: {
         flexDirection: 'row',
@@ -158,18 +154,17 @@ const styles = StyleSheet.create({
     },
     withdrawalContainer: {
         alignItems: 'center',
-
-
     },
     withdrawView: {
         width: '90%',
-        height: Dimensions.get('window').height * 0.37,
+        height: 330,
         backgroundColor: '#fff',
         elevation: 4,
         padding: 10,
         alignItems: 'center',
         borderRadius: 10,
-        gap: 10
+        gap: 10,
+        marginTop: 40,
     },
     withdrawalHeaderText: {
         fontWeight: '500',

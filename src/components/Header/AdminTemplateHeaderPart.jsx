@@ -5,6 +5,7 @@ import {
 } from 'react-native';
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Octicons from 'react-native-vector-icons/Octicons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
@@ -39,9 +40,9 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
 
     };
     return (
-        <SafeAreaView>
-            <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
-            <View style={[styles.headerContainer, { paddingBottom, bottom: inset.bottom + 10 }]}>
+        <SafeAreaView edges={['left', 'right', 'bottom']}>
+            <StatusBar backgroundColor="transparent" barStyle="dark-content" translucent />
+            <View style={[styles.headerContainer, { paddingBottom, paddingTop: inset.top }]}>
                 <Text style={styles.greetingText}>{name}</Text>
 
                 <View style={styles.iconGroup}>
@@ -53,10 +54,14 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
                             placeholderTextColor="#999"
                         />
                     </View>
-                    <TouchableOpacity style={styles.iconButton}>
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        style={styles.iconButton}>
                         <Icon name="notifications" size={26} color="#fff" />
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.iconButton} onPress={() => setMenuVisible(true)}>
+                    <TouchableOpacity
+                        activeOpacity={0.9}
+                        style={styles.iconButton} onPress={() => setMenuVisible(true)}>
                         <Icon name="menu" size={30} color="#fff" />
                     </TouchableOpacity>
                 </View>
@@ -90,7 +95,15 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.menuButtons} onPress={() => handleNavigate('Investments')}>
                                     <Icon name='work' size={24} color='#8F8F8F' />
-                                    <Text style={styles.menuItem}>Investments</Text>
+                                    <Text style={styles.menuItem}>User Investments</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.menuButtons} onPress={() => handleNavigate('InvestmentPlans')}>
+                                    <Icon name='fact-check' size={24} color='#8F8F8F' />
+                                    <Text style={styles.menuItem}>Investment Plans</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.menuButtons} onPress={() => handleNavigate('ReferralsScreen')}>
+                                    <Icon name='mobile-screen-share' size={24} color='#8F8F8F' />
+                                    <Text style={styles.menuItem}>Referrals</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.menuButtons} onPress={() => handleNavigate('SpinLogs')}>
                                     <Icon name='autorenew' size={24} color='#8F8F8F' />
@@ -103,6 +116,10 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
                                 <TouchableOpacity style={styles.menuButtons} onPress={() => handleNavigate('Withdrawals')}>
                                     <Icon name='file-download' size={24} color='#8F8F8F' />
                                     <Text style={styles.menuItem}>Withdrawals</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={styles.menuButtons} onPress={() => handleNavigate('ReportingTransactionScreen')}>
+                                    <Octicons name='arrow-switch' size={24} color='#8F8F8F' />
+                                    <Text style={styles.menuItem}>Reporting and Transaction</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.menuButtons} onPress={() => handleNavigate('Settings')}>
                                     <Icon name='settings' size={24} color='#8F8F8F' />
@@ -134,14 +151,12 @@ export default AdminTemplateHeaderPart;
 
 const styles = StyleSheet.create({
     headerContainer: {
-
         backgroundColor: '#34A853',
         paddingHorizontal: 16,
         paddingTop: 40,
         height: 250,
         width: '100%',
         justifyContent: "center",
-
 
     },
     greetingText: {
@@ -189,7 +204,7 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
         paddingHorizontal: 16,
         borderRadius: 10,
-        width: 200,
+        width: '50%',
         elevation: 5,
     },
     MenuItemImageContainer: {

@@ -123,6 +123,7 @@ const SplashScreen = () => {
 
     const { userToken, loading } = useSelector((state) => state.auth);
     const { userDetails } = useSelector((state) => state.user);
+    // console.log('User Details:', userDetails);
     console.log('User Token in splash:', userToken, 'Loading:', loading);
 
     //  Fetch userDetails if token is available

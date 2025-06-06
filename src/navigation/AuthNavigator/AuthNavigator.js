@@ -10,7 +10,8 @@ const AuthNavigator = () => {
     return (
         <Stack.Navigator 
         screenOptions={{
-            headerShown:false
+            headerShown:false,
+            animation: 'fade_from_bottom'
         }}
         >
             <Stack.Screen name='LoginScreen' component={LoginScreen} />

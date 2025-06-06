@@ -16,7 +16,7 @@ const ProfileScreenDownrside = () => {
             setTimeout(() => {
                 setLoading(false);
                 navigation.replace('AuthStack');
-            }, 2000);
+            }, 1500);
             // navigation.replace('AuthStack');
         } catch (error) {
             console.error('Logout Error:', error.message);

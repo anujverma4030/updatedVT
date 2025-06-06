@@ -1,11 +1,11 @@
-import { Alert, Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from 'react-native';
+import { ActivityIndicator, Alert, Dimensions, Image, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View, } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch, useSelector } from 'react-redux';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { updateUser } from '../../../redux/slices/userSlice';
+import { getEmployeeById, updateUser } from '../../../redux/slices/userSlice';
 import { API_BASE_URL } from '../../../api/axiosInstance';
 
 const PersonalDetails = () => {
@@ -51,6 +51,8 @@ const PersonalDetails = () => {
         try {
             await dispatch(updateUser(updateData));
             Alert.alert('Success', 'User details updated successfully');
+            dispatch(getEmployeeById(userId)); // Refresh user details
+
             setEditMode(false);
 
         } catch (error) {
@@ -59,7 +61,9 @@ const PersonalDetails = () => {
     }
     return (
         <SafeAreaView style={styles.MainContainer}>
-            <ScrollView>
+            <ScrollView 
+            showsVerticalScrollIndicator={false}
+            >
                 <View style={styles.headerContentContainer}>
                     <View style={styles.headerTextContainer}>
                         <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -92,13 +96,13 @@ const PersonalDetails = () => {
                             uri: userDetails.avatarUrl
                                 ? userDetails.avatarUrl
                                 : 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQzBwdXILD8UEHD_k8M2d-fvNLi9yBMMO3KXQ&s',
-                                resizeMode: 'cover',
+                            resizeMode: 'cover',
                         }}
                         style={styles.Image}
 
                     />
                     <TouchableOpacity
-                        style={[styles.carmeraIcon, { right: width * 0.08, top: height * 0.09 }]}
+                        style={[styles.cameraIcon, { right: width * 0.06, top: height * 0.08 }]}
                     >
                         <Icon name="add-a-photo" size={14} />
                     </TouchableOpacity>
@@ -165,7 +169,7 @@ const PersonalDetails = () => {
                             <TouchableOpacity
                                 onPress={handleUpdateUser}
                                 style={styles.verifiedButton}>
-                                <Text style={styles.verifiedText}>Update User</Text>
+                                <Text style={styles.verifiedText}>{loading ? (<ActivityIndicator size={'small'} color={'#fff'} />) : ('Update User')}</Text>
                                 {/* <Icon name="check-circle" size={36} color="#FF9800" /> */}
                             </TouchableOpacity>
                         ) : (
@@ -222,7 +226,7 @@ const styles = StyleSheet.create({
         margin: 25,
     },
     Image: {
-      
+
         width: 100,
         height: 100,
         borderRadius: 50,
@@ -230,7 +234,7 @@ const styles = StyleSheet.create({
         borderColor: '#000',
         overflow: 'hidden',
     },
-    carmeraIcon: {
+    cameraIcon: {
         backgroundColor: '#FFFFFF',
         width: 24,
         height: 24,

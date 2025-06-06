@@ -74,7 +74,7 @@ const ReferralDetailsScreen = () => {
               <Text style={[styles.tabLabel, selectedLevel === level.key && styles.activeLabel]}>
                 {level.label}
               </Text>
-              <Text style={styles.tabSubLabel}>{level.commission} Commission</Text>
+              <Text style={[styles.tabSubLabel ,selectedLevel === level.key && styles.activeLabel]}>{level.commission} Commission</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -138,30 +138,37 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   activeTab: {
-    borderBottomColor: '#FFA726',
+    borderBottomColor: 'green',
   },
   tabLabel: {
     fontWeight: 'bold',
     color: '#555',
   },
   activeLabel: {
-    color: '#34A853',
+    color: '#fff',
   },
   tabSubLabel: {
     fontSize: 12,
-    color: '#999',
+    color: '#000',
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#F1F1F1',
+    backgroundColor: '#fff',
     padding: 10,
     borderRadius: 6,
     marginBottom: 6,
+    borderBottomWidth: 1,
+    borderColor: '#ddd',
+    shadowColor: '#000',
+    elevation: 4,
+
   },
   headerCell: {
     flex: 1,
     fontWeight: 'bold',
     fontSize: 12,
+    marginLeft: 15,
+
   },
   row: {
     flexDirection: 'row',

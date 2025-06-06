@@ -34,7 +34,7 @@ const columnWidths = {
 const WithdrawalsScreen = () => {
   const dispatch = useDispatch();
   const { withdrawals, loading } = useSelector((state) => state.admin);
-  // console.log('withdrawals', withdrawals);
+  console.log('withdrawals', withdrawals);
 
   useEffect(() => {
     dispatch(fetchAllWithdrawals());
@@ -73,7 +73,7 @@ const WithdrawalsScreen = () => {
                         <Text style={[styles.cell, { width: columnWidths.userId }]}>{item.userId?._id}</Text>
                         <Text style={[styles.cell, { width: columnWidths.amount }]}>{item.amount}</Text>
                         <Text style={[styles.cell, { width: columnWidths.RequestTime, color: 'blue', textDecorationLine: 'underline' }]}>{new Date(item.createdAt).toLocaleDateString('en-GB')}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.status, color: '#E5A400' }]}>{item.status}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.status, color: '#E5A400' }]}>{item.status?.charAt(0).toUpperCase() + item.status.slice(1)}</Text>
                         <View style={[styles.cell, { width: columnWidths.actions, flexDirection: 'row' }]}>
                           <Text style={[styles.link, { color: 'green', textDecorationLine: 'underline' }]}>Approve</Text>
                         </View>

@@ -24,6 +24,7 @@ export const updateUser = createAsyncThunk(
     async (updateData, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.put('/profile/update', updateData);
+            console.log('User updated successfully:', response.data.user);
             return response.data.user;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Failed to update user');

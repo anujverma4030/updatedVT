@@ -26,10 +26,10 @@ export default function WelcomeScreen() {
                         />
                     </View>
                 </View>
-                <View style={[styles.buttonContainer, { top: height * 0.76 }]}>
+                <View style={[styles.buttonContainer, { top: 655 }]}>
                     <View>
                         <TouchableOpacity
-                            activeOpacity={1}
+                            activeOpacity={0.8}
                             onPress={() => navigation.navigate('SignUpScreen')}
                             style={styles.button}>
                             <Text style={styles.signupText}>Sign Up</Text>
@@ -37,7 +37,7 @@ export default function WelcomeScreen() {
                     </View>
                     <View>
                         <TouchableOpacity
-                            activeOpacity={1}
+                            activeOpacity={0.8}
                             onPress={() => navigation.navigate('LoginScreen')}
                             style={styles.loginbutton}>
                             <Text style={styles.loginText}>Log In</Text>
@@ -99,18 +99,18 @@ const styles = StyleSheet.create({
         padding: 10,
         marginHorizontal: 25,
         borderRadius: 6,
-        elevation: 5,
+        elevation: 4,
 
     },
     loginbutton: {
         alignItems: 'center',
         backgroundColor: "#fff",
-        borderColor: 'black',
-        borderWidth: 1,
+        borderColor: '#ccc',
+        borderWidth: 0.5,
         padding: 10,
         marginHorizontal: 25,
         borderRadius: 6,
-        elevation: 5,
+        elevation: 4,
     },
     signupText: {
         fontSize: RFValue(14),

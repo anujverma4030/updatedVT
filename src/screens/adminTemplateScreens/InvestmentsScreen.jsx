@@ -12,8 +12,10 @@ import { RFValue } from 'react-native-responsive-fontsize'
 import { TextInput } from 'react-native-gesture-handler'
 import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart'
 import { useDispatch, useSelector } from 'react-redux'
-import { fetchAllInvestmentPlans } from '../../redux/slices/adminSlice'
+import { fetchAllInvestmentPlans, fetchUserInvestments } from '../../redux/slices/adminSlice'
 import Loader from '../../components/Loader/Loader'
+import moment from 'moment'
+
 
 // const investments = new Array(5).fill({
 //   userId: 'UU01',
@@ -36,10 +38,12 @@ const columnWidths = {
 const InvestmentsScreen = () => {
 
   const dispatch = useDispatch();
-  const { investmentPlans, loading } = useSelector((state) => state.admin);
-  console.log('investmentPlans', investmentPlans);
+  // const { investmentPlans, loading } = useSelector((state) => state.admin);
+  const { userInvestments, loading } = useSelector((state) => state.admin);
+  // console.log('investmentPlans', investmentPlans);
+  console.log('userInvestments', userInvestments);
   useEffect(() => {
-    dispatch(fetchAllInvestmentPlans());
+    dispatch(fetchUserInvestments());
   }, [dispatch]);
   return (
     <>
@@ -67,14 +71,14 @@ const InvestmentsScreen = () => {
                       <Text style={[styles.headerCell, { width: columnWidths.date }]}>Dates</Text>
                     </View>
 
-                    {investmentPlans.map((item, index) => (
+                    {userInvestments.map((item, index) => (
                       <View style={styles.row} key={index}>
-                        <Text style={[styles.cell, { width: columnWidths.userId }]}>{item._id}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.planName }]}>{item.name}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.amount }]}>{item.minAmount}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.roi }]}>{item.roiPercent}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.status }]}>{item.status}</Text>
-                        <Text style={[styles.cell, { width: columnWidths.date }]}>{item.date}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.userId }]}>{item ? item._id : 'N/A'}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.planName }]}>{item ? item.planId.name : 'N/A'}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.amount }]}>${item ? item.amount : 'N/A'}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.roi }]}>{item ? item.planId.roiPercent : 'N/A'}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.status }]}>{item ? item.status?.charAt(0).toUpperCase() + item.status.slice(1) : 'N/A'}</Text>
+                        <Text style={[styles.cell, { width: columnWidths.date }]}>{item ? moment(item.startDate).format('MMM DD, YYYY') : 'N/A'}</Text>
                       </View>
                     ))}
                   </View>

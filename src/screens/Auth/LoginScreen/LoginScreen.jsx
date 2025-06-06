@@ -19,6 +19,7 @@ const LoginScreen = () => {
     const [badPassword, setBadPassword] = useState('')
     const [badEmail, setBadEmail] = useState('')
     const navigation = useNavigation();
+    const [showPassword, setShowPassword] = useState(true);
     const dispatch = useDispatch();
     const loading = useSelector((state) => state.auth.loading);
     const errorMsg = useSelector((state) => state.auth.errorMsg);
@@ -88,6 +89,7 @@ const LoginScreen = () => {
                 <TextInput style={styles.input}
                     value={email}
                     onChangeText={(text) => textFill(text, 'email')}
+                    placeholderTextColor={'#000'}
 
                 />
 
@@ -96,10 +98,14 @@ const LoginScreen = () => {
                     <TextInput style={styles.inputPassword}
                         value={password}
                         onChangeText={(text) => textFill(text, 'password')}
+                        secureTextEntry={showPassword}
+                        placeholderTextColor={'#000'}
                     />
-                    <TouchableOpacity>
+                    <TouchableOpacity 
+                    onPress={() => setShowPassword(!showPassword)}
+                    >
                         <Icon
-                            style={[styles.icon, { right: width * 0.01, top: height * 0.008 }]}
+                            style={[styles.icon, { right: width * 0.01, top: height * 0.012 }]}
                             name="visibility"
                             size={18}
                             color="#000"
@@ -152,7 +158,7 @@ const LoginScreen = () => {
                 </TouchableOpacity>
 
             </View>
-          
+
         </SafeAreaView>
     );
 }
@@ -186,29 +192,25 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         paddingHorizontal: 10,
         paddingVertical: 8,
-        marginBottom: 15
+        marginBottom: 15,
+        color:'#000'
     },
     passwordContainer: {
-        // display: 'flex',
+       
         flexDirection: 'row',
         width: "100%",
         borderWidth: 1,
         borderColor: '#ccc',
         borderRadius: 5,
         paddingHorizontal: 10,
-        //   paddingVertical: 8,
         marginBottom: 15,
-
+        justifyContent: 'space-between',
     },
     inputPassword: {
-        // borderWidth: 1,
-        // borderColor: '#ccc',
-        // borderRadius: 5,
-        // paddingHorizontal: 10,
-        // paddingVertical: 8,
-        // marginBottom: 15,
-        // width: "100%"
-        flex: 1
+       
+        width: "90%",
+        color:'#000'
+        // flex: 1
     },
     icon: {
         position: 'absolute',
@@ -223,7 +225,7 @@ const styles = StyleSheet.create({
     },
     loginButton: {
         backgroundColor: 'green',
-        paddingVertical: 10,
+        paddingVertical: 12,
         borderRadius: 5,
         marginTop: 20
     },

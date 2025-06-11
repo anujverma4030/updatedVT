@@ -15,8 +15,8 @@ type LevelKey = 'level1' | 'level2' | 'level3';
 
 const levels = [
   { label: 'LEVEL 1', commission: '10%', key: 'level1' },
-  { label: 'LEVEL 2', commission: '20%', key: 'level2' },
-  { label: 'LEVEL 3', commission: '30%', key: 'level3' },
+  // { label: 'LEVEL 2', commission: '20%', key: 'level2' },
+  // { label: 'LEVEL 3', commission: '30%', key: 'level3' },
 ] as const;
 
 const data: Record<LevelKey, { name: string; referredBy?: string; date: string; earnings: string }[]> = {
@@ -62,37 +62,39 @@ const ReferralDetailsScreen = () => {
           <Icon name='notifications' size={20} color='#fff' />
         </TouchableOpacity>
       </View>
+      
 
-      <View style={[styles.tabsMainContainer, { padding: 16 }]}>
-        <View style={styles.tabs}>
-          {levels.map((level) => (
-            <TouchableOpacity
-              key={level.key}
-              style={[styles.tab, selectedLevel === level.key && styles.activeTab]}
-              onPress={() => setSelectedLevel(level.key)}
-            >
-              <Text style={[styles.tabLabel, selectedLevel === level.key && styles.activeLabel]}>
-                {level.label}
-              </Text>
-              <Text style={[styles.tabSubLabel ,selectedLevel === level.key && styles.activeLabel]}>{level.commission} Commission</Text>
-            </TouchableOpacity>
-          ))}
+        <View style={[styles.tabsMainContainer, { marginTop: 30 }]}>
+          <View style={styles.tabs}>
+            {levels.map((level) => (
+              <TouchableOpacity
+                key={level.key}
+                style={[styles.tab, selectedLevel === level.key && styles.activeTab]}
+                onPress={() => setSelectedLevel(level.key)}
+              >
+                <Text style={[styles.tabLabel, selectedLevel === level.key && styles.activeLabel]}>
+                  {level.label}
+                </Text>
+                <Text style={[styles.tabSubLabel, selectedLevel === level.key && styles.activeLabel]}>{level.commission} Commission</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+
+          <View style={styles.tableHeader}>
+            <Text style={styles.headerCell}>Name</Text>
+            {selectedLevel !== 'level1' && <Text style={styles.headerCell}>Referred By</Text>}
+            <Text style={styles.headerCell}>Joined On</Text>
+            <Text style={styles.headerCell}>Earnings</Text>
+          </View>
+
+          <FlatList
+            data={data[selectedLevel]}
+            keyExtractor={(_, index) => index.toString()}
+            renderItem={renderItem}
+            contentContainerStyle={{ paddingBottom: 30 }}
+          />
         </View>
-
-        <View style={styles.tableHeader}>
-          <Text style={styles.headerCell}>Name</Text>
-          {selectedLevel !== 'level1' && <Text style={styles.headerCell}>Referred By</Text>}
-          <Text style={styles.headerCell}>Joined On</Text>
-          <Text style={styles.headerCell}>Earnings</Text>
-        </View>
-
-        <FlatList
-          data={data[selectedLevel]}
-          keyExtractor={(_, index) => index.toString()}
-          renderItem={renderItem}
-          contentContainerStyle={{ paddingBottom: 30 }}
-        />
-      </View>
+     
     </SafeAreaView>
   );
 };
@@ -124,18 +126,28 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginVertical: 10,
     elevation: 3,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    // width: '90%',
+    shadowColor: 'blue',
+
   },
   tabs: {
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginBottom: 10,
-    backgroundColor: '#84D299'
+    backgroundColor: '#34A853',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+
+
   },
   tab: {
     alignItems: 'center',
     paddingVertical: 10,
     borderBottomWidth: 2,
     borderBottomColor: 'transparent',
+    // marginLeft: 10, // for now level 1 only
   },
   activeTab: {
     borderBottomColor: 'green',
@@ -161,13 +173,14 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     shadowColor: '#000',
     elevation: 4,
+    // width: '100%',
 
   },
   headerCell: {
     flex: 1,
     fontWeight: 'bold',
     fontSize: 12,
-    marginLeft: 15,
+    marginLeft: 25,
 
   },
   row: {
@@ -175,6 +188,9 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderColor: '#eee',
+    // justifyContent: 'space-between',
+    // paddingHorizontal: 10,
+    // alignItems: 'center',
   },
   cell: {
     flex: 1,

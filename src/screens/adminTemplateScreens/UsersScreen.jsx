@@ -99,14 +99,13 @@ const UsersScreen = () => {
               }}
             >
               <AdminTemplateHeaderPart name='Users' paddingBottom={20} />
-              <Text style={{
+              {/* <Text style={{
                 fontSize: RFValue(20),
                 fontWeight: 'bold',
                 color: '#333',
-                marginLeft: 10,
                 marginBottom: 10,
                 textAlign: 'center',
-              }}>Total Users : {users.length}</Text>
+              }}>Total Users : {users ? users?.length : "N/A"}</Text> */}
               <View style={styles.container}>
 
                 <ScrollView

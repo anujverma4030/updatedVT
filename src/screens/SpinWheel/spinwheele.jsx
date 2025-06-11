@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-import WheelOfFortune from 'react-native-wheel-of-fortune';
+// import WheelOfFortune from 'react-native-wheel-of-fortune';
 
 const participants = [
   '%10',

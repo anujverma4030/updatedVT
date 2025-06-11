@@ -10,7 +10,7 @@ import WelcomeScreen from '../screens/Auth/WelcomeScreen/WelcomeScreen';
 import SplashScreen from '../screens/Auth/SplashScreen/SplashScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import LoginScreen from '../screens/Auth/LoginScreen/LoginScreen';
-import SignUpScreen from '../screens/Auth/OTPVerificationScreen/SignUpScreen';
+import SignUpScreen from '../screens/Auth/SignUpScreen/SignUpScreen';
 import AdminStackNavigator from './AdminStackNavigator';
 import AuthNavigator from './AuthNavigator/AuthNavigator';
 import UserDeposit from '../screens/Deposit/UserDeposit';
@@ -40,7 +40,8 @@ const MainStackNavigator = () => {
         <ScreenWrapper>
           <Stack.Navigator screenOptions={{
             headerShown: false,
-            animation: 'fade_from_bottom'
+            animation: 'fade_from_bottom',
+            orientation:'portrait'
 
           }}
           //  initialRouteName='AdminPanel'

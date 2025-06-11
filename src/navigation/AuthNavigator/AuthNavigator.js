@@ -2,7 +2,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../../screens/Auth/LoginScreen/LoginScreen';
-import SignUpScreen from '../../screens/Auth/OTPVerificationScreen/SignUpScreen';
+import SignUpScreen from '../../screens/Auth/SignUpScreen/SignUpScreen';
 
 const Stack = createNativeStackNavigator();
 

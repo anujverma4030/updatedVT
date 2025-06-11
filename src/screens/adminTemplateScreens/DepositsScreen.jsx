@@ -37,16 +37,16 @@ const DepositsScreen = () => {
   // console.log('Deposits:', deposits);
   useEffect(() => {
     dispatch(fetchAllDeposits());
-  }, [dispatch]); 
-  return ( 
+  }, [dispatch]);
+  return (
     <>
       <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
-      {
-        loading ? (
-          <Loader visible={loading} />
-        ) : (
-          <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
 
+      <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+        {
+          loading ? (
+            <Loader visible={loading} />
+          ) : (
             <ScrollView
               showsVerticalScrollIndicator={false}
             >
@@ -84,9 +84,10 @@ const DepositsScreen = () => {
                 </ScrollView>
               </View>
             </ScrollView>
-          </SafeAreaView>
-        )
-      }
+          )
+        }
+      </SafeAreaView>
+
 
     </>
   )

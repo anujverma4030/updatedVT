@@ -119,7 +119,7 @@ const LoginScreen = () => {
                 <TouchableOpacity
                     onPress={handleLogin}
                     disabled={loading}
-                    activeOpacity={0.7}
+                    activeOpacity={0.8}
                     style={styles.loginButton}>
                     <Text style={styles.loginButtonText}>{loading ? (<ActivityIndicator size={24} color={'#fff'} />) : 'Log In'}</Text>
                 </TouchableOpacity>
@@ -227,13 +227,16 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
         paddingVertical: 12,
         borderRadius: 5,
-        marginTop: 20
+        marginTop: 20,
+        height: 50,
+       
+
     },
     loginButtonText: {
         color: '#fff',
         textAlign: 'center',
         fontSize: RFValue(14),
-        fontWeight: 400
+        fontWeight: '400'
     },
     orText: {
         textAlign: 'center',

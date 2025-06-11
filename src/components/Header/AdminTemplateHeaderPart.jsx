@@ -6,6 +6,7 @@ import {
 import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Octicons from 'react-native-vector-icons/Octicons';
+import Fontisto from 'react-native-vector-icons/Fontisto';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
@@ -23,7 +24,6 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
         navigation.navigate(screen);
     };
     const handleLogout = async () => {
-
         setLoading(true);
         try {
             await dispatch(logout());
@@ -36,8 +36,6 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
             console.error('Logout Error:', error.message);
 
         }
-
-
     };
     return (
         <SafeAreaView edges={['left', 'right', 'bottom']}>
@@ -57,7 +55,7 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
                     <TouchableOpacity
                         activeOpacity={0.9}
                         style={styles.iconButton}>
-                        <Icon name="notifications" size={26} color="#fff" />
+                        <Fontisto name="bell" size={26} color="#fff" />
                     </TouchableOpacity>
                     <TouchableOpacity
                         activeOpacity={0.9}
@@ -106,7 +104,7 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
                                     <Text style={styles.menuItem}>Referrals</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.menuButtons} onPress={() => handleNavigate('SpinLogs')}>
-                                    <Icon name='autorenew' size={24} color='#8F8F8F' />
+                                    <Icon name='radar' size={24} color='#8F8F8F' />
                                     <Text style={styles.menuItem}>Spin Logs</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={styles.menuButtons} onPress={() => handleNavigate('Deposits')}>
@@ -206,6 +204,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: '50%',
         elevation: 5,
+       
     },
     MenuItemImageContainer: {
         width: 32,

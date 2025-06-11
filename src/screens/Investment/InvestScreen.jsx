@@ -406,6 +406,7 @@ const InvestScreen = () => {
                   </View>
                   <FlatList
                     data={investmentHistory}
+                    // horizontal
                     renderItem={renderInvestmentHistory}
                     keyExtractor={(item) => item._id}
                     scrollEnabled={false}

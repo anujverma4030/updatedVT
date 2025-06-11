@@ -4,7 +4,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
-import Loader from '../../../components/Loader/Loader';
+
 import { useDispatch, useSelector } from 'react-redux';
 import { signup } from '../../../redux/slices/authSlice';
 // import { AuthContext } from '../../../context/AuthContext';
@@ -20,9 +20,11 @@ const SignUpScreen = () => {
     const [badMobile, setBadMobile] = useState('')
     const [badName, setBadName] = useState('')
     const [badUserName, setBadUserName] = useState('')
+    const [refrerCode, setReferCode] = useState('');
     const [showPassword, setShowPassword] = useState(true);
+
     // const { signup, loading, errorMsg } = useContext(AuthContext);
-    // console.log(loading);
+
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const { loading, errorMsg } = useSelector((state) => state.auth); // Redux state
@@ -95,7 +97,7 @@ const SignUpScreen = () => {
             return;
         }
 
-        const resultAction = await dispatch(signup({ name, username: userName, email, mobile, password }));
+        const resultAction = await dispatch(signup({ name, username: userName, email, mobile, password , refrerCode }));
 
         if (signup.fulfilled.match(resultAction)) {
             Alert.alert('Success', 'Account created successfully');
@@ -134,6 +136,7 @@ const SignUpScreen = () => {
             setBadUserName(false);
             return;
         }
+        
     }
     const resetForm = () => {
         setName('');
@@ -218,16 +221,23 @@ const SignUpScreen = () => {
                         onChangeText={(text) => textFill(text, 'mobile')}
                         keyboardType="phone-pad"
                         placeholderTextColor={'#000'}
-                        maxLength={10} // Assuming a 10-digit mobile number
+                        maxLength={10} 
                     />
-
+                    <Text style={styles.label}>Referral Code</Text>
+                    <TextInput style={styles.input}
+                        value={refrerCode}
+                        onChangeText={setReferCode}
+                        keyboardType="default"
+                        placeholderTextColor={'#000'}
+                       
+                    />
 
                     <Text style={styles.label}>Password</Text>
                     <View style={styles.passwordContainer}>
                         <TextInput style={styles.inputPassword}
                             value={password}
                             onChangeText={(text) => textFill(text, 'password')}
-                            secureTextEntry
+                            secureTextEntry={showPassword}
                             placeholderTextColor={'#000'}
                         />
                         <TouchableOpacity
@@ -292,7 +302,7 @@ const SignUpScreen = () => {
                 </ScrollView>
 
             </View>
-            <Loader visible={loading} />
+          
         </SafeAreaView>
     )
 };
@@ -410,7 +420,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'green',
         paddingVertical: 12,
         borderRadius: 5,
-        marginTop: 30
+        marginTop: 30,
+        height: 50,
     },
     loginButtonText: {
         color: '#fff',

@@ -1,8 +1,8 @@
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-export const API_BASE_URL = 'https://vtoxfambackend.onrender.com/api';
+export const API_BASE_URL = 'https://spine.onrender.com/api';
 const axiosInstance = axios.create({
-    baseURL: 'https://vtoxfambackend.onrender.com/api',
+    baseURL: 'https://spine.onrender.com/api',
     headers: {
         'Content-Type': 'application/json',
     },

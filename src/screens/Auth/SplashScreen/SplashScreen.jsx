@@ -106,7 +106,7 @@
 // export default SplashScreen;
 import { useNavigation } from '@react-navigation/native';
 import React, { useEffect } from 'react';
-import { ImageBackground, Platform, StatusBar, useWindowDimensions, View } from 'react-native';
+import { Image, ImageBackground, Platform, StatusBar, useWindowDimensions, View } from 'react-native';
 import { useDispatch, useSelector } from 'react-redux';
 import { getEmployeeById } from '../../../redux/slices/userSlice';
 import { decodeUserFromToken } from '../../../utils/auth';
@@ -170,7 +170,7 @@ const SplashScreen = () => {
         // return <Loader />;
     }
     useEffect(() => {
-        changeNavigationBarColor('transparent', true); // true = light nav icons
+        changeNavigationBarColor('transparent', true); 
     }, []);
     return (
         <>
@@ -178,10 +178,31 @@ const SplashScreen = () => {
 
             <View style={{ flex: 1 }}>
                 <ImageBackground
-                    source={require('../../../assests/landing.png')}
+                    source={require('../../../assests/Landing4x.png')}
                     style={{ width: '100%', height: adjustedHeight, flex: 1 }}
                     resizeMode='cover'
                 >
+                    <View  style={{
+                        flex:1,
+                        justifyContent:'flex-end',
+                        alignItems:'flex-end'
+                    }}>
+
+                   
+                        <Image
+                         source={require('../../../assests/SplashWheel.png')}
+                         resizeMode='cover'
+                         style={{
+                            width:400,
+                            height:380,
+                            top:55
+                           
+                          
+                         }}
+                        
+                        />
+                         </View>
+                   
                 </ImageBackground>
             </View>
         </>

@@ -8,9 +8,9 @@ import { useSelector } from 'react-redux';
 const ReferralPageUpparPart = () => {
     const insets = useSafeAreaInsets();
     const { height } = Dimensions.get('window');
-    console.log(height * 0.03);
+    // console.log(height * 0.03);
     const { referralCode, } = useSelector(state => state.referral);
-    // console.log(referralCode);
+    console.log(referralCode);
     const copyToClipboardReferralCode = (itemCopy) => {
         Clipboard.setString(itemCopy);
         Alert.alert('Alert', 'Referral code copied to clipboard');
@@ -37,7 +37,7 @@ const ReferralPageUpparPart = () => {
                         <View style={[styles.wrapper, { bottom: height * 0.06 }]}>
                             <View style={styles.couponContainer}>
                                 <View style={styles.codeSection}>
-                                    <Text style={styles.codeText}>{referralCode}</Text>
+                                    <Text style={styles.codeText}>{referralCode ? referralCode : "N/A"}</Text>
                                 </View>
                                 <TouchableOpacity
                                     onPress={() => copyToClipboardReferralCode(referralCode)}

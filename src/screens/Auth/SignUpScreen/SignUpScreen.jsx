@@ -7,6 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { useDispatch, useSelector } from 'react-redux';
 import { signup } from '../../../redux/slices/authSlice';
+import SignUpLoginHeadPart from '../../../components/Header/SignInLoginHeadPart';
 // import { AuthContext } from '../../../context/AuthContext';
 const SignUpScreen = () => {
     const { height, width } = Dimensions.get('window');
@@ -148,39 +149,8 @@ const SignUpScreen = () => {
         <SafeAreaView style={styles.container}>
 
             <View style={styles.mainContainer}>
-                <View>
-                    <Image
-                        source={require('../../../assests/loginSiginBacckgroundImage.png')}
-                        style={styles.image}
-                    />
-                </View>
-                <View>
-                    <Image
-                        style={[styles.image, { top: height * -0.45 }]}
-                        source={require("../../../assests/leftCoins.png")}
-                    />
-                    <Image
-                        style={[styles.image, { top: height * -0.75, left: width * 0.4 }]}
-                        source={require("../../../assests/rightCoins.png")}
-                    />
-                </View>
-                <View style={[styles.loginAndCreateAccountContainer, { top: height * 0.09 }]}>
-                    <View style={styles.loginArrowBackContain}>
-                        <TouchableOpacity
-                            onPress={() => navigation.goBack()}
-
-                        >
-                            <Icon style={styles.BackIcon} name='arrow-back' size={20} color="#000000" />
-                        </TouchableOpacity>
-                        <Text style={styles.loginText}>Sign Up</Text>
-                    </View>
-                    <View style={styles.loginArrowBackContain}>
-                        {/* <TouchableOpacity
-                                style={styles.createAccountButton}>
-                                <Text style={styles.createNewText}>Create New Account</Text>
-                            </TouchableOpacity> */}
-                    </View>
-                </View>
+            <SignUpLoginHeadPart  showCreateAcount={false} title={'Sign Up'}/>
+            
             </View>
 
             <View style={styles.body}>
@@ -326,7 +296,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10
     },
     loginArrowBackContain: {
-        display: 'flex',
+      
         flexDirection: "row",
         alignItems: "center",
         gap: 10,

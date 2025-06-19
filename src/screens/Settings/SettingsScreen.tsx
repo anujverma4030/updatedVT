@@ -1,28 +1,38 @@
-import { StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import React from 'react';
+import { StatusBar, StyleSheet, Text, TouchableOpacity, View, SafeAreaView, ActivityIndicator } from 'react-native';
+import React, { useEffect } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteAllNotifications, getAllNotifications } from '../../redux/slices/notificationSlice';
+
 
 const SettingsScreen = () => {
     const navigation = useNavigation();
+    const dispatch = useDispatch()
+    // const { notifications, loading, errorMsg, successMsg } = useSelector((state) => state.notification)
+
+
+    // useEffect(() => {
+    //     dispatch(getAllNotifications())
+    // }, [dispatch])
 
     return (
         <SafeAreaView style={styles.cardContainer}>
-             <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent/>
+            <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent />
             {/* Header */}
             <View style={styles.headerContentContainer}>
                 <View style={styles.headerTextContainer}>
-                    <TouchableOpacity 
-                    activeOpacity={0.7}
-                    onPress={() => navigation.goBack()}>
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => navigation.goBack()}>
                         <Icon name="arrow-back" size={20} color="#fff" />
                     </TouchableOpacity>
                     <Text style={styles.headerText}>Settings</Text>
+                   
                 </View>
                 <TouchableOpacity
-                  activeOpacity={0.7}
+                    activeOpacity={0.7}
                 >
                     <Icon name="notifications" size={20} color="#fff" />
                 </TouchableOpacity>
@@ -33,7 +43,7 @@ const SettingsScreen = () => {
                 {/* Account Setting */}
                 <View style={styles.option}>
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                        activeOpacity={0.7}
                     >
                         <View style={styles.labelContainer}>
                             <Icon name="person" size={24} color="#000" style={styles.icon} />
@@ -41,7 +51,7 @@ const SettingsScreen = () => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                        activeOpacity={0.7}
                     >
                         <Icon name="chevron-right" size={24} color="#000" />
                     </TouchableOpacity>
@@ -51,7 +61,8 @@ const SettingsScreen = () => {
                 {/* Notifications */}
                 <View style={styles.option}>
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                        activeOpacity={0.7}
+                       
                     >
                         <View style={styles.labelContainer}>
                             <Icon name="notifications" size={24} color="#000" style={styles.icon} />
@@ -59,7 +70,7 @@ const SettingsScreen = () => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                        activeOpacity={0.7}
                     >
                         <Icon name="chevron-right" size={24} color="#000" />
                     </TouchableOpacity>
@@ -69,7 +80,7 @@ const SettingsScreen = () => {
                 {/* App Preference */}
                 <View style={styles.option}>
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                        activeOpacity={0.7}
                     >
                         <View style={styles.labelContainer}>
                             <Icon name="tune" size={24} color="#000" style={styles.icon} />
@@ -77,7 +88,7 @@ const SettingsScreen = () => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                        activeOpacity={0.7}
                     >
                         <Icon name="chevron-right" size={24} color="#000" />
                     </TouchableOpacity>
@@ -87,7 +98,7 @@ const SettingsScreen = () => {
                 {/* Help & FAQ */}
                 <View style={styles.option}>
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                        activeOpacity={0.7}
                     >
                         <View style={styles.labelContainer}>
                             <Icon name="help" size={24} color="#000" style={styles.icon} />
@@ -95,7 +106,7 @@ const SettingsScreen = () => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                        activeOpacity={0.7}
                     >
                         <Icon name="chevron-right" size={24} color="#000" />
                     </TouchableOpacity>
@@ -105,7 +116,7 @@ const SettingsScreen = () => {
                 {/* Legal */}
                 <View style={styles.option}>
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                        activeOpacity={0.7}
                     >
                         <View style={styles.labelContainer}>
                             <Icon name="gavel" size={24} color="#000" style={styles.icon} />
@@ -113,7 +124,7 @@ const SettingsScreen = () => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                        activeOpacity={0.7}
                     >
                         <Icon name="chevron-right" size={24} color="#000" />
                     </TouchableOpacity>
@@ -123,7 +134,7 @@ const SettingsScreen = () => {
                 {/* Others */}
                 <View style={styles.option}>
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                        activeOpacity={0.7}
                     >
                         <View style={styles.labelContainer}>
                             <Icon name="more-horiz" size={24} color="#000" style={styles.icon} />
@@ -131,7 +142,7 @@ const SettingsScreen = () => {
                         </View>
                     </TouchableOpacity>
                     <TouchableOpacity
-                      activeOpacity={0.7}
+                        activeOpacity={0.7}
                     >
                         <Icon name="chevron-right" size={24} color="#000" />
                     </TouchableOpacity>
@@ -147,13 +158,14 @@ const styles = StyleSheet.create({
     cardContainer: {
         flex: 1,
         backgroundColor: '#fff',
+
     },
     headerContentContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
         backgroundColor: '#34A853',
-        paddingVertical: 30,
+        paddingVertical: 40,
         paddingHorizontal: 10,
     },
     headerTextContainer: {

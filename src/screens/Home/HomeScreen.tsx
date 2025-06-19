@@ -73,7 +73,9 @@ const HomeScreen: React.FC = () => {
                                         <Text style={styles.welcomeText}>Welcome, {userDetails ? userDetails.name : 'User'}</Text>
                                         <Text style={styles.subText}>Get Ready To Spin</Text>
                                     </View>
-                                    <TouchableOpacity style={styles.notificationIcon}>
+                                    <TouchableOpacity
+                                        activeOpacity={0.9}
+                                        style={styles.notificationIcon}>
                                         <Icon name='notifications' size={20} color="#FF8800" />
                                     </TouchableOpacity>
                                 </View>
@@ -291,6 +293,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
+        paddingVertical: 40,
     },
     welcomeText: {
         color: '#fff',

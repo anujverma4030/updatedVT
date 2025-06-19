@@ -74,8 +74,8 @@ const WalletInfoScreen = () => {
                                     <Text style={styles.cardText}>Main Balance: ${wallet?.balance}</Text>
                                     <Text style={styles.cardText}>Locked Balance: ${wallet?.balance?.toFixed(2) ?? '0.00'}</Text>
                                     <Text style={styles.cardText}>Commission: ${wallet?.commission?.toFixed(2) ?? '0.00'}</Text>
-                                    <Text style={styles.cardText}>Binance Wallet: 0x****1234</Text>
-                                    <Text style={styles.cardText}>Bonus Cash: $50 (expires on 2025-05-1)</Text>
+                                    <Text style={styles.cardText}>Binance Wallet:0x****1234</Text>
+                                    <Text style={styles.cardText}>Bonus Cash:$50 (expires on 2025-05-1)</Text>
                                 </View>
                                 <TouchableOpacity style={styles.Button}>
                                     <Text style={styles.ButtonText}>Add/Update Wallet</Text>

@@ -81,7 +81,7 @@ const LoginScreen = () => {
     }
     return (
         <SafeAreaView style={styles.container}>
-            <SignUpLoginHeadPart />
+            <SignUpLoginHeadPart showCreateAcount={true} title={'Log In'}/>
             <View style={styles.body}>
                 <Text style={styles.welcomeText}>WelCome Back!</Text>
 

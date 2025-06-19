@@ -9,6 +9,7 @@ export const getWalletBalance = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await axiosInstance.get('/wallet/balance');
+            
             return response.data.wallet;
         } catch (error) {
             return rejectWithValue(error.response?.data?.message || 'Failed to fetch balance');

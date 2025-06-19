@@ -2,7 +2,7 @@ import { StyleSheet, View } from 'react-native';
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 
-import Icon from 'react-native-vector-icons/MaterialIcons'; // or any icon library you use
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import SpinScreen from '../../screens/SpinWheel/SpinScreen';
 import InvestScreen from '../../screens/Investment/InvestScreen';

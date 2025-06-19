@@ -19,14 +19,16 @@ export default function WelcomeScreen() {
                         <Text style={styles.welcomeText}>Welcome to the Spin &{'\n'} Win Adventure!</Text>
                         <Text style={styles.spinTheWheelText}>Spin the wheel, invite friends, and unlock exciting rewards with every turn!</Text>
                     </View>
-                    <View style={[styles.spinImageOverlay, { top: height * 0.16 }]}>
+                    <View style={[styles.spinImageOverlay, { top: height * 0.17 }]}>
                         <Image
                             style={styles.spinImage}
-                            source={require('../../../assests/welcom@spin.png')}
+                            source={require('../../../assests/WelcomeSpin.png')}
+                            resizeMode='contain'
+                            
                         />
                     </View>
                 </View>
-                <View style={[styles.buttonContainer, { top: 655 }]}>
+                <View style={[styles.buttonContainer, { top: 630 }]}>
                     <View>
                         <TouchableOpacity
                             activeOpacity={0.8}
@@ -83,9 +85,12 @@ const styles = StyleSheet.create({
     },
     spinImageOverlay: {
         position: 'absolute',
+        // justifyContent:'center',
+        alignSelf:'center',
     },
     spinImage: {
-        resizeMode: 'contain'
+        width:400,
+        height:550
     },
 
     buttonContainer: {

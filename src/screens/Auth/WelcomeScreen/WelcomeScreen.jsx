@@ -7,7 +7,7 @@ export default function WelcomeScreen() {
     const navigation = useNavigation();
     const { height } = Dimensions.get('window');
     return (
-        <View>
+        
             <SafeAreaView>
                 <View style={styles.mainContainer}>
                     <Image
@@ -45,7 +45,7 @@ export default function WelcomeScreen() {
                             <Text style={styles.loginText}>Log In</Text>
                         </TouchableOpacity>
                     </View>
-                    <View>
+                    <View style={styles.policy}>
                         <Text style={styles.agreePolicyText}>
                             By clicking Login or Signup, you agree to our
                             <Text style={styles.linkText}> Privacy Policy </Text>{"\n"}
@@ -55,7 +55,7 @@ export default function WelcomeScreen() {
                     </View>
                 </View>
             </SafeAreaView>
-        </View >
+     
 
     )
 }
@@ -63,10 +63,11 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
     },
     image: {
-        resizeMode: 'contain'
+        resizeMode: 'contain',
+        width:'100%'
     },
     overlay: {
         position: 'absolute',
@@ -76,12 +77,12 @@ const styles = StyleSheet.create({
     welcomeText: {
         fontSize: RFValue(24, 600),
         fontWeight: 'bold',
-        color: 'white',
+        color: 'black',
         textAlign: 'center'
     },
     spinTheWheelText: {
         color: 'white',
-        fontSize: 8,
+        fontSize: 9,
     },
     spinImageOverlay: {
         position: 'absolute',
@@ -125,13 +126,19 @@ const styles = StyleSheet.create({
     },
     loginText: {
         fontSize: RFValue(14),
+        color:'black',
+        fontWeight:400,
     },
     agreePolicyText: {
         fontSize: RFValue(10),
-        textAlign: 'center'
+        textAlign: 'center',
+        color:"#34A853"
     },
     linkText: {
         color: "#34A853"
+    },
+    policy:{
+        marginTop:20
     }
 
 })

@@ -149,7 +149,13 @@ const SplashScreen = () => {
         }
 
         // Wait until userDetails are fetched
-        if (!userDetails) return;
+        if (!userDetails) {
+    const timer = setTimeout(() => {
+        navigation.replace('WelcomeScreen');
+    }, 2000);
+    return () => clearTimeout(timer);
+}
+
 
         const role = userDetails?.role?.toLowerCase();
         const timer = setTimeout(() => {

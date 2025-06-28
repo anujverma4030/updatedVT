@@ -62,6 +62,7 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
                         style={styles.iconButton} onPress={() => setMenuVisible(true)}>
                         <Icon name="menu" size={30} color="#fff" />
                     </TouchableOpacity>
+                    
                 </View>
             </View>
 

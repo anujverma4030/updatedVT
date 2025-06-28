@@ -243,7 +243,8 @@ const styles = StyleSheet.create({
         height: 85
     },
     buttonsText: {
-        textAlign: 'center'
+        textAlign: 'center',
+        color:"black"
     },
     dashboardWrapper: {
         paddingHorizontal: 16,
@@ -252,6 +253,7 @@ const styles = StyleSheet.create({
     dashboardTitle: {
         fontSize: RFValue(18),
         fontWeight: 'bold',
+        color:'black'
     },
     SignupTrendText: {
         fontSize: RFValue(18),

@@ -44,7 +44,7 @@ const MainStackNavigator = () => {
             orientation:'portrait'
 
           }}
-          //  initialRouteName='AdminPanel'
+           initialRouteName='AdminPanel'
           >
             <Stack.Screen name='SplashScreen' component={SplashScreen} />
             <Stack.Screen name='AdminPanel' component={AdminStackNavigator} />

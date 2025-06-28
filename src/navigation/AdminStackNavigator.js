@@ -15,6 +15,7 @@ import AddNewInvestment from '../screens/adminTemplateScreens/AddNewInvestment';
 import ReferralsScreen from '../screens/adminTemplateScreens/ReferralsScreen';
 import InvestmentPlans from '../screens/adminTemplateScreens/InvestmentPlans';
 import ReportingTransactionScreen from '../screens/adminTemplateScreens/ReportingTransactionScreen';
+import EditPlanScreen from '../screens/adminTemplateScreens/EditPlanScreen';
 const Stack = createNativeStackNavigator();
 
 const AdminStackNavigator = () => {
@@ -24,6 +25,8 @@ const AdminStackNavigator = () => {
             animation: 'fade_from_bottom'
         }}
         >
+            <Stack.Screen name='InvestmentPlans' component={InvestmentPlans} />
+            <Stack.Screen name="EditPlan" component={EditPlanScreen} />
             <Stack.Screen name="Home" component={DashBoardScreen} />
             <Stack.Screen name="Users" component={UsersScreen} />
             <Stack.Screen name="Investments" component={InvestmentsScreen} />
@@ -35,7 +38,7 @@ const AdminStackNavigator = () => {
             <Stack.Screen name='UserDetailsScreen' component={UserDetailsScreen}/>
             <Stack.Screen name='AddNewInvestment' component={AddNewInvestment} />
             <Stack.Screen name='ReferralsScreen' component={ReferralsScreen} />
-            <Stack.Screen name='InvestmentPlans' component={InvestmentPlans} />
+            {/* <Stack.Screen name='InvestmentPlans' component={InvestmentPlans} /> */}
             <Stack.Screen name='ReportingTransactionScreen' component={ReportingTransactionScreen} />
         </Stack.Navigator>
     );

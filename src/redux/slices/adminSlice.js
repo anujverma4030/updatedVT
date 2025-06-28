@@ -216,8 +216,18 @@ const adminSlice = createSlice({
     loading: false,
     error: null,
     singleUserLoading: false,
+    selectedPlan: null,
+    selectedPlanMode: 'edit',
   },
-  reducers: {},
+  reducers: {setSelectedPlan: (state, action) => {
+      state.selectedPlan = action.payload.plan;
+      state.selectedPlanMode = action.payload.mode;
+    },
+    clearSelectedPlan: (state) => {
+      state.selectedPlan = null;
+      state.selectedPlanMode = 'edit';
+    },
+  },
   extraReducers: (builder) => {
     builder
       // Dashboard Stats
@@ -342,7 +352,10 @@ const adminSlice = createSlice({
           state.error = null;
         }
       );
+
+      
   }
 });
 
 export default adminSlice.reducer;
+export const { setSelectedPlan, clearSelectedPlan } = adminSlice.actions;

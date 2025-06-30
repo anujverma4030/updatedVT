@@ -54,8 +54,6 @@ export const loadToken = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const token = await AsyncStorage.getItem('userToken');
-            // console.log('Loaded token from storage:', token);
-           
             return token;
         } catch (err) {
             return rejectWithValue('No token found');
@@ -89,7 +87,12 @@ const authSlice = createSlice({
         loadUserFromStorage: (state, action) => {
             state.userToken = action.payload.token;
             state.userInfo = action.payload.user;
-        }
+        },
+        // ✅ NEW reducer added here
+        setUserToken: (state, action) => {
+            state.userToken = action.payload;
+            state.userId = action.payload ? jwtDecode(action.payload).id : null;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -144,5 +147,8 @@ const authSlice = createSlice({
             });
     },
 });
-export const { logout: logoutAction, loadUserFromStorage } = authSlice.actions;
+
+// ✅ Add `setUserToken` in export
+export const { logout: logoutAction, loadUserFromStorage, setUserToken } = authSlice.actions;
+
 export default authSlice.reducer;

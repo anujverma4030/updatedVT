@@ -7,31 +7,64 @@ import {
   TouchableOpacity,
   SafeAreaView,
   ScrollView,
+  Modal,
 } from 'react-native';
 import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart';
 import { useSelector, useDispatch } from 'react-redux';
-import { clearSelectedPlan } from '../../redux/slices/adminSlice';
+import {
+  clearSelectedPlan,
+  updateInvestmentPlan,
+  createInvestmentPlan,
+  fetchAllInvestmentPlans,
+} from '../../redux/slices/adminSlice';
 
 const EditPlanScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const { selectedPlan, selectedPlanMode } = useSelector(state => state.admin);
-
   const color = selectedPlan?.color || '#34A853';
   const isAddMode = selectedPlanMode === 'add';
 
   const [planName, setPlanName] = useState(selectedPlan?.title || '');
-  const [roi, setRoi] = useState(selectedPlan?.roi || '');
-  const [amount, setAmount] = useState(selectedPlan?.amount || '');
-  const [duration, setDuration] = useState(selectedPlan?.duration || '');
+  const [roi, setRoi] = useState(selectedPlan?.roi?.toString() || '');
+  const [amount, setAmount] = useState(selectedPlan?.amount?.toString() || '');
+  const [duration, setDuration] = useState(selectedPlan?.duration?.toString() || '');
+  const [payout, setPayout] = useState(selectedPlan?.payout || '');
 
-  const handleSave = () => {
-    const payload = isAddMode
-      ? { planName, roi, amount, duration }
-      : { roi, amount, duration };
+  const [showSnackbar, setShowSnackbar] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [oldValues, setOldValues] = useState({
+    roi: selectedPlan?.roi || '',
+    amount: selectedPlan?.amount || '',
+  });
 
-    console.log(`${isAddMode ? 'Added' : 'Updated'} Plan:`, payload);
-    dispatch(clearSelectedPlan());
-    navigation.goBack();
+  const handleSave = async () => {
+    const payload = {
+      title: planName,
+      roi,
+      amount,
+      duration,
+      payoutType: payout,
+    };
+
+    try {
+      if (isAddMode) {
+        await dispatch(createInvestmentPlan(payload));
+      } else {
+        const id = selectedPlan?._id;
+        await dispatch(updateInvestmentPlan({ id, data: payload }));
+      }
+
+      await dispatch(fetchAllInvestmentPlans());
+      setShowSnackbar(true);
+      setShowSuccessModal(true);
+
+      setTimeout(() => {
+        setShowSnackbar(false);
+      }, 3000);
+    } catch (error) {
+      setShowSnackbar(true);
+      setTimeout(() => setShowSnackbar(false), 3000);
+    }
   };
 
   const handleCancel = () => {
@@ -41,8 +74,7 @@ const EditPlanScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={styles.safeArea}>
-      <AdminTemplateHeaderPart name='Investment Plans Management' paddingBottom={10} />
-
+      <AdminTemplateHeaderPart name="Investment Plans Management" paddingBottom={10} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={[styles.cardBox, { borderLeftColor: color }]}>
           <View style={[styles.titleBar, { backgroundColor: color }]}>
@@ -88,6 +120,14 @@ const EditPlanScreen = ({ navigation }) => {
             placeholder="e.g. 3 Days"
           />
 
+          <Text style={styles.label}>Payout :</Text>
+          <TextInput
+            style={styles.input}
+            value={payout}
+            onChangeText={setPayout}
+            placeholder="e.g. Daily"
+          />
+
           <View style={styles.buttonContainer}>
             <TouchableOpacity
               style={[styles.button, { backgroundColor: color }]}
@@ -107,6 +147,50 @@ const EditPlanScreen = ({ navigation }) => {
           </View>
         </View>
       </ScrollView>
+
+      {showSnackbar && (
+        <View style={styles.snackbar}>
+          <Text style={styles.snackbarText}>
+            {isAddMode ? '✅ Plan added successfully' : '✅ Plan updated successfully'}
+          </Text>
+        </View>
+      )}
+
+      {/* ✅ UPDATED MODAL START */}
+      <Modal visible={showSuccessModal} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <Text style={styles.modalTitle}>✔️ Plan updated</Text>
+            <Text style={styles.modalSubTitle}>Basic plan changes saved :</Text>
+
+            <View style={styles.modalRow}>
+              <Text style={styles.labelLeft}>ROI</Text>
+              <Text style={styles.valueRight}>{roi}% ( From {oldValues?.roi || 'N/A'}% )</Text>
+            </View>
+            <View style={styles.separator} />
+
+            <View style={styles.modalRow}>
+              <Text style={styles.labelLeft}>Minimum investment</Text>
+              <Text style={styles.valueRight}>${amount || 'N/A'}</Text>
+            </View>
+            <View style={styles.separator} />
+
+            <View style={styles.buttonRightAligned}>
+              <TouchableOpacity
+                style={styles.okButton}
+                onPress={() => {
+                  setShowSuccessModal(false);
+                  dispatch(clearSelectedPlan());
+                  navigation.goBack();
+                }}
+              >
+                <Text style={styles.okButtonText}>OK</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+      {/* ✅ UPDATED MODAL END */}
     </SafeAreaView>
   );
 };
@@ -114,9 +198,89 @@ const EditPlanScreen = ({ navigation }) => {
 export default EditPlanScreen;
 
 const styles = StyleSheet.create({
-  safeArea: {
+  safeArea: { flex: 1, backgroundColor: '#fff' },
+  snackbar: {
+    position: 'absolute',
+    bottom: 90,
+    left: 20,
+    right: 20,
+    backgroundColor: '#34A853',
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    zIndex: 999,
+    elevation: 5,
+  },
+  snackbarText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  modalOverlay: {
     flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '85%',
     backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: '700',
+    marginBottom: 10,
+    color: '#000',
+  },
+  modalSubTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 16,
+    color: '#000',
+  },
+  modalRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  labelLeft: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#34A853',
+    flex: 1,
+  },
+  valueRight: {
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#000',
+    textAlign: 'right',
+    flex: 1.2,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#ccc',
+    marginVertical: 6,
+  },
+  buttonRightAligned: {
+    alignItems: 'flex-start',
+    marginTop: 20,
+  },
+  okButton: {
+    borderWidth: 1,
+    borderColor: '#34A853',
+    borderRadius: 6,
+    paddingHorizontal: 24,
+    paddingVertical: 10,
+  },
+  okButtonText: {
+    color: '#34A853',
+    fontWeight: '700',
+    fontSize: 15,
   },
   cardBox: {
     margin: 16,
@@ -125,14 +289,9 @@ const styles = StyleSheet.create({
     borderLeftWidth: 6,
     borderRadius: 10,
     elevation: 2,
-    shadowColor: '#000',
-    shadowOpacity: 0.05,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 3,
     overflow: 'hidden',
   },
   titleBar: {
-    width: '100%',
     paddingVertical: 14,
     paddingHorizontal: 20,
   },
@@ -156,6 +315,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginHorizontal: 20,
     backgroundColor: '#fff',
+    color: 'black',
   },
   buttonContainer: {
     marginTop: 30,

@@ -10,6 +10,8 @@ import { Provider, useDispatch, useSelector } from 'react-redux'
 import { store } from './src/redux/store'
 import { loadToken } from './src/redux/slices/authSlice'
 import jwtDecode from 'jwt-decode';
+import AdminStackNavigator from './src/navigation/AdminStackNavigator'
+
 
 const App = () => {
   const dispatch = useDispatch();
@@ -21,6 +23,8 @@ const App = () => {
  
   return (
     <MainStackNavigator />
+    // <AdminStackNavigator/>
+    
   )
 }
 

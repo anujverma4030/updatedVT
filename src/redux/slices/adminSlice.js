@@ -278,11 +278,7 @@ const adminSlice = createSlice({
         state.withdrawals = action.payload;
         state.loading = false;
       })
-      // Update Investment Plan
-      .addCase(updateInvestmentPlan.fulfilled, (state, action) => {
-        // optionally update the investmentPlans list
-
-      })
+      
       // Spins
       .addCase(fetchSpinLogs.fulfilled, (state, action) => {
         state.spins = action.payload;
@@ -298,9 +294,15 @@ const adminSlice = createSlice({
       })
       // Create Investment Plan
       .addCase(createInvestmentPlan.fulfilled, (state, action) => {
-        state.investmentPlans.push(action.payload);
-        state.loading = false;
-      })
+  const plan = action.payload;
+  if (plan.amount && !plan.minAmount) {
+    plan.minAmount = plan.amount;
+  }
+  state.investmentPlans.push(plan);
+  state.loading = false;
+})
+
+ 
       // Fetch User Investments
       .addCase(fetchUserInvestments.fulfilled, (state, action) => {
         state.userInvestments = action.payload;
@@ -327,6 +329,16 @@ const adminSlice = createSlice({
         state.withdrawals = updatedWithdrawals;
         state.loading = false;
       })
+      // Update Investment Plan
+      .addCase(updateInvestmentPlan.fulfilled, (state, action) => {
+       // This will update the specific plan in the investmentPlans array
+       const updatedPlan = action.payload;
+       const index = state.investmentPlans.findIndex(plan => plan.id === updatedPlan.id);
+       if (index !== -1) {
+       state.investmentPlans[index] = updatedPlan;
+      }
+       })
+
       // handle fulfilled actions globally
       .addMatcher(
         (action) => action.type.startsWith('admin/') && action.type.endsWith('/fulfilled'),

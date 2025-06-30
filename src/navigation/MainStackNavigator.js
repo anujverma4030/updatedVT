@@ -24,6 +24,7 @@ import jwtDecode from 'jwt-decode';
 import { getEmployeeById } from '../redux/slices/userSlice';
 import ScreenWrapper from '../components/ScreenWrapper';
 
+
 const Stack = createNativeStackNavigator();
 const MainStackNavigator = () => {
   const dispatch = useDispatch();
@@ -46,6 +47,7 @@ const MainStackNavigator = () => {
           }}
            initialRouteName='AdminPanel'
           >
+            
             <Stack.Screen name='SplashScreen' component={SplashScreen} />
             <Stack.Screen name='AdminPanel' component={AdminStackNavigator} />
             <Stack.Screen name='WelcomeScreen' component={WelcomeScreen} />

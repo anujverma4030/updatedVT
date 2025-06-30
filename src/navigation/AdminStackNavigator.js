@@ -25,8 +25,7 @@ const AdminStackNavigator = () => {
             animation: 'fade_from_bottom'
         }}
         >
-            <Stack.Screen name='InvestmentPlans' component={InvestmentPlans} />
-            <Stack.Screen name="EditPlan" component={EditPlanScreen} />
+            
             <Stack.Screen name="Home" component={DashBoardScreen} />
             <Stack.Screen name="Users" component={UsersScreen} />
             <Stack.Screen name="Investments" component={InvestmentsScreen} />
@@ -39,6 +38,8 @@ const AdminStackNavigator = () => {
             <Stack.Screen name='AddNewInvestment' component={AddNewInvestment} />
             <Stack.Screen name='ReferralsScreen' component={ReferralsScreen} />
             {/* <Stack.Screen name='InvestmentPlans' component={InvestmentPlans} /> */}
+            <Stack.Screen name='InvestmentPlans' component={InvestmentPlans} />
+            <Stack.Screen name="EditPlan" component={EditPlanScreen} />
             <Stack.Screen name='ReportingTransactionScreen' component={ReportingTransactionScreen} />
         </Stack.Navigator>
     );

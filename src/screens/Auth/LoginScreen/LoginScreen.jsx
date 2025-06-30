@@ -10,6 +10,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { login } from '../../../redux/slices/authSlice';
 import { getEmployeeById } from '../../../redux/slices/userSlice';
 import jwtDecode from 'jwt-decode';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const LoginScreen = () => {
     const { height, width } = Dimensions.get('window');
@@ -40,6 +42,10 @@ const LoginScreen = () => {
                 Alert.alert('Success', 'Login Success');
                 //  load token and userId
                 const token = resultAction.payload?.token || resultAction.payload;
+                await AsyncStorage.setItem('userToken', token);
+                const savedToken = await AsyncStorage.getItem('userToken');
+                console.log('🟢 Saved Token:', savedToken);
+                Alert.alert("Saved Token", savedToken || 'null');
                 const decoded = jwtDecode(token);
                 const userId = decoded?.id;
 

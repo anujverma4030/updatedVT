@@ -21,6 +21,7 @@ export const subscribeToPlan = createAsyncThunk(
         try {
             // const token = getState().auth.userToken;
             console.log('Subscribing to plan with ID:', id, 'and payload:', payload);
+            await dispatch(fetchActiveInvestments());
             const res = await axiosInstance.post(`/invest/subscribe/${id}`, payload);
 
             console.log('Subscription Response:', res.data);

@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'reac
 const PlanCard = ({
   title,
   logo,
-  image, // ✅ added image prop
+  image,
   roi,
   amount,
   duration,
@@ -13,7 +13,8 @@ const PlanCard = ({
   borderColor = '#999',
   editButtonColor = '#34A853',
   editButtonText = 'Edit',
-  onEditPress
+  onEditPress,
+  onDeletePress, // ✅
 }) => {
   return (
     <View style={[styles.card, { borderLeftColor: borderColor }]}>
@@ -41,13 +42,25 @@ const PlanCard = ({
         )}
       </View>
 
+      {/* ✅ Edit and Delete Buttons Side-by-Side */}
       {!editable && (
-        <TouchableOpacity
-          style={[styles.editButton, { backgroundColor: editButtonColor }]}
-          onPress={onEditPress}
-        >
-          <Text style={styles.editText}>{editButtonText}</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            style={[styles.editButton, { backgroundColor: editButtonColor }]}
+            onPress={onEditPress}
+          >
+            <Text style={styles.editText}>{editButtonText}</Text>
+          </TouchableOpacity>
+
+          {onDeletePress && (
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={onDeletePress}
+            >
+              <Text style={styles.deleteText}>Delete</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       )}
     </View>
   );
@@ -115,7 +128,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingRight: 10,
   },
-  planimage: { // renamed from 'image' to avoid conflict with prop name
+  planimage: {
     width: 150,
     height: 130,
     borderRadius: 8,
@@ -143,14 +156,32 @@ const styles = StyleSheet.create({
     fontSize: 14,
     paddingVertical: 4,
   },
-  editButton: {
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
     marginTop: 12,
+  },
+  editButton: {
     paddingVertical: 10,
+    paddingHorizontal: 20,
     borderRadius: 6,
     alignItems: 'center',
   },
   editText: {
     color: 'white',
+    fontWeight: 'bold',
+    fontSize: 15,
+  },
+  deleteButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: '#FF3B30',
+    borderRadius: 6,
+    alignItems: 'center',
+  },
+  deleteText: {
+    color: '#fff',
     fontWeight: 'bold',
     fontSize: 15,
   },

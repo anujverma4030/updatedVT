@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   ScrollView,
   Modal,
+  Alert,
 } from 'react-native';
 import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart';
 import { useSelector, useDispatch } from 'react-redux';
@@ -24,46 +25,55 @@ const EditPlanScreen = ({ navigation }) => {
   const color = selectedPlan?.color || '#34A853';
   const isAddMode = selectedPlanMode === 'add';
 
-  const [planName, setPlanName] = useState(selectedPlan?.title || '');
-  const [roi, setRoi] = useState(selectedPlan?.roi?.toString() || '');
-  const [amount, setAmount] = useState(selectedPlan?.amount?.toString() || '');
-  const [duration, setDuration] = useState(selectedPlan?.duration?.toString() || '');
-  const [payout, setPayout] = useState(selectedPlan?.payout || '');
-
+  const [planName, setPlanName] = useState(selectedPlan?.name || '');
+  const [roi, setRoi] = useState(selectedPlan?.roiPercent?.toString() || '');
+  const [amount, setAmount] = useState(selectedPlan?.minAmount?.toString() || '');
+  const [duration, setDuration] = useState(selectedPlan?.durationDays?.toString() || '');
+  const [payout, setPayout] = useState(selectedPlan?.payoutType || '');
   const [showSnackbar, setShowSnackbar] = useState(false);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [oldValues, setOldValues] = useState({
-    roi: selectedPlan?.roi || '',
+    roi: selectedPlan?.roiPercent || '',
     amount: selectedPlan?.amount || '',
   });
 
   const handleSave = async () => {
     const payload = {
-      title: planName,
-      roi,
-      amount,
-      duration,
+      name: planName,
+      roiPercent: roi,
+      minAmount: amount,
+      durationDays: duration,
       payoutType: payout,
     };
 
     try {
       if (isAddMode) {
-        await dispatch(createInvestmentPlan(payload));
+        await dispatch(createInvestmentPlan(payload)).unwrap();
       } else {
-        const id = selectedPlan?._id;
-        await dispatch(updateInvestmentPlan({ id, data: payload }));
+        // ✅ Proper ID check
+        const id = selectedPlan && (selectedPlan._id || selectedPlan.id);
+        if (!id || id.startsWith('basic') || id.startsWith('Gold') || id.startsWith('Premium')) {
+          console.warn('🚨 Invalid or demo plan ID. Update skipped.');
+          Alert.alert(
+            '❌ Demo Plan',
+            'This plan is for display only and cannot be updated. Please add a new one instead.'
+          );
+          return;
+        }
+
+        await dispatch(updateInvestmentPlan({ id, data: payload })).unwrap();
       }
 
       await dispatch(fetchAllInvestmentPlans());
       setShowSnackbar(true);
       setShowSuccessModal(true);
-
-      setTimeout(() => {
-        setShowSnackbar(false);
-      }, 3000);
-    } catch (error) {
-      setShowSnackbar(true);
       setTimeout(() => setShowSnackbar(false), 3000);
+    } catch (error) {
+      console.error('Error while saving plan:', error);
+      Alert.alert(
+        '❌ Failed to Save Plan',
+        error?.message || error?.error || 'Something went wrong while saving the plan.'
+      );
     }
   };
 
@@ -79,7 +89,7 @@ const EditPlanScreen = ({ navigation }) => {
         <View style={[styles.cardBox, { borderLeftColor: color }]}>
           <View style={[styles.titleBar, { backgroundColor: color }]}>
             <Text style={styles.titleText}>
-              {isAddMode ? 'Add New Plan' : `Edit ${selectedPlan?.title}`}
+              {isAddMode ? 'Add New Plan' : `Edit ${selectedPlan?.name}`}
             </Text>
           </View>
 
@@ -95,12 +105,13 @@ const EditPlanScreen = ({ navigation }) => {
             </>
           )}
 
-          <Text style={styles.label}>ROI :</Text>
+          <Text style={styles.label}>ROI (%) :</Text>
           <TextInput
             style={styles.input}
             value={roi}
             onChangeText={setRoi}
-            placeholder="e.g. 1.5% Daily"
+            placeholder="e.g. 15"
+            keyboardType="numeric"
           />
 
           <Text style={styles.label}>Min Amount :</Text>
@@ -117,7 +128,8 @@ const EditPlanScreen = ({ navigation }) => {
             style={styles.input}
             value={duration}
             onChangeText={setDuration}
-            placeholder="e.g. 3 Days"
+            placeholder="e.g. 3"
+            keyboardType="numeric"
           />
 
           <Text style={styles.label}>Payout :</Text>
@@ -156,16 +168,18 @@ const EditPlanScreen = ({ navigation }) => {
         </View>
       )}
 
-      {/* ✅ UPDATED MODAL START */}
+      {/* ✅ MODAL */}
       <Modal visible={showSuccessModal} transparent animationType="fade">
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>✔️ Plan updated</Text>
-            <Text style={styles.modalSubTitle}>Basic plan changes saved :</Text>
+            <Text style={styles.modalSubTitle}>Basic plan changes saved:</Text>
 
             <View style={styles.modalRow}>
               <Text style={styles.labelLeft}>ROI</Text>
-              <Text style={styles.valueRight}>{roi}% ( From {oldValues?.roi || 'N/A'}% )</Text>
+              <Text style={styles.valueRight}>
+                {roi}% (From {oldValues?.roi || 'N/A'}%)
+              </Text>
             </View>
             <View style={styles.separator} />
 
@@ -190,12 +204,13 @@ const EditPlanScreen = ({ navigation }) => {
           </View>
         </View>
       </Modal>
-      {/* ✅ UPDATED MODAL END */}
     </SafeAreaView>
   );
 };
 
 export default EditPlanScreen;
+
+
 
 const styles = StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: '#fff' },

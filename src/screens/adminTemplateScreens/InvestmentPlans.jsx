@@ -4,6 +4,7 @@ import {
   StyleSheet,
   View,
   SafeAreaView,
+  Alert,
 } from 'react-native';
 import React, { useCallback } from 'react';
 import Loader from '../../components/Loader/Loader';
@@ -13,9 +14,11 @@ import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import {
   fetchAllInvestmentPlans,
   setSelectedPlan,
+  deleteInvestmentPlan,
 } from '../../redux/slices/adminSlice';
 import PlanCard from '../../components/planCard/PlanCard';
- 
+
+
 
 const InvestmentPlans = () => {
   const { investmentPlans, loading } = useSelector((state) => state.admin);
@@ -32,44 +35,78 @@ const InvestmentPlans = () => {
     dispatch(
       setSelectedPlan({
         plan: {
-          title: plan.title,
-          roi: plan.roi,
-          amount: plan.minAmount,
-          duration: plan.duration,
-          payout: plan.payoutType,
+          _id: plan._id,
+          name: plan.name || plan.title || '',
+          roiPercent: plan.roiPercent || plan.roi || '',
+          minAmount: plan.minAmount || plan.amount || '', // ✅ fix this from `amount`
+          durationDays: plan.durationDays || plan.duration || '', // ✅ fix this from `duration`
+          payoutType: plan.payoutType || plan.payout || '',
           color,
-        },
-        mode,
+        }, mode,
       })
     );
     navigation.navigate('EditPlan');
   };
 
+  const handleDelete = (id) => {
+    Alert.alert(
+      'Delete Plan?',
+      'Are you sure you want to delete this plan?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => {
+            (async () => {
+              try {
+                await dispatch(deleteInvestmentPlan(id));
+                dispatch(fetchAllInvestmentPlans());
+              } catch (error) {
+                console.error('Delete failed:', error);
+              }
+            })();
+          },
+        },
+      ]
+    );
+  };
+
   const hardcodedPlans = [
     {
-      title: 'Basic Plan',
-      roi: '1.5% Daily',
-      minAmount: '500',
-      duration: '3 Days',
-      payoutType: 'Daily',
-      borderColor: '#34A853',
-      logo: require('../../assests/basicplanlogo.png'),
-      image: require('../../assests/card1.png'),
+    _id: 'basic-plan', // ✅ required
+    title: 'Basic Plan',
+    name: 'Basic Plan', // ✅ used in redux slice
+    roi: '1.5%', // ✅ make it number/string without % symbol for redux
+    roiPercent: '1.5',
+    minAmount: '500',
+    amount: '500', // ✅ fallback
+    duration: '3',
+    durationDays: '3',
+    payout: 'Daily',
+    payoutType: 'Daily',
+    borderColor: '#34A853',
+    logo: require('../../assests/basicplanlogo.png'),
+    image: require('../../assests/card1.png'),
     },
-    {
+    { _id: 'Gold-plan',
       title: 'Gold Plan',
-      roi: '2.5% Daily',
+      name: 'Gold Plan',
+      roi: '2.5 Daily',
       minAmount: '2000',
+      amount: '2000', 
       duration: '7 Days',
       payoutType: 'Weekly',
       borderColor: '#FDBE00',
       logo: require('../../assests/goldplanlogo.png'),
       image: require('../../assests/premiumplanImage.png'),
     },
-    {
+    { _id: 'Premium-plan',
       title: 'Premium Plan',
-      roi: '4.0% Daily',
+      name: 'Premium Plan',
+      roi: '4.0 Daily',
       minAmount: '5000',
+      amount: '5000', 
       duration: '7 Days',
       payoutType: 'Monthly',
       borderColor: '#9747FF',
@@ -116,10 +153,14 @@ const InvestmentPlans = () => {
                   />
                 ))}
 
-                {/* ✅ Dynamic Plans from API (avoiding duplicates safely) */}
+                {/* ✅ Dynamic Plans from API */}
                 {investmentPlans?.map((plan, index) => {
-                  const hardcodedTitles = hardcodedPlans.map(p => p.title.trim().toLowerCase());
-                  const isDuplicate = hardcodedTitles.includes(plan.title?.trim().toLowerCase());
+                  const hardcodedTitles = hardcodedPlans.map(p =>
+                    p.title.trim().toLowerCase()
+                  );
+                  const isDuplicate = hardcodedTitles.includes(
+                    plan.title?.trim().toLowerCase()
+                  );
                   if (isDuplicate) return null;
 
                   const dynamicColor = '#666';
@@ -127,15 +168,17 @@ const InvestmentPlans = () => {
                   return (
                     <PlanCard
                       key={`dynamic-${plan._id || index}`}
-                      title={plan?.title || 'N/A'}
-                      roi={`${plan?.roi || 'N/A'}%`}
-                      amount={`$${plan?.minAmount || 'N/A'}`}
-                      duration={plan?.duration || 'N/A'}
-                      payout={plan?.payoutType || 'N/A'}
+                      title={plan?.name || 'N/A'} // ✅ plan.name is correct
+                      roi={`${plan?.roiPercent || 'N/A'}%`} // ✅ corrected
+                      amount={`$${plan?.minAmount || 'N/A'}`} // ✅ already correct
+                      duration={`${plan?.durationDays || 'N/A'} days`} // ✅ corrected
+                      payout={plan?.autoPayout ? 'Yes' : 'No'} // ✅ corrected
                       borderColor={dynamicColor}
                       editButtonColor={dynamicColor}
                       onEditPress={() => handleEdit(plan, dynamicColor)}
+                      onDeletePress={() => handleDelete(plan._id)}
                     />
+
                   );
                 })}
 

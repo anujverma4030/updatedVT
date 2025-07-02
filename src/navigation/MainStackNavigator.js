@@ -37,7 +37,7 @@ const MainStackNavigator = () => {
 
   return (
     <NavigationContainer>
-      <SafeAreaProvider>
+      
         <ScreenWrapper>
           <Stack.Navigator screenOptions={{
             headerShown: false,
@@ -66,7 +66,7 @@ const MainStackNavigator = () => {
 
           </Stack.Navigator>
         </ScreenWrapper>
-      </SafeAreaProvider>
+      
     </NavigationContainer>
   );
 };

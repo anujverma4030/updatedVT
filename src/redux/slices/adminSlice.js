@@ -1,20 +1,36 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-
-// Dashboard Stats // Completed
+import { Alert } from 'react-native'; 
+// Dashboard Stats
 export const fetchDashboardStats = createAsyncThunk(
   'admin/fetchDashboardStats',
   async (_, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get('/admin/dashboard');
-      // console.log('Dashboard Details:', response.data.stats);
       return response.data.stats;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
-// Approve All Withdrawals
+
+// Delete Investment Plan with error alert
+export const deleteInvestmentPlan = createAsyncThunk(
+  'admin/deleteInvestmentPlan',
+  async (id, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.delete(`/admin/deleteplan/${id}`);
+      return { id };
+    } catch (error) {
+      const errorMsg = error?.response?.data || error.message || 'Unknown error';
+      console.error('❌ Delete API failed:', errorMsg);
+      return rejectWithValue(errorMsg);
+    }
+  }
+);
+
+
+
 export const approveAllWithdrawals = createAsyncThunk("admin/approveAllWithdrawals", async (_, thunkAPI) => {
   try {
     const res = await axiosInstance.get("/admin/approvewithdrawals");
@@ -23,7 +39,7 @@ export const approveAllWithdrawals = createAsyncThunk("admin/approveAllWithdrawa
     return thunkAPI.rejectWithValue(err.response.data);
   }
 });
-//  Create Investment Plan
+
 export const createInvestmentPlan = createAsyncThunk("admin/createInvestmentPlan", async (payload, thunkAPI) => {
   try {
     const res = await axiosInstance.post("/admin/investment/plan", payload);
@@ -32,7 +48,7 @@ export const createInvestmentPlan = createAsyncThunk("admin/createInvestmentPlan
     return thunkAPI.rejectWithValue(err.response.data);
   }
 });
-// All Investment Plans // completed
+
 export const fetchAllInvestmentPlans = createAsyncThunk(
   'admin/fetchAllInvestmentPlans',
   async (_, { rejectWithValue }) => {
@@ -44,7 +60,7 @@ export const fetchAllInvestmentPlans = createAsyncThunk(
     }
   }
 );
-// Fetch User Investments
+
 export const fetchUserInvestments = createAsyncThunk("admin/fetchUserInvestments", async (_, thunkAPI) => {
   try {
     const res = await axiosInstance.get("/admin/userinvestments");
@@ -53,19 +69,19 @@ export const fetchUserInvestments = createAsyncThunk("admin/fetchUserInvestments
     return thunkAPI.rejectWithValue(err.response.data);
   }
 });
-// Update Investment Plan
+
 export const updateInvestmentPlan = createAsyncThunk(
   'admin/updateInvestmentPlan',
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.put(`/admin/plan/${id}`, data);
+      const response = await axiosInstance.put(`/admin/investment/updateplan/${id}`, data); // ✅ FIXED
       return response.data.data;
     } catch (error) {
       return rejectWithValue(error.response.data);
     }
   }
 );
-// All Users
+
 export const fetchAllUsers = createAsyncThunk(
   'admin/fetchAllUsers',
   async (_, { rejectWithValue }) => {
@@ -78,7 +94,6 @@ export const fetchAllUsers = createAsyncThunk(
   }
 );
 
-// Single User by ID
 export const fetchUserById = createAsyncThunk(
   'admin/fetchUserById',
   async (userId, { rejectWithValue }) => {
@@ -91,7 +106,6 @@ export const fetchUserById = createAsyncThunk(
   }
 );
 
-// Toggle User Status
 export const toggleUserStatus = createAsyncThunk(
   'admin/toggleUserStatus',
   async ({ id, status }, { rejectWithValue }) => {
@@ -103,7 +117,7 @@ export const toggleUserStatus = createAsyncThunk(
     }
   }
 );
-// Toggle Deposit Status
+
 export const toggleDepositStatus = createAsyncThunk("admin/toggleDepositStatus", async ({ id, status }, thunkAPI) => {
   try {
     const res = await axiosInstance.put(`/admin/depositstatus/${id}`, { status });
@@ -112,7 +126,7 @@ export const toggleDepositStatus = createAsyncThunk("admin/toggleDepositStatus",
     return thunkAPI.rejectWithValue(err.response.data);
   }
 });
-// Toggle Withdrawal Status
+
 export const toggleWithdrawalStatus = createAsyncThunk("admin/toggleWithdrawalStatus", async ({ id, status }, thunkAPI) => {
   try {
     const res = await axiosInstance.put(`/admin/withdrawalstatus/${id}`, { status });
@@ -122,7 +136,6 @@ export const toggleWithdrawalStatus = createAsyncThunk("admin/toggleWithdrawalSt
   }
 });
 
-// All Transactions
 export const fetchTransactionReports = createAsyncThunk(
   'admin/fetchTransactionReports',
   async (_, { rejectWithValue }) => {
@@ -135,8 +148,6 @@ export const fetchTransactionReports = createAsyncThunk(
   }
 );
 
-
-// All Deposits
 export const fetchAllDeposits = createAsyncThunk(
   'admin/fetchAllDeposits',
   async (_, { rejectWithValue }) => {
@@ -149,7 +160,6 @@ export const fetchAllDeposits = createAsyncThunk(
   }
 );
 
-// All Withdrawals
 export const fetchAllWithdrawals = createAsyncThunk(
   'admin/fetchAllWithdrawals',
   async (_, { rejectWithValue }) => {
@@ -160,9 +170,8 @@ export const fetchAllWithdrawals = createAsyncThunk(
       return rejectWithValue(error.response.data);
     }
   }
-); 
+);
 
-// All Spins
 export const fetchSpinLogs = createAsyncThunk(
   'admin/fetchSpinLogs',
   async (_, { rejectWithValue }) => {
@@ -175,7 +184,6 @@ export const fetchSpinLogs = createAsyncThunk(
   }
 );
 
-// Referral Stats
 export const fetchReferralStats = createAsyncThunk(
   'admin/fetchReferralStats',
   async (_, { rejectWithValue }) => {
@@ -188,18 +196,6 @@ export const fetchReferralStats = createAsyncThunk(
   }
 );
 
-// All User Investments
-// export const fetchAllUserInvestments = createAsyncThunk(
-//   'admin/fetchAllUserInvestments',
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const response = await axiosInstance.get('/admin/investments');
-//       return response.data.investments;
-//     } catch (error) {
-//       return rejectWithValue(error.response.data);
-//     }
-//   }
-// );
 const adminSlice = createSlice({
   name: 'admin',
   initialState: {
@@ -219,7 +215,8 @@ const adminSlice = createSlice({
     selectedPlan: null,
     selectedPlanMode: 'edit',
   },
-  reducers: {setSelectedPlan: (state, action) => {
+  reducers: {
+    setSelectedPlan: (state, action) => {
       state.selectedPlan = action.payload.plan;
       state.selectedPlanMode = action.payload.mode;
     },
@@ -230,7 +227,6 @@ const adminSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Dashboard Stats
       .addCase(fetchDashboardStats.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -243,13 +239,10 @@ const adminSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
-      // Users
       .addCase(fetchAllUsers.fulfilled, (state, action) => {
         state.users = action.payload;
         state.loading = false;
       })
-      // Single User
-      
       .addCase(fetchUserById.fulfilled, (state, action) => {
         state.singleUser = action.payload;
         state.singleUserLoading = false;
@@ -258,18 +251,13 @@ const adminSlice = createSlice({
         state.singleUserLoading = false;
         state.error = action.payload;
       })
-      // Toggle User Status
       .addCase(toggleUserStatus.fulfilled, (state, action) => {
-        // You may want to update user status in users list if needed
         state.singleUser = action.payload;
       })
-      // Investment Plans
       .addCase(fetchAllInvestmentPlans.fulfilled, (state, action) => {
         state.investmentPlans = action.payload;
         state.loading = false;
       })
-
-      // Deposits and Withdrawals
       .addCase(fetchAllDeposits.fulfilled, (state, action) => {
         state.deposits = action.payload;
         state.loading = false;
@@ -278,68 +266,70 @@ const adminSlice = createSlice({
         state.withdrawals = action.payload;
         state.loading = false;
       })
-      
-      // Spins
       .addCase(fetchSpinLogs.fulfilled, (state, action) => {
         state.spins = action.payload;
         state.loading = false;
       })
-      // Referral Stats
       .addCase(fetchReferralStats.fulfilled, (state, action) => {
         state.referralStats = action.payload;
       })
-      // Transaction Reports
       .addCase(fetchTransactionReports.fulfilled, (state, action) => {
         state.transactionReports = action.payload;
       })
-      // Create Investment Plan
       .addCase(createInvestmentPlan.fulfilled, (state, action) => {
-  const plan = action.payload;
-  if (plan.amount && !plan.minAmount) {
-    plan.minAmount = plan.amount;
-  }
-  state.investmentPlans.push(plan);
-  state.loading = false;
-})
-
- 
-      // Fetch User Investments
+        const plan = action.payload;
+        if (plan.amount && !plan.minAmount) {
+          plan.minAmount = plan.amount;
+        }
+        state.investmentPlans.push(plan);
+        state.loading = false;
+      })
       .addCase(fetchUserInvestments.fulfilled, (state, action) => {
         state.userInvestments = action.payload;
         state.loading = false;
       })
-      // Approve All Withdrawals
       .addCase(approveAllWithdrawals.fulfilled, (state, action) => {
         state.withdrawals = action.payload;
         state.loading = false;
       })
-      // Toggle Deposit Status
       .addCase(toggleDepositStatus.fulfilled, (state, action) => {
-        const updatedDeposits = state.deposits.map(deposit =>
-          deposit.id === action.payload.id ? action.payload : deposit
+        state.deposits = state.deposits.map(d =>
+          d.id === action.payload.id ? action.payload : d
         );
-        state.deposits = updatedDeposits;
         state.loading = false;
       })
-      // Toggle Withdrawal Status
       .addCase(toggleWithdrawalStatus.fulfilled, (state, action) => {
-        const updatedWithdrawals = state.withdrawals.map(withdrawal =>
-          withdrawal.id === action.payload.id ? action.payload : withdrawal
+        state.withdrawals = state.withdrawals.map(w =>
+          w.id === action.payload.id ? action.payload : w
         );
-        state.withdrawals = updatedWithdrawals;
         state.loading = false;
       })
-      // Update Investment Plan
       .addCase(updateInvestmentPlan.fulfilled, (state, action) => {
-       // This will update the specific plan in the investmentPlans array
-       const updatedPlan = action.payload;
-       const index = state.investmentPlans.findIndex(plan => plan.id === updatedPlan.id);
-       if (index !== -1) {
-       state.investmentPlans[index] = updatedPlan;
-      }
-       })
+        const updatedPlan = action.payload;
+        const index = state.investmentPlans.findIndex(plan => plan.id === updatedPlan.id);
+        if (index !== -1) {
+          state.investmentPlans[index] = updatedPlan;
+        }
+      })
 
-      // handle fulfilled actions globally
+      // ✅ Delete Investment Plan — SUCCESS
+      .addCase(deleteInvestmentPlan.fulfilled, (state, action) => {
+        const deletedId = action.payload.id;
+        state.investmentPlans = state.investmentPlans.filter(plan => plan.id !== deletedId);
+      })
+
+      // ❌ Delete Investment Plan — ERROR ALERT
+      .addCase(deleteInvestmentPlan.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+        const errorMessage =
+          typeof action.payload === 'string'
+            ? action.payload
+            : action.payload?.message || 'Unknown error occurred while deleting the plan.';
+        Alert.alert('❌ Delete Failed', errorMessage); // ✅ Native Alert
+      })
+
+      // Global Matchers
       .addMatcher(
         (action) => action.type.startsWith('admin/') && action.type.endsWith('/fulfilled'),
         (state) => {
@@ -347,8 +337,6 @@ const adminSlice = createSlice({
           state.error = null;
         }
       )
-
-      // handle rejections globally
       .addMatcher(
         (action) => action.type.startsWith('admin/') && action.type.endsWith('/rejected'),
         (state, action) => {
@@ -356,7 +344,6 @@ const adminSlice = createSlice({
           state.error = action.payload;
         }
       )
-
       .addMatcher(
         (action) => action.type.startsWith('admin/') && action.type.endsWith('/pending'),
         (state) => {
@@ -364,9 +351,7 @@ const adminSlice = createSlice({
           state.error = null;
         }
       );
-
-      
-  }
+  },
 });
 
 export default adminSlice.reducer;

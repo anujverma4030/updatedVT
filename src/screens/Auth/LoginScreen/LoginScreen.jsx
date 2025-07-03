@@ -87,7 +87,7 @@ const LoginScreen = () => {
     }
     return (
         <SafeAreaView style={styles.container}>
-            <SignUpLoginHeadPart showCreateAcount={true} title={'Log In'}/>
+            <SignUpLoginHeadPart showCreateAcount={true} title={'Log In'} />
             <View style={styles.body}>
                 <Text style={styles.welcomeText}>WelCome Back!</Text>
 
@@ -107,8 +107,8 @@ const LoginScreen = () => {
                         secureTextEntry={showPassword}
                         placeholderTextColor={'#000'}
                     />
-                    <TouchableOpacity 
-                    onPress={() => setShowPassword(!showPassword)}
+                    <TouchableOpacity
+                        onPress={() => setShowPassword(!showPassword)}
                     >
                         <Icon
                             style={[styles.icon, { right: width * 0.01, top: height * 0.012 }]}
@@ -118,9 +118,13 @@ const LoginScreen = () => {
                         />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity style={styles.forgotPassword}>
+                <TouchableOpacity
+                    style={styles.forgotPassword}
+                    onPress={() => navigation.navigate('ForgotPasswordScreen')}
+                >
                     <Text style={styles.forgotPasswordText}>Forgot Password ?</Text>
                 </TouchableOpacity>
+
 
                 <TouchableOpacity
                     onPress={handleLogin}
@@ -199,10 +203,10 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         paddingVertical: 8,
         marginBottom: 15,
-        color:'#000'
+        color: '#000'
     },
     passwordContainer: {
-       
+
         flexDirection: 'row',
         width: "100%",
         borderWidth: 1,
@@ -213,9 +217,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     inputPassword: {
-       
+
         width: "90%",
-        color:'#000'
+        color: '#000'
         // flex: 1
     },
     icon: {
@@ -235,7 +239,7 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         marginTop: 20,
         height: 50,
-       
+
 
     },
     loginButtonText: {

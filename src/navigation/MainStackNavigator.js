@@ -23,6 +23,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import jwtDecode from 'jwt-decode';
 import { getEmployeeById } from '../redux/slices/userSlice';
 import ScreenWrapper from '../components/ScreenWrapper';
+import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen/ForgotPasswordScreen';
+import OtpVerificationScreen from '../screens/Auth/OtpVerificationScreen/OtpVerificationScreen';
+import ResetPasswordScreen from '../screens/Auth/ResetPasswordScreen/ResetPasswordScreen';
 
 
 const Stack = createNativeStackNavigator();
@@ -45,7 +48,7 @@ const MainStackNavigator = () => {
             orientation:'portrait'
 
           }}
-           initialRouteName='AdminPanel'
+          //  initialRouteName='AdminPanel'
           >
             
             <Stack.Screen name='SplashScreen' component={SplashScreen} />
@@ -54,6 +57,9 @@ const MainStackNavigator = () => {
             <Stack.Screen name='AuthStack' component={AuthNavigator} />
             <Stack.Screen name='LoginScreen' component={LoginScreen} />
             <Stack.Screen name='SignUpScreen' component={SignUpScreen} />
+            <Stack.Screen name='ForgotPasswordScreen' component={ForgotPasswordScreen} />
+            <Stack.Screen name='OtpVerificationScreen' component={OtpVerificationScreen} />
+            <Stack.Screen name='ResetPasswordScreen' component={ResetPasswordScreen} />
             <Stack.Screen name="MainTabs" component={TabNavigator} />
             <Stack.Screen name="ReferralDetails" component={ReferralDetailsScreen} />
             <Stack.Screen name="PersonalDetails" component={PersonalDetails} />

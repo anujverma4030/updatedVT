@@ -1,26 +1,32 @@
-import React, { useReducer, useRef, useState } from 'react';
-import { Modal, Dimensions, Image, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, Easing, Animated } from 'react-native';
-import SpinPageBackSide from '../../components/Header/SpinPageBackSide';
+import React, { useRef, useState } from 'react';
+import {
+  Animated,
+  Dimensions,
+  Easing,
+  Image,
+  ImageBackground,
+  Modal,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Alert,
+} from 'react-native';
+import Svg, { Circle, G, Path, Text as SvgText, Defs, Stop, LinearGradient } from 'react-native-svg';
 import { RFValue } from 'react-native-responsive-fontsize';
-import Icon from 'react-native-vector-icons/MaterialIcons'
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import axios from '../../api/axiosInstance';
+import SpinPageBackSide from '../../components/Header/SpinPageBackSide';
 
-import Svg, { Circle, G, Path, Text as SvgText, Defs, Stop, LinearGradient } from "react-native-svg";
-
-
-// const prizes = [
-//   "50$", "1$", "5$", "20$", "JACKPOT", "15$",
-//   "100$", "1$", "500$", "10$", "ZERO", "2$",
-// ];
 const prizes = [
-  "IPHONE", "$333", "IPAD", "WATCH", "$0.11", "$0.66",
-  "$0.33", "$111", "$11", "$66", "$0", "$333",
+  '$0.11', '$0.33', '$0.50', '$0.66', '$0.80',
+  'IPHONE', 'WATCH', '$0', '$111', '$11', '$66', '$1'
 ];
 
-const { width } = Dimensions.get("window");
-const colors = ["#ffbf80", "#661a00"];
+const { width } = Dimensions.get('window');
 const wheelSize = width * 0.8;
-const numberOfSegments = 12;
-const angleBySegment = 360 / numberOfSegments;
+const angleBySegment = 360 / prizes.length;
 const oneTurn = 360;
 
 function calculateArc(startAngle, endAngle) {
@@ -29,47 +35,80 @@ function calculateArc(startAngle, endAngle) {
   const y1 = r + r * Math.sin((Math.PI / 180) * startAngle);
   const x2 = r + r * Math.cos((Math.PI / 180) * endAngle);
   const y2 = r + r * Math.sin((Math.PI / 180) * endAngle);
-  const largeArcFlag = endAngle - startAngle <= 180 ? "0" : "1";
+  const largeArcFlag = endAngle - startAngle <= 180 ? '0' : '1';
   return `M${r},${r} L${x1},${y1} A${r},${r} 0 ${largeArcFlag} 1 ${x2},${y2} Z`;
 }
 
 const SpinScreen = () => {
-  const [winner, setWinner] = useState("");
+  const [winner, setWinner] = useState('');
   const [isSpinning, setIsSpinning] = useState(false);
-  const { height, width } = Dimensions.get('window');
   const [showModal, setShowModal] = useState(false);
+  const [showBuyModal, setShowBuyModal] = useState(false);
+  const [quantity, setQuantity] = useState(1);
+  const [spinCount, setSpinCount] = useState(5); // just display counter (static)
   const animatedValue = useRef(new Animated.Value(0)).current;
   const wheelRotation = useRef(0);
 
-  const spinWheel = () => {
-    if (isSpinning) return;
+  const spinFromBackend = async () => {
+    if (isSpinning || spinCount <= 0) return;
     setIsSpinning(true);
-    setWinner("");
+    setWinner('');
     setShowModal(false);
-    const randomIndex = Math.floor(Math.random() * numberOfSegments);
+    setSpinCount(prev => prev - 1); // decrement spin count locally
 
-    // Subtract 90 deg to align the winner at the top (12 o'clock)
-    const rotateTo = 360 * 6 + (360 - (randomIndex * angleBySegment + angleBySegment / 2) - 90);
+    try {
+      const response = await axios.get('/spin/playtwo');
+      const resultValue = response?.data?.spin?.resultValue;
 
-    Animated.timing(animatedValue, {
-      toValue: rotateTo,
-      duration: 4000,
-      easing: Easing.out(Easing.cubic),
-      useNativeDriver: true,
-    }).start(() => {
-      wheelRotation.current = rotateTo % oneTurn; // Keep the rotation value within 0-360
+      const index = prizes.findIndex((prize) => {
+        if (prize.startsWith('$')) {
+          return parseFloat(prize.slice(1)) === Number(resultValue);
+        }
+        return prize === resultValue;
+      });
+
+      if (index >= 0 && index < prizes.length) {
+        const rotateTo =
+          360 * 6 +
+          (360 - (index * angleBySegment + angleBySegment / 2) - 90);
+
+        Animated.timing(animatedValue, {
+          toValue: rotateTo,
+          duration: 4000,
+          easing: Easing.out(Easing.cubic),
+          useNativeDriver: true,
+        }).start(() => {
+          wheelRotation.current = rotateTo % oneTurn;
+          animatedValue.setValue(wheelRotation.current);
+          setWinner(prizes[index]);
+          setTimeout(() => setShowModal(true), 500);
+          setIsSpinning(false);
+        });
+      } else {
+        Alert.alert('Error', `Prize not found for: ${resultValue}`);
+        setIsSpinning(false);
+      }
+    } catch (error) {
+      Alert.alert('Error', error?.response?.data?.message || 'Spin failed');
       setIsSpinning(false);
-      setWinner(prizes[randomIndex]);
-      animatedValue.setValue(wheelRotation.current);
-      setTimeout(() => setShowModal(true), 500);
-    });
+    }
+  };
+
+  const handlePurchaseSpin = async () => {
+    try {
+      await axios.post('/spin/purchase', { spinCount: quantity });
+      setSpinCount(prev => prev + quantity); // increment local counter
+      Alert.alert('Success', 'Spins purchased!');
+    } catch (error) {
+      Alert.alert('Error', error?.response?.data?.message || 'Could not purchase spins');
+    }
   };
 
   const interpolatedRotate = animatedValue.interpolate({
     inputRange: [0, 360],
-    outputRange: ["0deg", "360deg"],
+    outputRange: ['0deg', '360deg'],
   });
-  // const wheelSize = width * 0.92;
+
   return (
     <ImageBackground
       source={require('../../assests/spinPageBGImage.png')}
@@ -77,10 +116,10 @@ const SpinScreen = () => {
       resizeMode="cover"
     >
       <SafeAreaView style={styles.container}>
-
         <SpinPageBackSide />
+
         <View style={styles.spinContainer}>
-          <Svg width={wheelSize + 18} height={wheelSize + 18} style={{ position: "absolute" }}>
+          <Svg width={wheelSize + 18} height={wheelSize + 18} style={{ position: 'absolute' }}>
             <Circle
               cx={(wheelSize + 18) / 2}
               cy={(wheelSize + 18) / 2}
@@ -90,270 +129,187 @@ const SpinScreen = () => {
               strokeWidth={5}
             />
           </Svg>
-          {/* <Path d={path} fill={colors[i % colors.length]} /> */}
-          
 
-              <Animated.View style={{ transform: [{ rotate: interpolatedRotate }] }}>
-                <Svg width={wheelSize} height={wheelSize}>
-                  <Defs>
-                    {prizes.map((_, i) => (
-                      <LinearGradient
-                        key={`grad-${i}`}
-                        id={`grad-${i}`}
-                        x1="0%"
-                        y1="0%"
-                        x2="0%"
-                        y2="100%"
+          <Animated.View style={{ transform: [{ rotate: interpolatedRotate }] }}>
+            <Svg width={wheelSize} height={wheelSize}>
+              <Defs>
+                {prizes.map((_, i) => (
+                  <LinearGradient key={`grad-${i}`} id={`grad-${i}`} x1="0%" y1="0%" x2="0%" y2="100%">
+                    <Stop offset="0%" stopColor={i % 2 === 0 ? '#FFE8AC' : '#FFC14D'} />
+                    <Stop offset="100%" stopColor={i % 2 === 0 ? '#FF8C4A' : '#9C1000'} />
+                  </LinearGradient>
+                ))}
+              </Defs>
+              <G>
+                {prizes.map((prize, i) => {
+                  const start = i * angleBySegment;
+                  const end = (i + 1) * angleBySegment;
+                  const path = calculateArc(start, end);
+                  const r = (wheelSize / 2) * 0.75;
+                  const mid = start + angleBySegment / 2;
+                  const x = wheelSize / 2 + r * Math.cos((Math.PI / 180) * mid);
+                  const y = wheelSize / 2 + r * Math.sin((Math.PI / 180) * mid);
+                  return (
+                    <G key={i}>
+                      <Path d={path} fill={`url(#grad-${i})`} />
+                      <SvgText
+                        x={x}
+                        y={y}
+                        fill="#fff"
+                        fontSize="14"
+                        fontWeight="bold"
+                        textAnchor="middle"
+                        alignmentBaseline="middle"
+                        transform={`rotate(${mid}, ${x}, ${y})`}
                       >
-                        <Stop offset="0%" stopColor={i % 2 === 0 ? '#FFE8AC' : '#FFC14D'} />
-                        <Stop offset="100%" stopColor={i % 2 === 0 ? '#FF8C4A' : '#9C1000'} />
-                      </LinearGradient>
-                    ))}
-                  </Defs>
-                  <G>
-                    {prizes.map((prize, i) => {
-                      const start = i * angleBySegment;
-                      const end = (i + 1) * angleBySegment;
-                      const path = calculateArc(start, end);
-                      const r = (wheelSize / 2) * 0.75;
-                      const mid = start + angleBySegment / 2;
-                      const x = wheelSize / 2 + r * Math.cos((Math.PI / 180) * mid);
-                      const y = wheelSize / 2 + r * Math.sin((Math.PI / 180) * mid);
-                      return (
-                        <G key={i}>
+                        {prize}
+                      </SvgText>
+                    </G>
+                  );
+                })}
+              </G>
+            </Svg>
+          </Animated.View>
 
-                          <Path d={path} fill={`url(#grad-${i})`} />
-
-                          <SvgText
-                            x={x}
-                            y={y}
-                            fill="#fff"
-                            fontSize="14"
-                            fontWeight="bold"
-                            textAnchor="middle"
-                            alignmentBaseline="middle"
-                            transform={`rotate(${mid}, ${x}, ${y})`}
-                          >
-                            {prize}
-                          </SvgText>
-                        </G>
-
-                      );
-                    })}
-                  </G>
-                </Svg>
-
-              </Animated.View>
-              {/* <Animated.Image
-            source={require('../../assests/spinWheelImage3.png')} // wheel image
-            style={{
-              width: wheelSize,
-              height: wheelSize,
-              transform: [{ rotate: interpolatedRotate }],
-             
-            }}
-            resizeMode="contain"
-
-          /> */}
-              <View style={styles.knobContainer}>
-                <View style={styles.knobInside}>
-                  <Image
-                    source={require("../../assests/knob2.png")}
-                    style={styles.knobPointer}
-                  />
-                </View>
-             
+          <View style={styles.knobContainer}>
+            <View style={styles.knobInside}>
+              <Image source={require('../../assests/knob2.png')} style={styles.knobPointer} />
+            </View>
           </View>
         </View>
+
+        {/* BUTTONS + COUNTER */}
         <View style={styles.btnContainer}>
-          <Icon name='keyboard-double-arrow-down' size={50} color="#FFFFFFA1" style={{ marginBottom: 10 }} />
+          <Text style={styles.spinCountText}>Spins Left: {spinCount}</Text>
+          <Icon name="keyboard-double-arrow-down" size={50} color="#FFFFFFA1" style={{ marginBottom: 10 }} />
           <TouchableOpacity
             activeOpacity={0.8}
-            style={[styles.button, isSpinning && { backgroundColor: "#999" }]}
-            onPress={spinWheel}
-            disabled={isSpinning}
+            style={[styles.button, isSpinning || spinCount === 0 ? { backgroundColor: '#999' } : {}]}
+            onPress={spinFromBackend}
+            disabled={isSpinning || spinCount === 0}
           >
-            <Text style={styles.buttonText}>
-              {isSpinning ? "Spinning..." : "Spin Now"}
-            </Text>
+            <Text style={styles.buttonText}>{isSpinning ? 'Spinning...' : 'Spin Now'}</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.purchaseButton}
+            onPress={() => setShowBuyModal(true)}
+          >
+            <Text style={styles.purchaseButtonText}>Buy Spin</Text>
           </TouchableOpacity>
         </View>
 
-
-        <Modal
-          animationType='fade'
-          transparent={true}
-          visible={showModal}
-          onRequestClose={() => setShowModal(false)}
-          hardwareAccelerated={true}
-          statusBarTranslucent={true}
-          navigationBarTranslucent={true}
-        >
+        {/* WIN MODAL */}
+        <Modal transparent visible={showModal}>
           <View style={styles.modalContainer}>
             <View style={styles.modalContent}>
-              <Image
-                source={require('../../assests/spinPageGiftImage.png')}
-                style={{ width: 100, height: 100, bottom: 60 }}
-                resizeMode='contain'
-              />
-              <Text style={{ fontSize: RFValue(30), fontWeight: 'bold', color: '#FF8800', bottom: 40 }}>Lucky Spin Star!</Text>
-              <Text style={{ fontSize: RFValue(20), fontWeight: '400', marginBottom: 10 }}>You Won</Text>
-              <Text style={{ fontSize: RFValue(20), marginBottom: 10 }}>{winner}</Text>
-              <Icon name='keyboard-double-arrow-down' size={24} color="orange" style={{ marginBottom: 10 }} />
-
-              <View style={{ flex: 1 }} />
-              <TouchableOpacity
-                activeOpacity={0.8}
-                style={[styles.spinModalButton, { top: height * 0.29 }]} onPress={() => {
-                  setShowModal(false);
-                  setWinner("");
-                  spinWheel();
-
-                }
-                }>
-                <Text style={styles.signInButtonText}>Spin Again</Text>
+              <Text style={{ fontSize: RFValue(20), marginBottom: 10, color: 'black' }}>You Won</Text>
+              <Text style={{ fontSize: RFValue(24), fontWeight: 'bold', color: 'green' }}>{winner}</Text>
+              <TouchableOpacity onPress={() => setShowModal(false)} style={styles.spinModalButton}>
+                <Text style={styles.signInButtonText}>OK</Text>
               </TouchableOpacity>
-              {/* <TouchableOpacity onPress={() => setModalVisible(false)} style={{ marginTop: 16 }}>
-                <Text style={{ color: "#555", fontSize: 16 }}>Close</Text>
-              </TouchableOpacity> */}
+            </View>
+          </View>
+        </Modal>
+
+        {/* BUY MODAL */}
+        <Modal transparent visible={showBuyModal} animationType="slide">
+          <View style={styles.modalContainer}>
+            <View style={[styles.modalContent, { height: 260 }]}>
+              <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'black' }}>Buy Spins</Text>
+              <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 20 }}>
+                <TouchableOpacity onPress={() => setQuantity(q => Math.max(1, q - 1))} style={styles.counterBtn}>
+                  <Text style={[styles.counterText, { color: 'white' }]}>−</Text>
+                </TouchableOpacity>
+                <Text style={{ fontSize: 24, marginHorizontal: 20, color: 'black' }}>{quantity}</Text>
+                <TouchableOpacity onPress={() => setQuantity(q => q + 1)} style={styles.counterBtn}>
+                  <Text style={[styles.counterText, { color: 'white' }]}>+</Text>
+                </TouchableOpacity>
+              </View>
+              <Text style={{ fontSize: 16, marginBottom: 20, color: 'black' }}>Total: ${quantity * 5}</Text>
+              <View style={{ flexDirection: 'row' }}>
+                <TouchableOpacity onPress={() => setShowBuyModal(false)} style={[styles.counterBtn, { backgroundColor: 'magenta', marginRight: 10 }]}>
+                  <Text style={{ fontWeight: 'bold', color: 'white' }}>Cancel</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={() => { handlePurchaseSpin(); setShowBuyModal(false); }} style={[styles.counterBtn, { backgroundColor: 'magenta' }]}>
+                  <Text style={{ color: '#fff', fontWeight: 'bold' }}>Buy</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
         </Modal>
       </SafeAreaView>
-    </ImageBackground >
+    </ImageBackground>
   );
 };
 
-export default SpinScreen;
-
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  BGImage: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  spinWheelImageContainer: {
-    flex: 1,
-    position: 'absolute',
-    justifyContent: 'center',
-    alignItems: 'center',
-    height: '95%',
-    width: '95%'
-  },
-  spinWheelImage: {
-    height: '100%',
-    width: '100%',
-    resizeMode: 'contain'
-  },
-  spinModalButton: {
-    position: 'absolute',
+  container: { flex: 1 },
+  BGImage: { flex: 1, width: '100%', height: '100%' },
+  spinContainer: { alignItems: 'center', justifyContent: 'center', bottom: 200 },
+  knobContainer: { position: 'absolute', width: 30, height: 30, borderRadius: 30, justifyContent: 'center', alignItems: 'center', zIndex: 5 },
+  knobInside: { width: 25, height: 25, borderRadius: 30, justifyContent: 'center', alignItems: 'center', zIndex: 5 },
+  knobPointer: { position: 'absolute', top: -10, width: 33, height: 40 },
+  btnContainer: { justifyContent: 'center', alignItems: 'center', width: '100%', bottom: 180 },
+  button: {
     backgroundColor: '#34A853',
-    width: "80%",
-    paddingVertical: 10,
+    paddingHorizontal: 120,
+    paddingVertical: 14,
     borderRadius: 5,
-    marginTop: 30,
-    zIndex: 10,         // Add this
-    elevation: 10
-  },
-  signInButtonText: {
-    color: '#fff',
-    textAlign: 'center',
-    fontSize: RFValue(14),
-    fontWeight: 400
-  },
-  DownIcon: {
-    position: 'absolute'
-  },
-  freeSpinText: {
-    textAlign: 'center',
-    color: '#fff',
-    fontSize: RFValue(10),
-    fontWeight: 'normal'
-  },
-  modalContainer: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    elevation: 3,
     justifyContent: 'center',
     alignItems: 'center',
+    width: '80%',
+    borderWidth: 0.5,
+    borderColor: '#ccc',
   },
+  buttonText: { color: '#fff', fontWeight: 'bold', fontSize: RFValue(12) },
+  purchaseButton: {
+    backgroundColor: '#FF8800',
+    paddingHorizontal: 120,
+    paddingVertical: 14,
+    borderRadius: 5,
+    marginTop: 10,
+    elevation: 3,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '80%',
+    borderWidth: 0.5,
+    borderColor: '#ccc',
+  },
+  purchaseButtonText: { color: '#fff', fontWeight: 'bold', fontSize: RFValue(12) },
+  spinCountText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  modalContainer: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center' },
   modalContent: {
     backgroundColor: 'white',
     padding: 20,
     borderRadius: 10,
     width: '90%',
-    height: 400,
     alignItems: 'center',
-    justifyContent: 'space-between', // 
+    justifyContent: 'space-between',
   },
-  modalButton: {
-    backgroundColor: 'green',
+  spinModalButton: {
+    marginTop: 20,
+    backgroundColor: '#34A853',
     paddingVertical: 10,
-    paddingHorizontal: 25,
+    paddingHorizontal: 40,
     borderRadius: 5,
-    width: '70%'
   },
-  spinContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    bottom: 200,
-  },
-  knobContainer: {
-    position: "absolute",
-    width: 30,
-    height: 30,
-    borderRadius: 30,
-    // backgroundColor: "yellow",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 5,
-
-  },
-  knobInside: {
-    width: 25,
-    height: 25,
-    borderRadius: 30,
-    // backgroundColor: "rgb(172, 55, 16)",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 5,
-  },
-  knobPointer: {
-    position: "absolute",
-    top: -10,
-    width: 33,
-    height: 40,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    // transform: [{ rotate: "30deg" }],
-    // zIndex: 4,
-  },
-  btnContainer: {
-    justifyContent: 'center',
+  signInButtonText: { color: '#fff', fontSize: RFValue(14), fontWeight: '600' },
+  counterBtn: {
+    padding: 10,
+    borderRadius: 6,
+    minWidth: 50,
     alignItems: 'center',
-    width: '100%',
-    // marginTop: 40,
-    bottom: 180,
+    backgroundColor: '#28a745',
   },
-  button: {
-    backgroundColor: "#34A853",
-    paddingHorizontal: 120,
-    paddingVertical: 14,
-    borderRadius: 5,
-    elevation: 3,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "80%",
-    borderWidth: 0.5,
-    borderColor: "#ccc",
-
-  },
-  buttonText: {
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: RFValue(12),
-  },
+  counterText: { fontSize: 18, fontWeight: 'bold' },
 });
+
+export default SpinScreen;

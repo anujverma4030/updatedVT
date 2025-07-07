@@ -7,7 +7,7 @@ import MainStackNavigator from './src/navigation/MainStackNavigator';
 import { store } from './src/redux/store';
 import { loadToken } from './src/redux/slices/authSlice';
 
-// 👇 This component is safe to use hooks like useDispatch
+
 const AppContent = () => {
   const dispatch = useDispatch();
 

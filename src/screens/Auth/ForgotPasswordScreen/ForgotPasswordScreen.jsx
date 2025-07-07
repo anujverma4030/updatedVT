@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import axios from '../../../api/axiosInstance'; // ✅ your configured axios base URL
+import axios from '../../../api/axiosInstance'; 
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState('');
@@ -24,7 +24,7 @@ const ForgotPasswordScreen = () => {
     }
 
     try {
-      const response = await axios.post('/profile/otp', { email }); // ✅ Correct
+      const response = await axios.post('/profile/otp', { email });
 
       console.log("✅ API Response:", response.data);
 

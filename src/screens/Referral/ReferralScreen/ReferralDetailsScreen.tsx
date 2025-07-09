@@ -4,97 +4,124 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchReferralSummary } from '../../../redux/slices/referralSlice';
+import { RootState, AppDispatch } from '../../../redux/store';
+import moment from 'moment';
+import Loader from '../../../components/Loader/Loader';
 
-type LevelKey = 'level1' | 'level2' | 'level3';
-
-const levels = [
-  { label: 'LEVEL 1', commission: '10%', key: 'level1' },
-  // { label: 'LEVEL 2', commission: '20%', key: 'level2' },
-  // { label: 'LEVEL 3', commission: '30%', key: 'level3' },
-] as const;
-
-const data: Record<LevelKey, { name: string; referredBy?: string; date: string; earnings: string }[]> = {
-  level1: [
-    { name: 'Aman Singh', date: '2025-04-15', earnings: '$50' },
-    { name: 'Aman Singh', date: '2025-04-15', earnings: '$50' },
-  ],
-  level2: [
-    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '$90' },
-    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '$90' },
-  ],
-  level3: [
-    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '$90' },
-    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '$90' },
-    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '$90' },
-    { name: 'Rohit Saini', referredBy: 'Aman Singh', date: '2025-04-15', earnings: '$90' },
-  ],
+type ReferralItem = {
+  referredUser?: {
+    name?: string;
+    username?: string;
+    email?: string;
+    createdAt?: string;
+  };
+  createdAt?: string;
+  isCommissionGiven?: boolean;
+  level?: number;
 };
 
 const ReferralDetailsScreen = () => {
   const navigation = useNavigation();
-  const [selectedLevel, setSelectedLevel] = useState<LevelKey>('level1');
+  const dispatch = useDispatch<AppDispatch>();
 
-  const renderItem = ({ item }: { item: typeof data[LevelKey][number] }) => (
+  const { summary, referralLoading } = useSelector(
+    (state: RootState) => state.referral
+  );
+
+  const [selectedLevel, setSelectedLevel] = useState<'level1' | 'level2' | 'level3'>('level1');
+
+  useEffect(() => {
+    dispatch(fetchReferralSummary());
+  }, [dispatch]);
+
+  const levelNumber: Record<'level1' | 'level2' | 'level3', number> = {
+    level1: 1,
+    level2: 2,
+    level3: 3,
+  };
+
+  const levels = [
+    { label: 'LEVEL 1', commission: '10%', key: 'level1' },
+    { label: 'LEVEL 2', commission: '5%', key: 'level2' },
+    { label: 'LEVEL 3', commission: '2%', key: 'level3' },
+  ];
+
+  const levelData: ReferralItem[] = (summary?.referrals || []).filter(
+    (item: ReferralItem) => item.level === levelNumber[selectedLevel]
+  );
+
+  const renderItem = ({ item }: { item: ReferralItem }) => (
     <View style={styles.row}>
-      <Text style={styles.cell}>{item.name}</Text>
-      {selectedLevel !== 'level1' && <Text style={styles.cell}>{item.referredBy}</Text>}
-      <Text style={styles.cell}>{item.date}</Text>
-      <Text style={styles.cell}>{item.earnings}</Text>
+      <Text style={styles.cell}>{item.referredUser?.name || 'N/A'}</Text>
+      <Text style={styles.cell}>
+        {item.createdAt ? moment(item.createdAt).format('DD MMM YYYY') : 'N/A'}
+      </Text>
+      <Text style={[styles.cell, { color: item.isCommissionGiven ? '#10B981' : '#EF4444' }]}>
+        {item.isCommissionGiven ? '✅ Yes' : '❌ No'}
+      </Text>
     </View>
   );
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={styles.MainContainer}>
+      {/* Header */}
       <View style={styles.headerContentContainer}>
         <View style={styles.headerTextContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
-            <Icon name='arrow-back' size={20} color='#fff' />
+            <Icon name="arrow-back" size={24} color="#fff" />
           </TouchableOpacity>
-          <Text style={styles.headerText}>Referral Earnings</Text>
+          <Text style={styles.headerText}>Referral Details</Text>
         </View>
-        <TouchableOpacity>
-          <Icon name='notifications' size={20} color='#fff' />
-        </TouchableOpacity>
       </View>
-      
 
-        <View style={[styles.tabsMainContainer, { marginTop: 30 }]}>
+      {referralLoading ? (
+        <Loader visible />
+      ) : (
+        <View style={styles.tabsMainContainer}>
+          {/* Tabs */}
           <View style={styles.tabs}>
             {levels.map((level) => (
               <TouchableOpacity
                 key={level.key}
                 style={[styles.tab, selectedLevel === level.key && styles.activeTab]}
-                onPress={() => setSelectedLevel(level.key)}
+                onPress={() => setSelectedLevel(level.key as 'level1' | 'level2' | 'level3')}
               >
                 <Text style={[styles.tabLabel, selectedLevel === level.key && styles.activeLabel]}>
                   {level.label}
                 </Text>
-                <Text style={[styles.tabSubLabel, selectedLevel === level.key && styles.activeLabel]}>{level.commission} Commission</Text>
+                <Text style={[styles.tabSubLabel, selectedLevel === level.key && styles.activeLabel]}>
+                  {level.commission} Commission
+                </Text>
               </TouchableOpacity>
             ))}
           </View>
 
+          {/* Table Header */}
           <View style={styles.tableHeader}>
             <Text style={styles.headerCell}>Name</Text>
-            {selectedLevel !== 'level1' && <Text style={styles.headerCell}>Referred By</Text>}
             <Text style={styles.headerCell}>Joined On</Text>
-            <Text style={styles.headerCell}>Earnings</Text>
+            <Text style={styles.headerCell}>Commission</Text>
           </View>
 
+          {/* Table */}
           <FlatList
-            data={data[selectedLevel]}
+            data={levelData}
             keyExtractor={(_, index) => index.toString()}
             renderItem={renderItem}
-            contentContainerStyle={{ paddingBottom: 30 }}
+            ListEmptyComponent={
+              <Text style={styles.emptyText}>No referrals yet for this level.</Text>
+            }
           />
         </View>
-     
+      )}
     </SafeAreaView>
   );
 };
@@ -102,23 +129,28 @@ const ReferralDetailsScreen = () => {
 export default ReferralDetailsScreen;
 
 const styles = StyleSheet.create({
+  MainContainer: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   headerContentContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: '#34A853',
-    paddingVertical: 30,
-    paddingHorizontal: 10
+    paddingVertical: 20,
+    paddingHorizontal: 15,
   },
   headerTextContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10
+    gap: 10,
   },
   headerText: {
-    fontSize: RFValue(20),
+    fontSize: RFValue(18),
     fontWeight: '500',
-    color: '#fff'
+    color: '#fff',
+    marginLeft: 10,
   },
   tabsMainContainer: {
     borderRadius: 4,
@@ -128,9 +160,6 @@ const styles = StyleSheet.create({
     elevation: 3,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-    // width: '90%',
-    shadowColor: 'blue',
-
   },
   tabs: {
     flexDirection: 'row',
@@ -139,22 +168,19 @@ const styles = StyleSheet.create({
     backgroundColor: '#34A853',
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-
-
   },
   tab: {
     alignItems: 'center',
     paddingVertical: 10,
     borderBottomWidth: 2,
     borderBottomColor: 'transparent',
-    // marginLeft: 10, // for now level 1 only
   },
   activeTab: {
-    borderBottomColor: 'green',
+    borderBottomColor: '#fff',
   },
   tabLabel: {
     fontWeight: 'bold',
-    color: '#555',
+    color: '#ccc',
   },
   activeLabel: {
     color: '#fff',
@@ -165,36 +191,34 @@ const styles = StyleSheet.create({
   },
   tableHeader: {
     flexDirection: 'row',
-    backgroundColor: '#fff',
+    backgroundColor: '#f2f2f2',
     padding: 10,
-    borderRadius: 6,
-    marginBottom: 6,
     borderBottomWidth: 1,
-    borderColor: '#ddd',
-    shadowColor: '#000',
-    elevation: 4,
-    // width: '100%',
-
+    borderColor: '#ccc',
   },
   headerCell: {
     flex: 1,
     fontWeight: 'bold',
-    fontSize: 12,
-    marginLeft: 25,
-
+    fontSize: RFValue(12),
+    color: '#000',
+    textAlign: 'center',
   },
   row: {
     flexDirection: 'row',
     paddingVertical: 10,
     borderBottomWidth: 1,
     borderColor: '#eee',
-    // justifyContent: 'space-between',
-    // paddingHorizontal: 10,
-    // alignItems: 'center',
+    paddingHorizontal: 10,
   },
   cell: {
     flex: 1,
-    fontSize: 13,
+    fontSize: RFValue(13),
+    color: '#000',
     textAlign: 'center',
+  },
+  emptyText: {
+    textAlign: 'center',
+    marginVertical: 20,
+    color: '#888',
   },
 });

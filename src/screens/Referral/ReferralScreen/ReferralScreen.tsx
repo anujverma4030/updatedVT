@@ -1,143 +1,164 @@
-import { Dimensions, Image, ImageBackground, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, FlatList } from 'react-native'
-import React, { useEffect } from 'react'
+// screens/ReferralScreen.tsx
+import {
+  Dimensions,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  FlatList,
+} from 'react-native';
+import React, { useEffect } from 'react';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { RFValue } from 'react-native-responsive-fontsize';
-import { Clipboard } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import ReferralPageUpparPart from './ReferralPageUpparPart';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchReferralCode, fetchReferralCommission, fetchReferralTree } from '../../../redux/slices/referralSlice';
+import {
+  fetchReferralCode,
+  fetchReferralCommission,
+  fetchReferralTree,
+} from '../../../redux/slices/referralSlice';
+import { fetchRewardInfo } from '../../../redux/slices/rewardSlice';
+import { RootState, AppDispatch } from '../../../redux/store';
 import Loader from '../../../components/Loader/Loader';
+import moment from 'moment';
 
+interface BonusItem {
+  name: string;
+  date: string;
+  amount: number;
+  level: number;
+}
 
 const ReferralScreen = () => {
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
-  const { height } = Dimensions.get('window');
-  const { referralTree, successMsg, errorMsg, referralCode, loading, commission } = useSelector(state => state.referral);
-  const dispatch = useDispatch();
-  console.log('Commission:', commission);
-  console.log('Referral Tree:', referralTree);
+  const navigation = useNavigation<any>();
+  const dispatch = useDispatch<AppDispatch>();
 
+  const { referralTree, referralLoading } = useSelector(
+    (state: RootState) => state.referral
+  );
+
+
+  const { summary, loading: summaryLoading, bonusHistory } = useSelector(
+    (state: RootState) => state.reward
+  );
+
+  const isLoading = summaryLoading || referralLoading;
 
   useEffect(() => {
     dispatch(fetchReferralCode());
     dispatch(fetchReferralTree());
     dispatch(fetchReferralCommission());
-  }, []);
-  const renderItem = ({ item }) => (
-    (
-      <View style={styles.dataRow}>
-        <Text style={styles.cellText}>Level: {item.level}</Text>
-        {/* <Text>Name: {item.referredId?.name || 'N/A'}</Text>
-        <Text>Email: {item.referredId?.email}</Text>
-        <Text>Username: {item.referredId?.username}</Text> */}
-        {/* <Text>Role: {item.referredId?.role}</Text> */}
-        <Text style={styles.cellText}>Commission: {item.commission}%</Text>
-      </View>
-    )
+    dispatch(fetchRewardInfo());
+  }, [dispatch]);
+
+  const commissionData = [
+    { level: 1, commissionPercent: 10 },
+    { level: 2, commissionPercent: 5 },
+    { level: 3, commissionPercent: 2 },
+  ];
+
+  const renderCommissionItem = ({ item }: { item: { level: number; commissionPercent: number } }) => (
+    <View style={styles.dataRow}>
+      <Text style={styles.cellText}>Level {item.level}</Text>
+      <Text style={styles.cellText}>{item.commissionPercent}%</Text>
+    </View>
   );
+
   return (
     <SafeAreaView style={styles.MainContainer}>
-      {
-        loading ? (
-          <Loader visible={loading} />
-        ) : (
-          <>
-            <ScrollView
-              contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 100 }}
-              showsVerticalScrollIndicator={false}
-            >
-              <ReferralPageUpparPart />
+      {isLoading ? (
+        <Loader visible={isLoading} />
+      ) : (
+        <ScrollView
+          contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 100 }}
+          showsVerticalScrollIndicator={false}
+        >
+          <ReferralPageUpparPart />
 
-              <Text style={styles.headerText}>Commission Levels</Text>
+          <Text style={styles.headerText}>Commission Levels</Text>
+          <View style={styles.Tablecontainer}>
+            <View style={styles.headerRowcontainer}>
+              <Text style={styles.TableheaderText}>Level</Text>
+              <Text style={styles.TableheaderText}>Commission</Text>
+            </View>
 
-              <View style={styles.Tablecontainer}>
-                <View style={styles.headerRowcontainer}>
-                  <Text style={[styles.TableheaderText,{marginLeft: 20}]}>Level</Text>
-                  <Text style={styles.TableheaderText}>Commission</Text>
-                </View>
-                {/* <View style={styles.dataRow}>
-                  <Text style={styles.cellText}>Level 1</Text>
-                  <Text style={styles.cellText}>10%</Text>
-                </View>
-                <View style={styles.dataRow}>
-                  <Text style={styles.cellText}>Level 2</Text>
-                  <Text style={styles.cellText}>5%</Text>
-                </View>
-                <View style={styles.dataRow}>
-                  <Text style={styles.cellText}>Level 3</Text>
-                  <Text style={styles.cellText}>2%</Text>
-                </View> */}
-                <FlatList
-                  data={referralTree}
-                  scrollEnabled={false}
-                  // horizontal
-                  keyExtractor={(_, index) => index.toString()}
-                  contentContainerStyle={{ padding: 10 }}
-                  ListEmptyComponent={<Text>No referrals yet.</Text>}
-                  renderItem={renderItem}
-                />
-                <View style={styles.showDetailsButtonContainer}>
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate('ReferralDetails')}
-                    style={styles.showDetailsButton}
-                  >
-                    <Text style={styles.showDetailsButtonText}>Show Details</Text>
-                  </TouchableOpacity>
-                </View>
-              </View>
+            <FlatList
+              data={commissionData}
+              scrollEnabled={false}
+              keyExtractor={(_, index) => index.toString()}
+              renderItem={renderCommissionItem}
+              contentContainerStyle={{ padding: 10 }}
+            />
 
-              <Text style={[styles.headerText, { marginTop: 40 }]}>Your Team</Text>
-              <View style={styles.yourTeamContianer}>
-                <View style={[styles.teamBox, { backgroundColor: '#FDBE00' }]}>
-                  <Text style={styles.teamBoxText}>Total Refferrals</Text>
-                  <Text style={styles.teamBoxNumber}>25</Text>
-                </View>
-                <View style={[styles.teamBox, { backgroundColor: '#10B981' }]}>
-                  <Text style={styles.teamBoxText}>Earnings</Text>
-                  <Text style={styles.teamBoxNumber}>$700</Text>
-                </View>
-                <View style={[styles.teamBox, { backgroundColor: '#FF8632' }]}>
-                  <Text style={styles.teamBoxText}>Active Investors</Text>
-                  <Text style={styles.teamBoxNumber}>15</Text>
-                </View>
-              </View>
+            <View style={styles.showDetailsButtonContainer}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('ReferralDetails')}
+                style={styles.showDetailsButton}
+              >
+                <Text style={styles.showDetailsButtonText}>Show Details</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
 
-              <Text style={[styles.headerText, { marginTop: 30 }]}>Bonus History</Text>
+          <Text style={[styles.headerText, { marginTop: 40 }]}>Your Team</Text>
+          <View style={styles.yourTeamContianer}>
+            <View style={[styles.teamBox, { backgroundColor: '#FDBE00' }]}>
+              <Text style={styles.teamBoxText}>Total Referrals</Text>
+              <Text style={styles.teamBoxNumber}>
+                {summary?.totalReferrals || '0'}
+              </Text>
+            </View>
+            <View style={[styles.teamBox, { backgroundColor: '#10B981' }]}>
+              <Text style={styles.teamBoxText}>Earnings</Text>
+              <Text style={styles.teamBoxNumber}>
+                ${summary?.earnings || '0'}
+              </Text>
+            </View>
+            <View style={[styles.teamBox, { backgroundColor: '#FF8632' }]}>
+              <Text style={styles.teamBoxText}>Active Investors</Text>
+              <Text style={styles.teamBoxNumber}>
+                {summary?.activeInvestors || '0'}
+              </Text>
+            </View>
+          </View>
 
-              <View style={styles.Tablecontainer}>
-                <View style={styles.headerRowcontainer}>
-                  <Text style={styles.TableheaderText}>Date</Text>
-                  <Text style={styles.TableheaderText}>Amount</Text>
-                  <Text style={styles.TableheaderText}>Level</Text>
-                </View>
-                <View style={[styles.dataRow, { backgroundColor: '#84D299' }]}>
-                  <Text style={[styles.cellText, { color: '#fff' }]}>20 April, 2025</Text>
-                  <Text style={[styles.cellText, { color: '#fff' }]}>$100</Text>
-                  <Text style={[styles.cellText, { color: '#fff' }]}>1</Text>
-                </View>
-                <View style={[styles.dataRow, { backgroundColor: '#84D299' }]}>
-                  <Text style={[styles.cellText, { color: '#fff' }]}>10 April, 2025</Text>
-                  <Text style={[styles.cellText, { color: '#fff' }]}>$50</Text>
-                  <Text style={[styles.cellText, { color: '#fff' }]}>2</Text>
-                </View>
-                <View style={[styles.dataRow, { backgroundColor: '#84D299' }]}>
-                  <Text style={[styles.cellText, { color: '#fff' }]}>10 April, 2025</Text>
-                  <Text style={[styles.cellText, { color: '#fff' }]}>$20</Text>
-                  <Text style={[styles.cellText, { color: '#fff' }]}>3</Text>
-                </View>
-              </View>
-            </ScrollView>
-          </>
-        )
-      }
+          <Text style={[styles.headerText, { marginTop: 30 }]}>Bonus History</Text>
+          <View style={styles.Tablecontainer}>
+            <View style={styles.headerRowcontainer}>
+              <Text style={styles.TableheaderText}>Date</Text>
+              <Text style={styles.TableheaderText}>Amount</Text>
+              <Text style={styles.TableheaderText}>Level</Text>
+            </View>
 
+            {bonusHistory && bonusHistory.length > 0 ? (
+              bonusHistory.slice(0, 3).map((item: BonusItem, index: number) => (
+                <View key={index} style={[styles.dataRow, { backgroundColor: '#84D299' }]}>
+                  <Text style={[styles.cellText, { color: '#fff' }]}>
+                    {moment(item.date).format('D MMM YYYY')}
+                  </Text>
+                  <Text style={[styles.cellText, { color: '#fff' }]}>
+                    ${item.amount}
+                  </Text>
+                  <Text style={[styles.cellText, { color: '#fff' }]}>
+                    {item.level}
+                  </Text>
+                </View>
+              ))
+            ) : (
+              <Text style={styles.emptyText}>No bonus history available.</Text>
+            )}
+          </View>
+        </ScrollView>
+      )}
     </SafeAreaView>
-  )
-}
+  );
+};
 
-export default ReferralScreen
+export default ReferralScreen;
 
 const styles = StyleSheet.create({
   MainContainer: {
@@ -146,14 +167,15 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: RFValue(20),
-    fontWeight: 'normal',
-    margin: 20
+    fontWeight: 'bold',
+    margin: 20,
+    color: '#222',
   },
   Tablecontainer: {
-    borderRadius: 4,
+    borderRadius: 6,
     backgroundColor: '#fff',
     marginHorizontal: 20,
-    marginVertical: 10,
+    marginBottom: 20,
     elevation: 3,
   },
   headerRowcontainer: {
@@ -162,64 +184,68 @@ const styles = StyleSheet.create({
     padding: 10,
     borderTopLeftRadius: 6,
     borderTopRightRadius: 6,
-
-
   },
   TableheaderText: {
     flex: 1,
-    color: '#fff',
-    fontWeight: '700',
-    // textAlign: 'center',
     fontSize: RFValue(12),
- 
-
+    fontWeight: '700',
+    color: '#fff',
   },
   dataRow: {
     flexDirection: 'row',
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    gap: 10,
-    
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    backgroundColor: '#F3F4F6',
   },
   cellText: {
     flex: 1,
-    textAlign: 'left',
     fontWeight: '600',
+    color: '#000',
   },
   showDetailsButtonContainer: {
-    justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    marginBottom: 10,
   },
   showDetailsButton: {
     backgroundColor: '#FF8800',
     width: '90%',
-    paddingVertical: 8,
+    paddingVertical: 10,
     borderRadius: 5,
-    marginVertical: 10
   },
   showDetailsButtonText: {
     color: '#fff',
     textAlign: 'center',
     fontSize: RFValue(14),
-    fontWeight: "500"
+    fontWeight: '500',
   },
   yourTeamContianer: {
     flexDirection: 'row',
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
+    marginHorizontal: 10,
   },
   teamBox: {
-    width: 95,
-    height: 62,
+    width: 100,
+    height: 70,
     borderRadius: 8,
     alignItems: 'center',
-    justifyContent: "center"
+    justifyContent: 'center',
+    padding: 4,
   },
   teamBoxText: {
-    color: '#fff',
     fontSize: RFValue(10),
+    color: '#fff',
+    textAlign: 'center',
   },
   teamBoxNumber: {
+    fontSize: RFValue(16),
     color: '#fff',
-    fontSize: RFValue(20),
+    fontWeight: 'bold',
+    marginTop: 4,
   },
-})
+  emptyText: {
+    textAlign: 'center',
+    fontSize: RFValue(14),
+    color: '#888',
+    paddingVertical: 10,
+  },
+});

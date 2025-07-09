@@ -36,33 +36,35 @@ export const subscribeToPlan = createAsyncThunk(
 
 // Fetch active investments
 export const fetchActiveInvestments = createAsyncThunk(
-    'investment/fetchActive',
-    async (_, { rejectWithValue }) => {
-        try {
-            const res = await axiosInstance.get('/invest/active');
-            // console.log('Active investment fetched',res.data.investments);
-            return res.data.investments;
-
-        } catch (error) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to fetch active investments');
-        }
+  'investment/fetchActive',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get('/invest/my-active'); // ✅ FIXED
+      console.log('Active Investments Response:', res.data);
+      return res.data.investments;
+    } catch (error) {
+      console.log('Error Fetching Active:', error.response?.data);
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch active investments');
     }
+  }
 );
 
 // Fetch investment history
-export const fetchInvestmentHistory = createAsyncThunk(
-    'investment/fetchHistory',
-    async (_, { rejectWithValue }) => {
-        try {
-            const res = await axiosInstance.get('/invest/history');
-            // console.log('Investment History Response:', res.data.investments);
-            return res.data.investments;
 
-        } catch (error) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to fetch investment history');
-        }
+
+export const fetchInvestmentHistory = createAsyncThunk(
+  'investment/fetchHistory',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get('/invest/my-history'); 
+      return res.data.investments;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch investment history');
     }
+  }
 );
+
+
 
 const investmentSlice = createSlice({
     name: 'investment',

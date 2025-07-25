@@ -7,8 +7,9 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Modal,
 } from 'react-native';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
@@ -22,10 +23,10 @@ const WalletInfoScreen = () => {
   const navigation = useNavigation();
   const { height, width } = Dimensions.get('window');
   const dispatch = useDispatch();
+  const [modalVisible, setModalVisible] = useState(false);
 
   const { wallet, loading } = useSelector((state) => state.wallet);
   const { rewardBalance, spinBalance, referralBalance } = useSelector((state) => state.reward);
-
   const walletFetched = useRef(false);
 
   useEffect(() => {
@@ -76,7 +77,7 @@ const WalletInfoScreen = () => {
 
             <View style={styles.card}>
               <View style={styles.cardTextContainer}>
-                {[ 
+                {[
                   { label: 'Main Balance', value: wallet?.balance },
                   { label: 'Locked Balance', value: wallet?.lockedBalance },
                   { label: 'Commission', value: wallet?.commission },
@@ -104,11 +105,49 @@ const WalletInfoScreen = () => {
                 </View>
               </View>
 
-              <TouchableOpacity style={styles.Button}>
+              <TouchableOpacity style={styles.Button} onPress={() => setModalVisible(true)}>
                 <Text style={styles.ButtonText}>Add/Update Wallet</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
+
+          {/* Modal for Manage Wallet Options */}
+          <Modal
+            visible={modalVisible}
+            animationType="fade"
+            transparent
+            onRequestClose={() => setModalVisible(false)}
+          >
+            <View style={styles.modalContainer}>
+              <View style={styles.modalBox}>
+                <Text style={styles.modalTitle}>Manage Wallet</Text>
+                <TouchableOpacity
+                  style={styles.modalButton}
+                  onPress={() => {
+                    setModalVisible(false);
+                    navigation.navigate('UserDeposit');
+                  }}
+                >
+                  <Text style={styles.modalButtonText}>Add Balance Request</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.modalButton}
+                  onPress={() => {
+                    setModalVisible(false);
+                    navigation.navigate('UserWithdraw');
+                  }}
+                >
+                  <Text style={styles.modalButtonText}>Withdraw Request</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={[styles.modalButton, { backgroundColor: '#ccc' }]}
+                  onPress={() => setModalVisible(false)}
+                >
+                  <Text style={[styles.modalButtonText, { color: '#000' }]}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Modal>
         </SafeAreaView>
       )}
     </>
@@ -203,5 +242,38 @@ const styles = StyleSheet.create({
     fontSize: RFValue(10),
     textAlign: 'center',
     color: '#fff',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.4)',
+  },
+  modalBox: {
+    backgroundColor: '#fff',
+    width: '80%',
+    borderRadius: 8,
+    padding: 20,
+    elevation: 5,
+  },
+  modalTitle: {
+    fontSize: RFValue(16),
+    fontWeight: '500',
+    marginBottom: 20,
+    textAlign: 'center',
+    color:'black'
+  },
+  modalButton: {
+    backgroundColor: '#34A853',
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderRadius: 5,
+    marginVertical: 6,
+  },
+  modalButtonText: {
+    color: '#fff',
+    textAlign: 'center',
+    fontSize: RFValue(13),
+    fontWeight: '500',
   },
 });

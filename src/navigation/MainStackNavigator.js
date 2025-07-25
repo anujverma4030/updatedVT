@@ -27,6 +27,7 @@ import ForgotPasswordScreen from '../screens/Auth/ForgotPasswordScreen/ForgotPas
 import OtpVerificationScreen from '../screens/Auth/OtpVerificationScreen/OtpVerificationScreen';
 import ResetPasswordScreen from '../screens/Auth/ResetPasswordScreen/ResetPasswordScreen';
 import SpinScreen from '../screens/SpinWheel/SpinScreen';
+import ReferralScreen from '../screens/Referral/ReferralScreen/ReferralScreen';
 
 
 
@@ -50,7 +51,7 @@ const MainStackNavigator = () => {
           orientation: 'portrait'
 
         }}
-        //  initialRouteName='AdminPanel'
+              // initialRouteName='AdminPanel'
         >
 
           <Stack.Screen name='SplashScreen' component={SplashScreen} />
@@ -64,6 +65,7 @@ const MainStackNavigator = () => {
           <Stack.Screen name='ResetPasswordScreen' component={ResetPasswordScreen} />
           <Stack.Screen name="MainTabs" component={TabNavigator} />
           <Stack.Screen name="SpinScreen" component={SpinScreen} />
+          <Stack.Screen name="ReferralScreen" component={ReferralScreen} />
           <Stack.Screen name="ReferralDetails" component={ReferralDetailsScreen} />
           <Stack.Screen name="PersonalDetails" component={PersonalDetails} />
           <Stack.Screen name="WalletInfo" component={WalletInfoScreen} />

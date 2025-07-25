@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import {
   Animated,
   Dimensions,
@@ -17,6 +17,8 @@ import Svg, { Circle, G, Path, Text as SvgText, Defs, Stop, LinearGradient } fro
 import { RFValue } from 'react-native-responsive-fontsize';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from '../../api/axiosInstance';
+import { useDispatch, useSelector } from 'react-redux';
+import { getSpinCount } from '../../redux/slices/spinSlice';
 import SpinPageBackSide from '../../components/Header/SpinPageBackSide';
 
 const prizes = [
@@ -40,37 +42,64 @@ function calculateArc(startAngle, endAngle) {
 }
 
 const SpinScreen = () => {
+  const dispatch = useDispatch();
+  const spinCount = useSelector(state => state.spin.spinCount);
+
   const [winner, setWinner] = useState('');
   const [isSpinning, setIsSpinning] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [showBuyModal, setShowBuyModal] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [spinCount, setSpinCount] = useState(5); // just display counter (static)
+  const [isPurchasing, setIsPurchasing] = useState(false);
+
   const animatedValue = useRef(new Animated.Value(0)).current;
   const wheelRotation = useRef(0);
 
+  const handleAddFunds = async () => {
+  try {
+    const response = await axios.post('/api/wallet/deposit', {
+      amount: 50, // or any amount
+    }, {
+      headers: {
+        Authorization: `Bearer ${userToken}`,
+      },
+    });
+    Alert.alert('Balance Added!');
+    dispatch(getWalletBalance()); // update redux
+  } catch (error) {
+    Alert.alert('Failed to add funds');
+  }
+};
+
+
+  useEffect(() => {
+    dispatch(getSpinCount());
+  }, []);
+
   const spinFromBackend = async () => {
-    if (isSpinning || spinCount <= 0) return;
+    if (isSpinning || spinCount <= 0) {
+      Alert.alert('No Spins Left', 'Please buy more spins to continue.');
+      return;
+    }
+
     setIsSpinning(true);
     setWinner('');
     setShowModal(false);
-    setSpinCount(prev => prev - 1); // decrement spin count locally
 
     try {
       const response = await axios.get('/spin/playtwo');
       const resultValue = response?.data?.spin?.resultValue;
 
-      const index = prizes.findIndex((prize) => {
+      const index = prizes.findIndex(prize => {
         if (prize.startsWith('$')) {
-          return parseFloat(prize.slice(1)) === Number(resultValue);
+          return parseFloat(prize.slice(1)).toFixed(2) === Number(resultValue).toFixed(2);
         }
         return prize === resultValue;
       });
 
-      if (index >= 0 && index < prizes.length) {
+      if (index >= 0) {
         const rotateTo =
-          360 * 6 +
-          (360 - (index * angleBySegment + angleBySegment / 2) - 90);
+          360 * 6 + (360 - (index * angleBySegment + angleBySegment / 2) - 90);
 
         Animated.timing(animatedValue, {
           toValue: rotateTo,
@@ -83,6 +112,7 @@ const SpinScreen = () => {
           setWinner(prizes[index]);
           setTimeout(() => setShowModal(true), 500);
           setIsSpinning(false);
+          dispatch(getSpinCount()); // refresh from backend
         });
       } else {
         Alert.alert('Error', `Prize not found for: ${resultValue}`);
@@ -95,12 +125,17 @@ const SpinScreen = () => {
   };
 
   const handlePurchaseSpin = async () => {
+    if (isPurchasing) return;
+    setIsPurchasing(true);
     try {
       await axios.post('/spin/purchase', { spinCount: quantity });
-      setSpinCount(prev => prev + quantity); // increment local counter
       Alert.alert('Success', 'Spins purchased!');
+      dispatch(getSpinCount());
+      setShowBuyModal(false);
     } catch (error) {
       Alert.alert('Error', error?.response?.data?.message || 'Could not purchase spins');
+    } finally {
+      setIsPurchasing(false);
     }
   };
 
@@ -178,7 +213,6 @@ const SpinScreen = () => {
           </View>
         </View>
 
-        {/* BUTTONS + COUNTER */}
         <View style={styles.btnContainer}>
           <Text style={styles.spinCountText}>Spins Left: {spinCount}</Text>
           <Icon name="keyboard-double-arrow-down" size={50} color="#FFFFFFA1" style={{ marginBottom: 10 }} />
@@ -232,9 +266,12 @@ const SpinScreen = () => {
                 <TouchableOpacity onPress={() => setShowBuyModal(false)} style={[styles.counterBtn, { backgroundColor: 'magenta', marginRight: 10 }]}>
                   <Text style={{ fontWeight: 'bold', color: 'white' }}>Cancel</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => { handlePurchaseSpin(); setShowBuyModal(false); }} style={[styles.counterBtn, { backgroundColor: 'magenta' }]}>
+                <TouchableOpacity onPress={handlePurchaseSpin} style={[styles.counterBtn, { backgroundColor: 'magenta' }]}>
                   <Text style={{ color: '#fff', fontWeight: 'bold' }}>Buy</Text>
                 </TouchableOpacity>
+
+                
+                
               </View>
             </View>
           </View>
@@ -243,6 +280,8 @@ const SpinScreen = () => {
     </ImageBackground>
   );
 };
+
+export default SpinScreen;
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
@@ -312,4 +351,4 @@ const styles = StyleSheet.create({
   counterText: { fontSize: 18, fontWeight: 'bold' },
 });
 
-export default SpinScreen;
+

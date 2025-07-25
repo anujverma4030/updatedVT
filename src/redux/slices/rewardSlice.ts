@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import { Alert } from 'react-native';
+// import { Alert } from 'react-native';
 
 export interface BonusItem {
   name: string;
@@ -18,23 +18,35 @@ interface RewardSummary {
 interface RewardState {
   rewardBalance: number;
   spinBalance: number;
-  referralBalance: number;  // added this field
+  referralBalance: number;
   summary: RewardSummary;
   bonusHistory: BonusItem[];
   loading: boolean;
   error: string | null;
 }
 
-export const fetchRewardInfo = createAsyncThunk<
-  any,
-  void,
-  { rejectValue: string }
->(
+export const fetchRewardInfo = createAsyncThunk<any, void, { rejectValue: string }>(
   'reward/fetchRewardInfo',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get('/reward/getreward');
-      return res.data;
+      const [walletRes, summaryRes] = await Promise.all([
+        axiosInstance.get('/reward/getreward'),
+        axiosInstance.get('/referral/summary'),
+      ]);
+
+      // Debug log
+      console.log("Reward API Response:", walletRes.data);
+      console.log("Summary API Response:", summaryRes.data);
+      // Alert.alert(
+      //   "API Summary Response",
+      //   JSON.stringify(summaryRes.data, null, 2)
+      // );
+
+
+      return {
+        ...walletRes.data,
+        summary: summaryRes.data?.data, // this should contain totalReferrals, earnings, activeInvestors
+      };
     } catch (error: any) {
       let message = 'Failed to fetch reward info';
       if (error.response) {
@@ -88,31 +100,38 @@ const rewardSlice = createSlice({
       .addCase(fetchRewardInfo.fulfilled, (state, action: PayloadAction<any>) => {
         const data = action.payload;
 
-        // Alert to check backend data keys and values
-        Alert.alert(
-          'Reward Info',
-          `Spin Balance: $${data.spineBalance}\nReferral Balance: $${data.referralBalance}\nReward Balance: $${data.rewardBalance}`
-        );
+        const rawSummary = data.summary ?? {};
+        const referrals = rawSummary.referrals ?? [];
+
+        // ✅ Manually extract fields
+        const earnings = rawSummary.totalCommission ?? 0;
+        const activeInvestors = referrals.filter((r: any) => r.isCommissionGiven).length;
+
+        const summary = {
+          totalReferrals: rawSummary.totalReferrals ?? 0,
+          earnings,
+          activeInvestors
+        };
+
+        // Show alert if needed
+        // Alert.alert(
+        //   'Summary (from frontend)',
+        //   `Referrals: ${summary.totalReferrals}\nEarnings: ${summary.earnings}\nActive: ${summary.activeInvestors}`
+        // );
 
         state.loading = false;
-        // Map backend keys correctly
         state.rewardBalance = data.rewardBalance ?? 0;
-        state.spinBalance = data.spineBalance ?? 0;  // Note: backend uses 'spineBalance'
+        state.spinBalance = data.spineBalance ?? 0;
         state.referralBalance = data.referralBalance ?? 0;
-        state.summary = data.summary ?? {
-          totalReferrals: 0,
-          earnings: 0,
-          activeInvestors: 0,
-        };
-        state.bonusHistory =
-          data.bonusHistory?.length > 0
-            ? data.bonusHistory
-            : [
-                { name: 'Rohit Sharma', date: new Date().toISOString(), amount: 25, level: 1 },
-                { name: 'Kunal Verma', date: new Date().toISOString(), amount: 40, level: 1 },
-                { name: 'Shruti Mehta', date: new Date().toISOString(), amount: 30, level: 1 },
-              ];
+        state.summary = summary;
+
+        state.bonusHistory = data.bonusHistory?.length > 0 ? data.bonusHistory : [
+          { name: 'Rohit Sharma', date: new Date().toISOString(), amount: 25, level: 1 },
+          { name: 'Kunal Verma', date: new Date().toISOString(), amount: 40, level: 1 },
+          { name: 'Shruti Mehta', date: new Date().toISOString(), amount: 30, level: 1 },
+        ];
       })
+
       .addCase(fetchRewardInfo.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload ?? 'Failed to fetch reward info';

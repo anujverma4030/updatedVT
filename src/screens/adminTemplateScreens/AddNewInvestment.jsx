@@ -18,8 +18,9 @@ const AddNewInvestment = () => {
                         >
                             <AdminTemplateHeaderPart name={'Add New Investments'} />
                             <View style={styles.dashboardWrapper}>
-                                
+                               
                             </View>
+                             
                         </ScrollView>
 
             </View>

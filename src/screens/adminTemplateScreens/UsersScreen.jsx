@@ -1,176 +1,107 @@
-import React, { useEffect } from 'react'
+import React, { useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   View,
-  TextInput,
-  StatusBar,
   FlatList,
-  Touchable,
-  TouchableOpacity
-} from 'react-native'
-
-import { RFValue } from 'react-native-responsive-fontsize'
-import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart'
-import { fetchAllUsers, fetchUserById, } from '../../redux/slices/adminSlice'
-import { useDispatch, useSelector } from 'react-redux'
-import Loader from '../../components/Loader/Loader'
-import { useNavigation } from '@react-navigation/native'
-
-// const users = new Array(8).fill({
-//   userId: 'UU01',
-//   name: 'Aman',
-//   email: 'Amandeep@Gmail.Com',
-//   balance: 'Rs.500',
-//   status: 'Active'
-// })
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchAllUsers } from '../../redux/slices/adminSlice';
+import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart';
+import { useNavigation } from '@react-navigation/native';
 
 const columnWidths = {
-  userId: 80,
-  name: 100,
-  email: 200,
-  balance: 120,
+  userId: 100,
+  name: 120,
+  email: 220,
   status: 100,
-  actions: 200,
-}
+  actions: 150,
+};
 
 const UsersScreen = () => {
-  const navigation = useNavigation();
   const dispatch = useDispatch();
-  const { users, loading } = useSelector((state) => state.admin);
-  console.log('Users:', users);
+  const navigation = useNavigation();
+  const { users, loading, error } = useSelector((state) => state.admin);
 
   useEffect(() => {
     dispatch(fetchAllUsers());
   }, [dispatch]);
-  const renderItem = ({ item }) => {
-    const status = item ? item.status?.charAt(0).toUpperCase() + item.status.slice(1) : 'N/A';
 
+  const renderItem = ({ item }) => {
     return (
       <View style={styles.row}>
-        <Text style={[styles.cell, { width: columnWidths.userId }]}>{item._id}</Text>
+        <Text style={[styles.cell, { width: columnWidths.userId }]} numberOfLines={1}>
+          {item._id}
+        </Text>
         <Text style={[styles.cell, { width: columnWidths.name }]}>{item.name}</Text>
         <Text style={[styles.cell, { width: columnWidths.email }]}>{item.email}</Text>
-        {/* <Text style={[styles.cell, { width: columnWidths.balance }]}>{item.balance}</Text> */}
-        <Text style={[styles.cell, { width: columnWidths.status }]}>{status}</Text>
+        <Text style={[styles.cell, { width: columnWidths.status }]}>
+          {item.status?.charAt(0).toUpperCase() + item.status?.slice(1)}
+        </Text>
         <View style={[styles.cell, { width: columnWidths.actions, flexDirection: 'row' }]}>
-          <TouchableOpacity onPress={() => {
-            navigation.navigate('UserDetailsScreen')
-            handleFetchUserById(item._id)
-          }}
+          <TouchableOpacity
+            onPress={() => navigation.navigate('UserDetailsScreen', { userId: item._id })}
           >
             <Text style={styles.link}>View</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.8}
-
-          >
+          <TouchableOpacity>
             <Text style={[styles.link, { color: '#E5A400' }]}>Suspend</Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            activeOpacity={0.8}
-            onPress={() => console.log('Suspend User', item._id)}
-          >
+          <TouchableOpacity>
             <Text style={styles.reject}>Reject</Text>
           </TouchableOpacity>
         </View>
       </View>
-    )
-  }
-  const handleFetchUserById = (userId) => {
-    dispatch(fetchUserById(userId));
-    // console.log('Fetch User By ID:', userId);
-  }
+    );
+  };
+
   return (
-    <>
-      <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
-      {
-        loading ? (
-          <Loader visible={loading} />
-
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 20 }}>
+        <AdminTemplateHeaderPart name="Users" paddingBottom={20} />
+        {loading ? (
+          <ActivityIndicator size="large" color="#000" style={{ marginTop: 40 }} />
+        ) : error ? (
+          <Text style={styles.errorText}>{error}</Text>
         ) : (
-          <SafeAreaView style={{ flex: 1, backgroundColor: '#fff' }}>
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={{
-                paddingBottom: 40
-              }}
-            >
-              <AdminTemplateHeaderPart name='Users' paddingBottom={20} />
-              {/* <Text style={{
-                fontSize: RFValue(20),
-                fontWeight: 'bold',
-                color: '#333',
-                marginBottom: 10,
-                textAlign: 'center',
-              }}>Total Users : {users ? users?.length : "N/A"}</Text> */}
-              <View style={styles.container}>
-
-                <ScrollView
-                  horizontal
-                  showsHorizontalScrollIndicator={false}
-                  contentContainerStyle={styles.HorizentalScrollContainer}
-                >
-                  <View style={styles.TableContainer}>
-
-                    <View style={[styles.row, styles.headerRow]}>
-                      <Text style={[styles.headerCell, { width: columnWidths.userId }]}>User ID</Text>
-                      <Text style={[styles.headerCell, { width: columnWidths.name }]}>Name</Text>
-                      <Text style={[styles.headerCell, { width: columnWidths.email }]}>E-Mail</Text>
-                      {/* <Text style={[styles.headerCell, { width: columnWidths.balance }]}>Wallet Balance</Text> */}
-                      <Text style={[styles.headerCell, { width: columnWidths.status }]}>Status</Text>
-                      <Text style={[styles.headerCell, { width: columnWidths.actions }]}>Actions</Text>
-                    </View>
-                    <FlatList
-                      data={users}
-                      keyExtractor={(item) => item._id}
-                      renderItem={renderItem}
-                      scrollEnabled={false}
-                      contentContainerStyle={{ paddingBottom: 20 }}
-                      showsVerticalScrollIndicator={false}
-                      ListEmptyComponent={() => (
-                        <View style={{ padding: 20 }}>
-                          <Text style={{
-                            textAlign: 'center',
-                            fontSize: RFValue(16),
-                            color: '#888',
-                            fontWeight: '500'
-                          }}>No users found</Text>
-                        </View>
-                      )}
-
-
-
-                    />
-
-                  </View>
-                </ScrollView>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <View style={styles.tableContainer}>
+              <View style={[styles.row, styles.headerRow]}>
+                <Text style={[styles.headerCell, { width: columnWidths.userId }]}>User ID</Text>
+                <Text style={[styles.headerCell, { width: columnWidths.name }]}>Name</Text>
+                <Text style={[styles.headerCell, { width: columnWidths.email }]}>E-Mail</Text>
+                <Text style={[styles.headerCell, { width: columnWidths.status }]}>Status</Text>
+                <Text style={[styles.headerCell, { width: columnWidths.actions }]}>Actions</Text>
               </View>
-            </ScrollView>
-          </SafeAreaView>
-        )
-
-      }
-    </>
-  )
-}
+              <FlatList
+                data={users}
+                keyExtractor={(item) => item._id}
+                renderItem={renderItem}
+                scrollEnabled={false}
+                ListEmptyComponent={
+                  <Text style={styles.emptyText}>No users found.</Text>
+                }
+              />
+            </View>
+          </ScrollView>
+        )}
+      </ScrollView>
+    </SafeAreaView>
+  );
+};
 
 export default UsersScreen;
 
 const styles = StyleSheet.create({
-  container: {
+  tableContainer: {
     padding: 10,
-    backgroundColor: "#F3F3F3",
+    backgroundColor: '#F3F3F3',
     margin: 10,
-    borderRadius: 6
-  },
-  HorizentalScrollContainer: {
-    backgroundColor: '#fff',
-  },
-  TableContainer: {
-
+    borderRadius: 6,
   },
   row: {
     flexDirection: 'row',
@@ -189,14 +120,25 @@ const styles = StyleSheet.create({
   },
   cell: {
     paddingHorizontal: 10,
+    color:'black'
   },
   link: {
     color: 'blue',
     marginRight: 10,
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
   },
   reject: {
     color: 'red',
-    textDecorationLine: 'underline'
+    textDecorationLine: 'underline',
   },
-})
+  errorText: {
+    color: 'red',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  emptyText: {
+    color: '#999',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+});

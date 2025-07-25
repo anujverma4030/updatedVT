@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     padding: 4,
   },
   teamBoxText: {
-    fontSize: RFValue(10),
+    fontSize: RFValue(7),
     color: '#fff',
     textAlign: 'center',
   },

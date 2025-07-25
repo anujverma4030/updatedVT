@@ -1,28 +1,36 @@
-import { ScrollView, StatusBar, StyleSheet, Text, Touchable, TouchableOpacity, View } from 'react-native'
-import React from 'react'
-import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context'
-import Loader from '../../components/Loader/Loader'
-import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart'
-import { useSelector } from 'react-redux'
-import { Image } from 'react-native'
-import { RFValue } from 'react-native-responsive-fontsize'
+import {
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+} from 'react-native';
+import React from 'react';
+import { SafeAreaView, useSafeAreaInsets } from 'react-native-safe-area-context';
+import Loader from '../../components/Loader/Loader';
+import AdminTemplateHeaderPart from '../../components/Header/AdminTemplateHeaderPart';
+import { useSelector } from 'react-redux';
+import { RFValue } from 'react-native-responsive-fontsize';
 
 const UserDetailsScreen = () => {
   const inset = useSafeAreaInsets();
-  const { singleUser, singleUserLoading, loading } = useSelector((state) => state.admin);
+  const { singleUser, singleUserLoading } = useSelector((state) => state.admin);
+
   console.log('Single User Details:', singleUser);
+
   return (
     <>
       <StatusBar backgroundColor={'transparent'} barStyle={"dark-content"} translucent />
       {
         singleUserLoading ? <Loader visible={singleUserLoading} /> : (
           <View style={{ flex: 1 }}>
+            <AdminTemplateHeaderPart name={"User Investments"} paddingBottom={20} />
 
             <ScrollView
               showsVerticalScrollIndicator={false}
               contentContainerStyle={[styles.scrollViewContent, { paddingBottom: inset.bottom + 50 }]}
             >
-              <AdminTemplateHeaderPart name={singleUser ? singleUser?.user.name : 'User'} />
               {/* User Details */}
               <View style={styles.dashboardWrapper}>
                 <View style={styles.userDetailsView1}>
@@ -31,43 +39,59 @@ const UserDetailsScreen = () => {
                     style={styles.imageStyle}
                     resizeMode='cover'
                   />
-
-                  <Text style={styles.useridText}>User Id : {singleUser ? singleUser.user._id : 'N/A'}</Text>
+                  <Text style={styles.useridText}>User Id : {singleUser?.user?._id || 'N/A'}</Text>
                   <View style={styles.walletView}>
-                    <Text style={styles.walletbalenceText}>
-                      Wallet Balance
-                    </Text>
-                    <Text style={styles.walletbalenceText}>
-                      ${singleUser ? singleUser.wallet.balance : 'N/A'}
-                    </Text>
+                    <Text style={styles.walletbalenceText}>Wallet Balance</Text>
+                    <Text style={styles.walletbalenceText}>${singleUser?.wallet?.balance || 'N/A'}</Text>
                   </View>
                 </View>
+
                 <View style={styles.userDetailsView2}>
                   <Text style={styles.label}>Full Name</Text>
                   <View style={styles.labelDetails}>
-                    <Text style={styles.nameText}>
-                      {singleUser ? singleUser.user.name : 'N/A'}
-                    </Text>
+                    <Text style={styles.nameText}>{singleUser?.user?.name || 'N/A'}</Text>
                   </View>
+
                   <Text style={styles.label}>E-Mail</Text>
                   <View style={styles.labelDetails}>
-                    <Text style={styles.nameText}>
-                      {singleUser ? singleUser.user.email : 'N/A'}
-                    </Text>
+                    <Text style={styles.nameText}>{singleUser?.user?.email || 'N/A'}</Text>
                   </View>
+
                   <Text style={styles.label}>Phone Number</Text>
                   <View style={styles.labelDetails}>
-                    <Text style={styles.nameText}>
-                      {singleUser ? singleUser.user.mobile : 'N/A'}
-                    </Text>
+                    <Text style={styles.nameText}>{singleUser?.user?.mobile || 'N/A'}</Text>
                   </View>
+
                   <Text style={styles.label}>Referral Code</Text>
                   <View style={styles.labelDetails}>
-                    <Text style={styles.nameText}>
-                      {singleUser ? singleUser.user.code : 'N/A'}
-                    </Text>
+                    <Text style={styles.nameText}>{singleUser?.user?.code || 'N/A'}</Text>
                   </View>
                 </View>
+
+                {/* Investment Plans Section */}
+                {
+                  singleUser?.investments?.length > 0 ? (
+                    <View style={{ paddingHorizontal: 10 }}>
+                      <Text style={styles.sectionTitle}>Investment Plans</Text>
+                      {
+                        singleUser.investments.map((inv, index) => (
+                          <View key={inv._id || index} style={styles.investmentCard}>
+                            <Text style={styles.label}>Plan Name: <Text style={styles.nameText}>{inv.planId?.name || 'N/A'}</Text></Text>
+                            <Text style={styles.label}>ROI: <Text style={styles.nameText}>{inv.planId?.roiPercent || 'N/A'}%</Text></Text>
+                            <Text style={styles.label}>Amount: <Text style={styles.nameText}>${inv.planId?.amount || 'N/A'}</Text></Text>
+                            <Text style={styles.label}>Status: <Text style={styles.nameText}>{inv.status || 'N/A'}</Text></Text>
+                            <Text style={styles.label}>Start Date: <Text style={styles.nameText}>{new Date(inv.startDate).toDateString()}</Text></Text>
+                          </View>
+                        ))
+                      }
+                    </View>
+                  ) : (
+                    <Text style={{ textAlign: 'center', color: '#999', marginTop: 20 }}>
+                      No Investments Found.
+                    </Text>
+                  )
+                }
+
               </View>
             </ScrollView>
           </View>
@@ -83,19 +107,15 @@ const styles = StyleSheet.create({
   scrollViewContent: {
     backgroundColor: '#fff',
     flexGrow: 1,
-
   },
   dashboardWrapper: {
     paddingHorizontal: 8,
     backgroundColor: '#fff',
-    // justifyContent:'center',
-    // alignItems: 'center',
     width: '100%',
     flex: 1
   },
   userDetailsView1: {
     flexDirection: 'row',
-    // justifyContent: 'center',
     alignItems: 'center',
     paddingVertical: 10,
     gap: 10,
@@ -113,7 +133,6 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: '500',
     width: '30%',
-
   },
   walletView: {
     width: '40%',
@@ -133,12 +152,8 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   userDetailsView2: {
-
-
-    // alignItems: 'center',
     paddingVertical: 20,
     paddingHorizontal: 10,
-    // borderRadius: 8,
     backgroundColor: '#fff',
     marginBottom: 20,
     width: '100%',
@@ -159,9 +174,22 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 4,
     backgroundColor: '#FFFFFF',
-    // elevation: 2,
     width: '100%',
     borderWidth: 0.5,
     borderColor: '#00000061',
   },
-})
+  sectionTitle: {
+    fontSize: RFValue(16),
+    fontWeight: '600',
+    color: '#000',
+    marginVertical: 10,
+  },
+  investmentCard: {
+    backgroundColor: '#f2f2f2',
+    padding: 12,
+    marginBottom: 12,
+    borderRadius: 8,
+    borderColor: '#ccc',
+    borderWidth: 0.5,
+  },
+});

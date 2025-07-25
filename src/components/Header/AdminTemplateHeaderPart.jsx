@@ -100,7 +100,7 @@ const AdminTemplateHeaderPart = ({ name, paddingBottom = 40 }) => {
                                     <Icon name='fact-check' size={24} color='#8F8F8F' />
                                     <Text style={styles.menuItem}>Investment Plans</Text>
                                 </TouchableOpacity>
-                                <TouchableOpacity style={styles.menuButtons} onPress={() => handleNavigate('ReferralsScreen')}>
+                                <TouchableOpacity style={styles.menuButtons} onPress={() => handleNavigate('ReferralScreen')}>
                                     <Icon name='mobile-screen-share' size={24} color='#8F8F8F' />
                                     <Text style={styles.menuItem}>Referrals</Text>
                                 </TouchableOpacity>

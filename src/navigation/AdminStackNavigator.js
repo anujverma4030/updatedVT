@@ -16,6 +16,7 @@ import ReferralsScreen from '../screens/adminTemplateScreens/ReferralsScreen';
 import InvestmentPlans from '../screens/adminTemplateScreens/InvestmentPlans';
 import ReportingTransactionScreen from '../screens/adminTemplateScreens/ReportingTransactionScreen';
 import EditPlanScreen from '../screens/adminTemplateScreens/EditPlanScreen';
+import ReferralScreen from '../screens/Referral/ReferralScreen/ReferralScreen';
 const Stack = createNativeStackNavigator();
 
 const AdminStackNavigator = () => {
@@ -36,7 +37,7 @@ const AdminStackNavigator = () => {
             <Stack.Screen name='ApproveWithdrawal' component={ApproveWithdrawal} />
             <Stack.Screen name='UserDetailsScreen' component={UserDetailsScreen}/>
             <Stack.Screen name='AddNewInvestment' component={AddNewInvestment} />
-            <Stack.Screen name='ReferralsScreen' component={ReferralsScreen} />
+            <Stack.Screen name='ReferralScreen' component={ReferralScreen} />
             {/* <Stack.Screen name='InvestmentPlans' component={InvestmentPlans} /> */}
             <Stack.Screen name='InvestmentPlans' component={InvestmentPlans} />
             <Stack.Screen name="EditPlan" component={EditPlanScreen} />

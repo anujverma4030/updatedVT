@@ -1,17 +1,23 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-
+// import { Alert } from 'react-native';
 // Fetch plans
+
 export const fetchInvestmentPlans = createAsyncThunk(
-    'investment/fetchPlans',
-    async (_, { rejectWithValue }) => {
-        try {
-            const res = await axiosInstance.get('/invest/plans');
-            return res.data.plans;
-        } catch (error) {
-            return rejectWithValue(error.response?.data?.message || 'Failed to fetch plans');
-        }
+  'investment/fetchPlans',
+  async (_, { rejectWithValue }) => {
+    try {
+      const res = await axiosInstance.get('/invest/plans');
+
+      // ✅ DEBUG ALERT
+      const planNames = res.data.plans.map(p => p.name).join(', ');
+    //   Alert.alert('Fetched Plans', planNames); // <-- Ye dikha dega console se pehle
+      
+      return res.data.plans;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch plans');
     }
+  }
 );
 
 // Subscribe to plan

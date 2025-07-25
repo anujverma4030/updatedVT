@@ -5,8 +5,9 @@ import {
   Text,
   TouchableOpacity,
   View,
+  
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { RFValue } from 'react-native-responsive-fontsize';
 import { useNavigation } from '@react-navigation/native';
@@ -32,31 +33,37 @@ const ReferralDetailsScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { summary, referralLoading } = useSelector(
+  const { summary, referralLoading, errorMsg } = useSelector(
     (state: RootState) => state.referral
   );
-
-  const [selectedLevel, setSelectedLevel] = useState<'level1' | 'level2' | 'level3'>('level1');
 
   useEffect(() => {
     dispatch(fetchReferralSummary());
   }, [dispatch]);
 
-  const levelNumber: Record<'level1' | 'level2' | 'level3', number> = {
-    level1: 1,
-    level2: 2,
-    level3: 3,
-  };
+  useEffect(() => {
+  // Alert.alert('Full Summary', JSON.stringify(summary, null, 2));
+}, [summary]);
 
-  const levels = [
-    { label: 'LEVEL 1', commission: '10%', key: 'level1' },
-    { label: 'LEVEL 2', commission: '5%', key: 'level2' },
-    { label: 'LEVEL 3', commission: '2%', key: 'level3' },
-  ];
 
-  const levelData: ReferralItem[] = (summary?.referrals || []).filter(
-    (item: ReferralItem) => item.level === levelNumber[selectedLevel]
-  );
+  useEffect(() => {
+    const referrals = summary?.referrals as ReferralItem[];
+    if (referrals?.length > 0) {
+      const sample = referrals[0];
+      // Alert.alert(
+      //   'Referral Debug',
+      //   `Name: ${sample?.referredUser?.name || 'N/A'}\nUsername: ${sample?.referredUser?.username || 'N/A'}\nLevel: ${sample?.level || 'N/A'}\nCommission: ${sample?.isCommissionGiven ? 'Yes' : 'No'}`
+      // );
+    } else {
+      // Alert.alert('Referral Debug', 'No referrals found.');
+    }
+  }, [summary]);
+
+  useEffect(() => {
+    if (errorMsg) {
+      // Alert.alert('Referral Error', String(errorMsg));
+    }
+  }, [errorMsg]);
 
   const renderItem = ({ item }: { item: ReferralItem }) => (
     <View style={styles.row}>
@@ -72,7 +79,6 @@ const ReferralDetailsScreen = () => {
 
   return (
     <SafeAreaView style={styles.MainContainer}>
-      {/* Header */}
       <View style={styles.headerContentContainer}>
         <View style={styles.headerTextContainer}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -86,38 +92,18 @@ const ReferralDetailsScreen = () => {
         <Loader visible />
       ) : (
         <View style={styles.tabsMainContainer}>
-          {/* Tabs */}
-          <View style={styles.tabs}>
-            {levels.map((level) => (
-              <TouchableOpacity
-                key={level.key}
-                style={[styles.tab, selectedLevel === level.key && styles.activeTab]}
-                onPress={() => setSelectedLevel(level.key as 'level1' | 'level2' | 'level3')}
-              >
-                <Text style={[styles.tabLabel, selectedLevel === level.key && styles.activeLabel]}>
-                  {level.label}
-                </Text>
-                <Text style={[styles.tabSubLabel, selectedLevel === level.key && styles.activeLabel]}>
-                  {level.commission} Commission
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
-
-          {/* Table Header */}
           <View style={styles.tableHeader}>
             <Text style={styles.headerCell}>Name</Text>
             <Text style={styles.headerCell}>Joined On</Text>
             <Text style={styles.headerCell}>Commission</Text>
           </View>
 
-          {/* Table */}
           <FlatList
-            data={levelData}
+            data={summary?.referrals as ReferralItem[]}
             keyExtractor={(_, index) => index.toString()}
             renderItem={renderItem}
             ListEmptyComponent={
-              <Text style={styles.emptyText}>No referrals yet for this level.</Text>
+              <Text style={styles.emptyText}>No referrals available.</Text>
             }
           />
         </View>
@@ -129,23 +115,15 @@ const ReferralDetailsScreen = () => {
 export default ReferralDetailsScreen;
 
 const styles = StyleSheet.create({
-  MainContainer: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
+  MainContainer: { flex: 1, backgroundColor: '#fff' },
   headerContentContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
     backgroundColor: '#34A853',
     paddingVertical: 20,
     paddingHorizontal: 15,
   },
-  headerTextContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
+  headerTextContainer: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   headerText: {
     fontSize: RFValue(18),
     fontWeight: '500',
@@ -160,34 +138,6 @@ const styles = StyleSheet.create({
     elevation: 3,
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
-  },
-  tabs: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 10,
-    backgroundColor: '#34A853',
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-  },
-  tab: {
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 2,
-    borderBottomColor: 'transparent',
-  },
-  activeTab: {
-    borderBottomColor: '#fff',
-  },
-  tabLabel: {
-    fontWeight: 'bold',
-    color: '#ccc',
-  },
-  activeLabel: {
-    color: '#fff',
-  },
-  tabSubLabel: {
-    fontSize: 12,
-    color: '#000',
   },
   tableHeader: {
     flexDirection: 'row',

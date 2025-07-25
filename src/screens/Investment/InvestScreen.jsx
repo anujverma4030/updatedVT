@@ -1,6 +1,6 @@
 import {
   ActivityIndicator,
-  Alert,
+  // Alert,
   Image,
   SafeAreaView,
   ScrollView,
@@ -31,7 +31,11 @@ const InvestScreen = () => {
   const dispatch = useDispatch();
   const { plans, activeInvestments, investmentHistory, loading } = useSelector(state => state.investment);
   const [loadingPlanId, setLoadingPlanId] = useState(null);
-  const topPlans = useMemo(() => (Array.isArray(plans) ? plans.slice(0, 6) : []), [plans]);
+
+
+const topPlans = useMemo(() => Array.isArray(plans) ? plans : [], [plans]);
+
+
 
   const completedInvestments = useMemo(() =>
     investmentHistory
@@ -39,6 +43,15 @@ const InvestScreen = () => {
       .slice(0, 4),
     [investmentHistory]
   );
+
+// useEffect(() => {
+//   if (plans && plans.length > 0) {
+//     console.log('Fetched Plans:', plans.map(p => p.name));
+//     const planNames = plans.map(p => p.name).join(', ');
+//     Alert.alert('Plans from backend:', planNames);
+//   }
+// }, [plans]);
+
 
   useEffect(() => {
     dispatch(fetchInvestmentPlans());
@@ -59,7 +72,7 @@ const InvestScreen = () => {
   const handleSubscribeInvestment = async (planId, payload) => {
     try {
       setLoadingPlanId(planId);
-      const result = await dispatch(subscribeToPlan({ id: planId, payload }));
+      const result = await dispatch(subscribeToPlan({ id: planId, payload })); 
       if (subscribeToPlan.fulfilled.match(result)) {
         Alert.alert("Success", "Investment successful.");
         await dispatch(fetchActiveInvestments());
@@ -153,7 +166,7 @@ const InvestScreen = () => {
   };
 
   const renderInvestmentHistory = ({ item }) => {
-    const planName = typeof item.planId === 'object' ? item.planId.name : item.planId || 'N/A';
+    const planName = typeof item.planid === 'object' ? item.planId.name : item.planid || 'N/A';
     const color = planColors[planName] || '#2E7D32';
     const statusColor = (item?.status || '').toLowerCase() === 'active' ? '#4CAF50' : '#F44336';
     return (

@@ -44,8 +44,8 @@ const LoginScreen = () => {
                 const token = resultAction.payload?.token || resultAction.payload;
                 await AsyncStorage.setItem('userToken', token);
                 const savedToken = await AsyncStorage.getItem('userToken');
-                console.log('🟢 Saved Token:', savedToken);
-                Alert.alert("Saved Token", savedToken || 'null');
+                // console.log('🟢 Saved Token:', savedToken);
+                // Alert.alert("Saved Token", savedToken || 'null');
                 const decoded = jwtDecode(token);
                 const userId = decoded?.id;
 

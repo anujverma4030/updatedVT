@@ -152,8 +152,11 @@ const HomeScreen: React.FC = () => {
                                     <View style={styles.divider} />
                                     <View style={styles.summaryItem}>
                                         <Text style={styles.label}>Frozen Amount</Text>
-                                        <Text style={[styles.value, { color: 'red' }]}>0</Text>
+                                        <Text style={[styles.value, { color: 'red' }]}>
+                                            ${userDetails?.wallet?.lockedBalance ?? '0'}
+                                        </Text>
                                     </View>
+
                                 </View>
 
                                 <Text style={styles.recentTitle}>Recent Activity</Text>
@@ -242,7 +245,7 @@ const HomeScreen: React.FC = () => {
                                 <ScrollView
                                     horizontal
                                     showsHorizontalScrollIndicator={false}
-                                    style={[styles.horizontalScrollContainer,{flex:1}]}
+                                    style={[styles.horizontalScrollContainer, { flex: 1 }]}
                                 >
                                     <View style={styles.card}>
                                         <Image source={require('../../assests/homepageBigWinImage.png')} style={styles.cardImage} />
@@ -256,7 +259,7 @@ const HomeScreen: React.FC = () => {
                                         <Image source={require('../../assests/homepageGirlScrollImage.png')} style={styles.cardImage} />
                                         <TouchableOpacity
                                             activeOpacity={0.8}
-                                             style={[styles.playButton]}>
+                                            style={[styles.playButton]}>
                                             <Text style={styles.playButtonText}>Play Now</Text>
                                         </TouchableOpacity>
                                     </View>
@@ -367,7 +370,7 @@ const styles = StyleSheet.create({
         fontWeight: '400'
     },
     summaryCard: {
-        
+
         backgroundColor: "#fff",
         marginHorizontal: 16,
         marginTop: 16,
@@ -409,12 +412,12 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontSize: 18,
         fontWeight: '600',
-         color: 'black',
+        color: 'black',
     },
     seeAll: {
         color: 'green',
         fontWeight: '500',
-        
+
     },
     todayCard: {
         backgroundColor: '#fff',
@@ -433,8 +436,8 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: RFValue(14),
         color: 'black',
-        paddingTop:22,
-        paddingLeft:10,
+        paddingTop: 22,
+        paddingLeft: 10,
     },
     separator: {
         borderBottomWidth: 1,
@@ -447,14 +450,14 @@ const styles = StyleSheet.create({
         marginLeft: 16,
         marginTop: 30,
         marginBottom: 10,
-        color:'black'
+        color: 'black'
     },
     recentContainer: {
         flexDirection: 'row',
         marginTop: 12,
         alignItems: 'center',
         gap: 15,
-        
+
     },
     recentCard: {
         width: 180,
@@ -476,17 +479,17 @@ const styles = StyleSheet.create({
         fontSize: RFValue(14),
         fontWeight: '400',
         marginBottom: 20,
-        color:'black'
+        color: 'black'
     },
     recentTime: {
         fontSize: 12,
         color: 'black',
-        
+
     },
     recentContainerImageContainer: {
         width: 80,
         height: 80,
-         
+
 
     },
     recentContainerImage: {
@@ -517,9 +520,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         position: 'absolute',
         borderRadius: 6,
-        margin:80,
-        marginLeft:40
-        
+        margin: 80,
+        marginLeft: 40
+
     },
     playButtonText: {
         color: '#fff',

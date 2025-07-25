@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-import { Alert } from 'react-native';
+// import { Alert } from 'react-native';
 
 // Async Thunks
 export const fetchReferralCode = createAsyncThunk(
@@ -124,14 +124,11 @@ const referralSlice = createSlice({
         state.errorMsg = null;
       })
       .addCase(fetchReferralSummary.fulfilled, (state, action) => {
-        const data = action.payload?.data ?? action.payload;
+        const data = action.payload?.data;
 
-        // Debug alert to confirm referral data
-        console.log('Referral Data:', data);
-        Alert.alert(
-          'Referral Data Loaded',
-          `Total: ${data.totalReferrals}, Earnings: $${data.earnings}, Active: ${data.activeInvestors}`
-        );
+        // Debug alert here
+        // Alert.alert('Referral Summary Response', JSON.stringify(data, null, 2));
+1
 
         state.referralLoading = false;
         state.summary = {
@@ -141,12 +138,17 @@ const referralSlice = createSlice({
           referrals: data.referrals || [],
         };
       })
+
       .addCase(fetchReferralSummary.rejected, (state, action) => {
         state.referralLoading = false;
         state.errorMsg = action.payload;
+
+        // ✅ Alert to show the error
+        // Alert.alert('Referral Summary Error', String(action.payload));
       });
   },
 });
 
 export const { resetReferralState } = referralSlice.actions;
 export default referralSlice.reducer;
+

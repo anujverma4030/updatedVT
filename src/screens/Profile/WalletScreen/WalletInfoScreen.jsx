@@ -62,12 +62,13 @@ const WalletInfoScreen = () => {
             {/* Withdrawals */}
             <View style={styles.depositAndWithdrawContainer}>
               <TouchableOpacity style={[styles.depositTextBox, { backgroundColor: '#FDBE00', borderTopLeftRadius: 6, borderBottomLeftRadius: 6 }]}>
-                <Text style={styles.depositText}>Pending Withdrawals $100 (processing)</Text>
+                <Text style={styles.depositText}>Pending </Text>
+                <Text style={styles.depositText}>$0 </Text>
               </TouchableOpacity>
               <TouchableOpacity style={[styles.depositTextBox, { backgroundColor: '#2E7D32', borderTopRightRadius: 6, borderBottomRightRadius: 6 }]}>
                 <Text style={styles.depositText}>
                   Total Withdrawn{'\n'}
-                  <Text>$1,150</Text>
+                  <Text>$0</Text>
                 </Text>
               </TouchableOpacity>
             </View>

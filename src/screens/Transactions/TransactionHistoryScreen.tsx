@@ -220,6 +220,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 13,
         textAlign: 'left',
+        color:'black'
     },
     pending: {
         color: '#F57C00',

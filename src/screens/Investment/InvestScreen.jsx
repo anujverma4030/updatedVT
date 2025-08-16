@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
   FlatList,
+  Alert
 } from 'react-native';
 import React, { useEffect, useState, useMemo } from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -53,11 +54,16 @@ const topPlans = useMemo(() => Array.isArray(plans) ? plans : [], [plans]);
 // }, [plans]);
 
 
-  useEffect(() => {
-    dispatch(fetchInvestmentPlans());
-    dispatch(fetchActiveInvestments());
-    dispatch(fetchInvestmentHistory());
-  }, []);     
+useEffect(() => {
+  dispatch(fetchInvestmentPlans());
+  dispatch(fetchActiveInvestments());
+  dispatch(fetchInvestmentHistory());
+}, []);
+
+useEffect(() => {
+ console.log('Plans from Redux:', plans);
+}, [plans]);
+
 
   const planColors = {
     'Basic Plan': '#0077FFD9',
@@ -107,6 +113,7 @@ const topPlans = useMemo(() => Array.isArray(plans) ? plans : [], [plans]);
           <Image source={require('../../assests/investMan.png')} style={styles.image} />
         </View>
         <View style={styles.buttonContainer}>
+          
           <TouchableOpacity
             disabled={isLoading}
             activeOpacity={0.7}
@@ -128,8 +135,16 @@ const topPlans = useMemo(() => Array.isArray(plans) ? plans : [], [plans]);
     );
   };
 
+  
+
   const renderOngoingInvestment = ({ item }) => {
-    const planName = typeof item.planId === 'object' ? item.planId.name : item.planId || 'N/A';
+    const planName =
+  item?.planId && typeof item.planId === 'object'
+    ? item.planId.name
+    : typeof item?.planId === 'string'
+      ? item.planId
+      : 'N/A';
+
     const color = planColors[planName] || '#0077FF';
     const invested = item.amount ?? 0;
     const earnings = item.earnings ?? 0;
@@ -141,10 +156,13 @@ const topPlans = useMemo(() => Array.isArray(plans) ? plans : [], [plans]);
     const progress = Math.min(Math.max(now.diff(start, 'days') / end.diff(start, 'days'), 0), 1);
 
     return (
+      
       <View style={[styles.ongoingCard, { backgroundColor: color }]}>
+        
         <View style={styles.ongoingTopRow}>
           <Icon name="bolt" color="#fff" size={18} />
           <Text style={styles.ongoingPlanTitle}>{planName}</Text>
+          
         </View>
         <Text style={styles.progressLabel}>Progress</Text>
         <Slider
@@ -166,18 +184,33 @@ const topPlans = useMemo(() => Array.isArray(plans) ? plans : [], [plans]);
   };
 
   const renderInvestmentHistory = ({ item }) => {
-    const planName = typeof item.planid === 'object' ? item.planId.name : item.planid || 'N/A';
-    const color = planColors[planName] || '#2E7D32';
-    const statusColor = (item?.status || '').toLowerCase() === 'active' ? '#4CAF50' : '#F44336';
-    return (
-      <View style={styles.dataRow}>
-        <Text style={[styles.cellText, { color }]}>{planName}</Text>
-        <Text style={[styles.cellText, { color }]}>${item?.amount ?? 0}</Text>
-        <Text style={[styles.cellText, { color }]}>{item?.endDate ? moment(item.endDate).format('MMM DD, YYYY') : 'N/A'}</Text>
-        <Text style={[styles.cellText, { color: statusColor }]}>{item?.status || 'Completed'}</Text>
-      </View>
-    );
-  };
+  const planName =
+    item?.planId && typeof item.planId === 'object'
+      ? item.planId.name
+      : typeof item?.planId === 'string'
+        ? item.planId
+        : 'N/A';
+
+  const color = planColors[planName] || '#2E7D32';
+  const statusColor = (item?.status || '').toLowerCase() === 'active' ? '#4CAF50' : '#F44336';
+  
+
+  return (
+    
+    <View style={styles.dataRow}>
+      
+      <Text style={[styles.cellText, { color }]}>{planName}</Text>
+      <Text style={[styles.cellText, { color }]}>${item?.amount ?? 0}</Text>
+      <Text style={[styles.cellText, { color }]}>
+        {item?.endDate ? moment(item.endDate).format('MMM DD, YYYY') : 'N/A'}
+      </Text>
+      <Text style={[styles.cellText, { color: statusColor }]}>
+        {item?.status || 'Completed'}
+      </Text>
+    </View>
+  );
+};
+
 
   return (
     <>
@@ -280,7 +313,7 @@ const styles = StyleSheet.create({
   },
   buttonText: { color: '#fff', fontWeight: '600', fontSize: 14, textAlign: 'center' },
   image: { width: 100, height: 100, resizeMode: 'contain', marginRight: 20 },
-  investmentHeaderText: { margin: 15, fontSize: RFValue(20), fontWeight: '500' },
+  investmentHeaderText: { margin: 15, fontSize: RFValue(20), fontWeight: '400',color:'black' },
   InvestmentTablecontainer: {
     borderRadius: 4,
     backgroundColor: '#fff',

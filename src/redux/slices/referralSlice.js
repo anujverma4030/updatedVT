@@ -1,13 +1,17 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
-// import { Alert } from 'react-native';
+import { Alert } from 'react-native';
 
-// Async Thunks
 export const fetchReferralCode = createAsyncThunk(
   'referral/fetchReferralCode',
   async (_, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.get('/referral/code');
+      const res = await axiosInstance.get('/referral/code-link');
+
+
+      // ✅ Alert for success
+      // Alert.alert('Referral Code Fetched', JSON.stringify(res.data.code, null, 2));
+
       return res.data.code;
     } catch (error) {
       let message = 'Failed to fetch referral code';
@@ -16,10 +20,15 @@ export const fetchReferralCode = createAsyncThunk(
       } else if (error.message) {
         message = error.message;
       }
+
+      // ❌ Alert for error
+      Alert.alert('Fetch Referral Error', message);
+
       return rejectWithValue(message);
     }
   }
 );
+
 
 export const fetchReferralTree = createAsyncThunk(
   'referral/fetchReferralTree',

@@ -261,7 +261,7 @@ const SpinScreen = () => {
                   <Text style={[styles.counterText, { color: 'white' }]}>+</Text>
                 </TouchableOpacity>
               </View>
-              <Text style={{ fontSize: 16, marginBottom: 20, color: 'black' }}>Total: ${quantity * 5}</Text>
+              <Text style={{ fontSize: 16, marginBottom: 20, color: 'black' }}>Total: ${quantity * 1}</Text>
               <View style={{ flexDirection: 'row' }}>
                 <TouchableOpacity onPress={() => setShowBuyModal(false)} style={[styles.counterBtn, { backgroundColor: 'magenta', marginRight: 10 }]}>
                   <Text style={{ fontWeight: 'bold', color: 'white' }}>Cancel</Text>
@@ -350,5 +350,4 @@ const styles = StyleSheet.create({
   },
   counterText: { fontSize: 18, fontWeight: 'bold' },
 });
-
 

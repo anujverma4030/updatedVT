@@ -8,6 +8,26 @@ const ProfileScreenDownrside = () => {
     const navigation = useNavigation();
     const dispatch = useDispatch();
     const [loading, setLoading] = useState(false);
+    const handleVerifyEmail = async () => {
+        try {
+            if (!user?.email) {
+                Alert.alert("Email not found", "Your profile doesn't have an email.");
+                return;
+            }
+
+            setLoading(true);
+            const res = await dispatch(verifyUpiId(user.email)).unwrap(); // sends OTP
+            setLoading(false);
+
+            Alert.alert("Success", res?.message || "OTP sent to your email");
+
+            navigation.navigate("VerifyEmailOtpScreen", { email: user.email });
+        } catch (err) {
+            setLoading(false);
+            Alert.alert("Error", err?.message || "Failed to send OTP");
+        }
+    };
+
     const handleLogout = async () => {
 
         setLoading(true);
@@ -15,15 +35,11 @@ const ProfileScreenDownrside = () => {
             await dispatch(logout());
             setTimeout(() => {
                 setLoading(false);
-                navigation.replace('AuthStack');
+                navigation.replace('WelcomeScreen');
             }, 1500);
-            // navigation.replace('AuthStack');
         } catch (error) {
             console.error('Logout Error:', error.message);
-
         }
-     
-
     };
     return (
         <View style={styles.cardContainer}>
@@ -38,25 +54,24 @@ const ProfileScreenDownrside = () => {
                     <Text style={styles.label}>Wallet Info</Text>
                 </TouchableOpacity>
                 <View style={styles.separator} />
-                <TouchableOpacity style={styles.option}>
-                    <Icon name="star" size={24} color="#000" style={styles.icon} />
-                    <Text style={styles.label}>Membership Level</Text>
-                </TouchableOpacity>
+
                 <View style={styles.separator} />
-                <TouchableOpacity style={styles.option}>
-                    <Icon name="description" size={24} color="#000" style={styles.icon} />
-                    <Text style={styles.label}>Agreement</Text>
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('VerifyBinance')}
+                    style={styles.option}
+                >
+                    <Icon name="mail" size={24} color="#000" style={styles.icon} />
+                    <Text style={styles.label}>Verify Binance Address</Text>
                 </TouchableOpacity>
+
+
                 <View style={styles.separator} />
                 <TouchableOpacity onPress={() => { navigation.navigate('TransactionHistory') }} style={styles.option}>
                     <Icon name="history" size={24} color="#000" style={styles.icon} />
                     <Text style={styles.label}>Transaction History</Text>
                 </TouchableOpacity>
                 <View style={styles.separator} />
-                <TouchableOpacity onPress={() => { navigation.navigate('Settings') }} style={styles.option}>
-                    <Icon name="settings" size={24} color="#000" style={styles.icon} />
-                    <Text style={styles.label}>Settings</Text>
-                </TouchableOpacity>
+
             </View>
 
             <TouchableOpacity
@@ -64,7 +79,7 @@ const ProfileScreenDownrside = () => {
                 onPress={handleLogout}
                 style={styles.signOutButton}
                 disabled={loading}
-             
+
             >
                 {loading ?
                     <ActivityIndicator size='small' color="#fff" />

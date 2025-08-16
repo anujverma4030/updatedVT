@@ -1,196 +1,246 @@
 import React, { useState } from 'react';
 import {
-  Dimensions,
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
   ScrollView,
   StatusBar,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-  Image,
-  TextInput,
   Alert,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { verifyUpiId, verifyUpiIdOtp, depositFunds } from '../../redux/slices/walletSlice';
 
 const UserDeposit = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
   const { userDetails } = useSelector((state) => state.user);
 
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     amount: '',
-    name: '',
-    txnId: '',
     walletAddress: '',
-    datetime: '',
-    paymentMethod: '',
+    date: '',
+    upiId: '',
+    otp: '',
   });
 
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+
   const handleChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
+    setForm({ ...form, [field]: value });
   };
 
-  const handleSelectMethod = (methodName) => {
-    setFormData({ ...formData, paymentMethod: methodName });
+  const handleSendOtp = async () => {
+    if (!form.upiId) return alert('Enter your Registered Email');
+    const res = await dispatch(verifyUpiId({ upiId: form.upiId }));
+    if (verifyUpiId.fulfilled.match(res)) {
+      alert('OTP sent successfully!');
+      setOtpSent(true);
+    } else {
+      alert(res.payload || 'Failed to send OTP');
+    }
   };
 
-  const paymentOptions = [
-    {
-      name: 'Bank',
-      image: require('../../assests/NotoBank.png'),
-    },
-    {
-      name: 'UPI',
-      image: require('../../assests/UPI.png'),
-    },
-    {
-      name: 'Crypto',
-      image: require('../../assests/Crypto.png'),
-    },
-  ];
+  const handleVerifyOtp = async () => {
+    if (!form.otp) return alert('Enter OTP');
+    const res = await dispatch(verifyUpiIdOtp({ otp: form.otp }));
+    if (verifyUpiIdOtp.fulfilled.match(res)) {
+      alert('OTP Verified');
+      setOtpVerified(true);
+    } else {
+      alert(res.payload || 'OTP verification failed');
+    }
+  };
 
-  const handleProceed = () => {
-    const { amount, name, txnId, walletAddress, datetime, paymentMethod } = formData;
-
-    if (!amount || !name || !txnId || !walletAddress || !datetime || !paymentMethod) {
-      Alert.alert('Error', 'Please fill all the fields and select a payment method.');
-      return;
+  const handleDeposit = async () => {
+    const { amount, walletAddress, date } = form;
+    if (!amount || !walletAddress || !date) {
+      return alert('Please fill all fields');
+    }
+    if (!otpVerified) {
+      return alert('Verify OTP first');
     }
 
-    // TODO: Add your API logic here
-    console.log('Sending data to backend:', formData);
-    Alert.alert('Success', 'Your deposit request is being processed.');
+    const res = await dispatch(depositFunds({ amount, walletAddress, date }));
+    if (depositFunds.fulfilled.match(res)) {
+      alert('Deposit submitted to admin successfully');
+      setForm({ amount: '', walletAddress: '', date: '', upiId: '', otp: '' });
+      setOtpSent(false);
+      setOtpVerified(false);
+    } else {
+      alert(res.payload || 'Deposit failed');
+    }
   };
 
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
-      <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.mainContainer}>
-        <ScrollView>
-          <View style={styles.headerContainer}>
-            <View style={styles.headerIcons}>
-              <TouchableOpacity onPress={() => navigation.goBack()}>
-                <MaterialIcons name="arrow-back" size={30} color="#fff" />
-              </TouchableOpacity>
-              <TouchableOpacity>
-                <MaterialIcons name="notifications" size={30} color="#fff" />
-              </TouchableOpacity>
-            </View>
-            <Text style={styles.headerText}>
-              Hi {userDetails?.name || 'User'}, add funds to your wallet securely.
-            </Text>
-            <View style={styles.headerIcons}>
-              <Text style={styles.balanceText}>
-                Balance: ${userDetails?.wallet?.balance || '0'}
-              </Text>
-            </View>
-          </View>
-
-          <View style={styles.withdrawalContainer}>
-            <View style={styles.withdrawView}>
-              <Text style={styles.withdrawalHeaderText}>Deposit</Text>
-
-              {/* All inputs together */}
-              <TextInput
-                placeholder="Enter Amount"
-                placeholderTextColor="black"
-                value={formData.amount}
-                onChangeText={(text) => handleChange('amount', text)}
-                keyboardType="numeric"
-                style={styles.modalInput}
-              />
-              <TextInput
-                placeholder="Your Name"
-                placeholderTextColor="black"
-                value={formData.name}
-                onChangeText={(text) => handleChange('name', text)}
-                style={styles.modalInput}
-              />
-              <TextInput
-                placeholder="Transaction ID"
-                placeholderTextColor="black"
-                value={formData.txnId}
-                onChangeText={(text) => handleChange('txnId', text)}
-                style={styles.modalInput}
-              />
-              <TextInput
-                placeholder="Wallet Address"
-                placeholderTextColor="black"
-                value={formData.walletAddress}
-                onChangeText={(text) => handleChange('walletAddress', text)}
-                style={styles.modalInput}
-              />
-              <TextInput
-                placeholder="Date & Time"
-                placeholderTextColor="black"
-                value={formData.datetime}
-                onChangeText={(text) => handleChange('datetime', text)}
-                style={styles.modalInput}
-              />
-
-              <Text style={styles.labelText}>Choose a payment method</Text>
-
-              <View style={styles.paymentOption}>
-                {paymentOptions.map((item, index) => (
-                  <TouchableOpacity
-                    key={index}
-                    onPress={() => handleSelectMethod(item.name)}
-                    style={[
-                      styles.optionCard,
-                      formData.paymentMethod === item.name && { borderColor: '#34A853', borderWidth: 2 },
-                    ]}
-                    activeOpacity={0.7}
-                  >
-                    <Image source={item.image} style={styles.image} />
-                    <Text style={styles.text}>{item.name}</Text>
-                  </TouchableOpacity>
-                ))}
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.mainContainer}>
+          <ScrollView keyboardShouldPersistTaps="handled">
+            <View style={styles.headerContainer}>
+              <View style={styles.headerIcons}>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                  <MaterialIcons name="arrow-back" size={30} color="#fff" />
+                </TouchableOpacity>
+                <MaterialIcons name="payments" size={30} color="#fff" />
               </View>
-
-              <TouchableOpacity style={styles.otpBtn} onPress={handleProceed} activeOpacity={0.7}>
-                <Text style={styles.otpBtnText}>Proceed</Text>
-              </TouchableOpacity>
+              <Text style={styles.headerText}>
+                Hello {userDetails?.name || 'User'}, fund your account securely!
+              </Text>
+              <View style={styles.headerIcons}>
+                <Text style={styles.balanceText}>
+                  Balance : ${userDetails?.wallet?.balance || '0'}
+                </Text>
+                <Image
+                  source={require('../../assests/WithdrawImage.png')}
+                  resizeMode="cover"
+                  style={styles.balanceImage}
+                />
+              </View>
             </View>
-          </View>
-        </ScrollView>
-      </SafeAreaView>
+
+            <View style={styles.withdrawalContainer}>
+              <View style={styles.withdrawView}>
+                <Text style={styles.withdrawalHeaderText}>Deposit</Text>
+
+                <View style={styles.textInput}>
+                  <TextInput
+                    placeholder="Enter amount"
+                    placeholderTextColor="#8F8F8F"
+                    style={styles.input}
+                    keyboardType="numeric"
+                    value={form.amount}
+                    onChangeText={(v) => handleChange('amount', v)}
+                  />
+                </View>
+
+                <View style={styles.textInput}>
+                  <TextInput
+                    placeholder="Enter Binance wallet address"
+                    placeholderTextColor="#8F8F8F"
+                    style={styles.input}
+                    value={form.walletAddress}
+                    onChangeText={(v) => handleChange('walletAddress', v)}
+                  />
+                </View>
+
+                <View style={styles.textInput}>
+                  <TextInput
+                    placeholder="Date (e.g. 2025-07-24)"
+                    placeholderTextColor="#8F8F8F"
+                    style={styles.input}
+                    value={form.date}
+                    onChangeText={(v) => handleChange('date', v)}
+                  />
+                </View>
+
+                <View style={styles.textInput}>
+                  <TextInput
+                    placeholder="Enter your Registered email"
+                    placeholderTextColor="#8F8F8F"
+                    style={styles.input}
+                    value={form.upiId}
+                    onChangeText={(v) => handleChange('upiId', v)}
+                    autoCapitalize="none"
+                  />
+                </View>
+
+                <Text style={styles.labelText}>Select Payment Method</Text>
+                <View style={styles.paymentOption}>
+                  <View style={styles.optionCard}>
+                    <Image
+                      source={require('../../assests/Crypto.png')}
+                      resizeMode="cover"
+                      style={styles.image}
+                    />
+                    <Text style={styles.text}>Binance</Text>
+                  </View>
+                </View>
+
+                {!otpSent ? (
+                  <TouchableOpacity style={styles.otpBtn} onPress={handleSendOtp}>
+                    <Text style={styles.otpBtnText}>Send OTP</Text>
+                  </TouchableOpacity>
+                ) : !otpVerified ? (
+                  <>
+                    <View style={styles.textInput}>
+                      <TextInput
+                        placeholder="Enter OTP"
+                        placeholderTextColor="#8F8F8F"
+                        style={styles.input}
+                        keyboardType="numeric"
+                        value={form.otp}
+                        onChangeText={(v) => handleChange('otp', v)}
+                      />
+                    </View>
+                    <TouchableOpacity style={styles.otpBtn} onPress={handleVerifyOtp}>
+                      <Text style={styles.otpBtnText}>Verify OTP</Text>
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  <TouchableOpacity style={styles.otpBtn} onPress={handleDeposit}>
+                    <Text style={styles.otpBtnText}>Deposit</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            </View>
+          </ScrollView>
+        </SafeAreaView>
+      </KeyboardAvoidingView>
     </>
   );
 };
 
 export default UserDeposit;
 
+// styles remain exactly the same (unchanged)
+
+
+
 const styles = StyleSheet.create({
-  mainContainer: { flex: 1, gap: 30 },
+  mainContainer: {
+    flex: 1,
+    gap: 30,
+  },
   headerContainer: {
     width: '100%',
     height: 300,
-    backgroundColor: '#34A853',
+    backgroundColor: '#1e88e5',
     paddingTop: 30,
   },
   headerIcons: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
     padding: 10,
     marginTop: 10,
   },
   headerText: {
-    textAlign: 'left',
-    fontWeight: '400',
     fontSize: 15,
     marginLeft: 20,
     color: '#fff',
     marginTop: 10,
   },
   balanceText: {
-    fontWeight: '400',
     fontSize: 24,
     color: '#F0F5F5',
     marginLeft: 5,
+  },
+  balanceImage: {
+    width: 203,
+    height: 169,
+    bottom: 8,
   },
   withdrawalContainer: {
     alignItems: 'center',
@@ -204,41 +254,51 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     gap: 10,
     marginTop: 40,
-    marginBottom: 20,
   },
   withdrawalHeaderText: {
-    fontWeight: '500',
     fontSize: 20,
     color: '#1E3D3D',
     alignSelf: 'flex-start',
+  },
+  textInput: {
+    width: '90%',
+    backgroundColor: '#fff',
+    elevation: 4,
+    borderRadius: 6,
+    borderWidth: 0.5,
+    borderColor: '#00000036',
+    marginTop: 8,
+  },
+  input: {
+    marginLeft: 10,
+    height: 45,
+    color: '#000',
   },
   labelText: {
     alignSelf: 'flex-start',
     marginLeft: 16,
     marginTop: 20,
     fontSize: 13,
-    fontWeight: '500',
+    fontWeight: '300',
     color: '#000000',
   },
   paymentOption: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     padding: 16,
-    backgroundColor: '#fff',
   },
   optionCard: {
+    flexDirection: 'row',
     alignItems: 'center',
     padding: 5,
-    marginHorizontal: 8,
-    backgroundColor: '#fff',
     borderRadius: 6,
     elevation: 2,
-    flexDirection: 'row',
-    width: '28%',
-    height: 40,
-    justifyContent: 'space-evenly',
+    backgroundColor: '#fff',
     borderColor: '#00000036',
-    borderWidth: 1,
+    borderWidth: 0.5,
+    width: '50%',
+    justifyContent: 'space-evenly',
+    height: 40,
   },
   image: {
     width: 28,
@@ -254,8 +314,8 @@ const styles = StyleSheet.create({
     width: '60%',
     justifyContent: 'center',
     alignItems: 'center',
-    height: 35,
-    marginTop: 20,
+    height: 40,
+    marginTop: 10,
     borderRadius: 6,
     elevation: 2,
   },
@@ -263,15 +323,5 @@ const styles = StyleSheet.create({
     color: '#F0F5F5',
     fontWeight: '500',
     fontSize: 15,
-  },
-  modalInput: {
-    borderWidth: 1,
-    borderColor: '#ccc',
-    marginBottom: 10,
-    paddingHorizontal: 10,
-    borderRadius: 6,
-    height: 40,
-    width: '90%',
-    color: 'black',
   },
 });

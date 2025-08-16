@@ -9,7 +9,7 @@ export const getEmployeeById = createAsyncThunk(
             console.log('Fetching user with ID:', employeeId);
             const response = await axiosInstance.get(`/profile/${employeeId}`);
             console.log('User fetched successfully:', response.data.user);
-            
+
             return response.data.user;
         } catch (error) {
             console.log(error.response?.data?.message);
@@ -50,6 +50,31 @@ export const uploadAvatar = createAsyncThunk(
         }
     }
 );
+import { Alert } from 'react-native';
+export const fetchUserDashboardSummary = createAsyncThunk(
+  'user/fetchUserDashboardSummary',
+  async (_, { rejectWithValue, getState }) => {
+    try {
+      const token = getState().auth.userToken;
+
+      const res = await axiosInstance.get('/profile/dashboardsummary', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+    //   Alert.alert("Dashboard Data", JSON.stringify(res.data, null, 2));
+
+      return res.data;
+    } catch (error) {
+      Alert.alert("Error", error.response?.data?.message || 'Failed to fetch dashboard summary');
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch dashboard summary');
+    }
+  }
+);
+
+
+
 
 const userSlice = createSlice({
     name: 'user',
@@ -58,13 +83,14 @@ const userSlice = createSlice({
         wallet: null,
         loading: false,
         errorMsg: null,
+        dashboardSummary: null,
     },
     reducers: {
         clearUser: (state) => {
             state.userDetails = null;
             state.wallet = null;
             state.errorMsg = null;
-            
+
         },
     },
     extraReducers: (builder) => {
@@ -84,7 +110,7 @@ const userSlice = createSlice({
                 state.userDetails = action.payload;
                 state.wallet = action.payload.wallet || null;
                 state.loading = false;
-              })
+            })
             .addCase(getEmployeeById.rejected, (state, action) => {
                 state.loading = false;
                 state.errorMsg = action.payload;
@@ -116,7 +142,21 @@ const userSlice = createSlice({
             .addCase(uploadAvatar.rejected, (state, action) => {
                 state.loading = false;
                 state.errorMsg = action.payload;
-            });
+            })
+            // Dashboard Summary
+            .addCase(fetchUserDashboardSummary.pending, (state) => {
+                state.loading = true;
+                state.errorMsg = null;
+            })
+            .addCase(fetchUserDashboardSummary.fulfilled, (state, action) => {
+                state.dashboardSummary = action.payload;
+                state.loading = false;
+            })
+            .addCase(fetchUserDashboardSummary.rejected, (state, action) => {
+                state.loading = false;
+                state.errorMsg = action.payload;
+            })
+
     },
 });
 

@@ -39,7 +39,7 @@ const LoginScreen = () => {
         try {
             const resultAction = await dispatch(login({ email, password }));
             if (login.fulfilled.match(resultAction)) {
-                Alert.alert('Success', 'Login Success');
+                // Alert.alert('Success', 'Login Success');
                 //  load token and userId
                 const token = resultAction.payload?.token || resultAction.payload;
                 await AsyncStorage.setItem('userToken', token);

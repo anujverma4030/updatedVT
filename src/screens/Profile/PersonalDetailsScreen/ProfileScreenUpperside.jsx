@@ -62,17 +62,37 @@ const ProfileScreenUpperside = () => {
                     <View style={styles.depositAndWithdrawContainer}>
                         <TouchableOpacity
                             activeOpacity={0.7}
-                            style={[styles.depositTextBox, { backgroundColor: '#0653D1', borderTopLeftRadius: 6, borderBottomLeftRadius: 6 }]}>
+                            onPress={() => navigation.navigate('UserDeposit')}
+                            style={[
+                                styles.depositTextBox,
+                                {
+                                    backgroundColor: '#0653D1',
+                                    borderTopLeftRadius: 6,
+                                    borderBottomLeftRadius: 6,
+                                },
+                            ]}
+                        >
                             <Text style={styles.depositText}>Deposit</Text>
                         </TouchableOpacity>
+
                         <TouchableOpacity
                             activeOpacity={0.7}
                             onPress={() => navigation.navigate('UserWithdraw')}
-                            style={[styles.depositTextBox, { backgroundColor: '#FDBE00', borderTopRightRadius: 6, borderBottomRightRadius: 6 }]}>
-                            <Text style={styles.depositText}>Withdraw{'\n'}
+                            style={[
+                                styles.depositTextBox,
+                                {
+                                    backgroundColor: '#FDBE00',
+                                    borderTopRightRadius: 6,
+                                    borderBottomRightRadius: 6,
+                                },
+                            ]}
+                        >
+                            <Text style={styles.depositText}>
+                                Withdraw{'\n'}
                                 <Text style={styles.rulesText}>Rules: 24hr lock, Min $100</Text>
                             </Text>
                         </TouchableOpacity>
+
                     </View>
                 </View>
             </View>

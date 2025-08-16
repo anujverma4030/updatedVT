@@ -28,6 +28,8 @@ import OtpVerificationScreen from '../screens/Auth/OtpVerificationScreen/OtpVeri
 import ResetPasswordScreen from '../screens/Auth/ResetPasswordScreen/ResetPasswordScreen';
 import SpinScreen from '../screens/SpinWheel/SpinScreen';
 import ReferralScreen from '../screens/Referral/ReferralScreen/ReferralScreen';
+import VerifyEmailOtpScreen from '../screens/Profile/PersonalDetailsScreen/VerifyEmailOtpScreen'
+import VerifyBinanceScreen from '../screens/verifyBinance';
 
 
 
@@ -74,6 +76,10 @@ const MainStackNavigator = () => {
           <Stack.Screen name='UserDeposit' component={UserDeposit} />
           <Stack.Screen name='UserWithdraw' component={UserWithdraw} />
           <Stack.Screen name='UserWithdrawalOTP' component={UserWithdrawOTP} />
+          {/* <Stack.Screen name="VerifyEmail" component={VerifyEmailOtpScreen} /> */}
+          <Stack.Screen name='VerifyBinance' component={VerifyBinanceScreen} />
+          
+
 
         </Stack.Navigator>
       </ScreenWrapper>

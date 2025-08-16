@@ -37,10 +37,9 @@ const ReferralScreen = () => {
   const navigation = useNavigation<any>();
   const dispatch = useDispatch<AppDispatch>();
 
-  const { referralTree, referralLoading } = useSelector(
+  const { referralTree, referralLoading, referralCode } = useSelector(
     (state: RootState) => state.referral
   );
-
 
   const { summary, loading: summaryLoading, bonusHistory } = useSelector(
     (state: RootState) => state.reward
@@ -77,7 +76,8 @@ const ReferralScreen = () => {
           contentContainerStyle={{ flexGrow: 1, paddingBottom: insets.bottom + 100 }}
           showsVerticalScrollIndicator={false}
         >
-          <ReferralPageUpparPart />
+          {/* ✅ PASS referralCode here */}
+          <ReferralPageUpparPart referralCode={referralCode} />
 
           <Text style={styles.headerText}>Commission Levels</Text>
           <View style={styles.Tablecontainer}>
@@ -159,6 +159,9 @@ const ReferralScreen = () => {
 };
 
 export default ReferralScreen;
+
+// Keep your same StyleSheet here (no changes)
+
 
 const styles = StyleSheet.create({
   MainContainer: {

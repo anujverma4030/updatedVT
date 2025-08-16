@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axiosInstance from '../../api/axiosInstance';
+import { Alert } from 'react-native';
 // import { Alert } from 'react-native';
 
 // ========== THUNKS ==========
@@ -26,7 +27,7 @@ export const fetchUserInvestments = createAsyncThunk(
       // alert("INVESTMENT DATA: " + JSON.stringify(res.data)); // Dev only
       return res.data.investments;
     } catch (err) {
-      
+
       return thunkAPI.rejectWithValue(err.response.data);
     }
   }
@@ -145,29 +146,44 @@ export const fetchAllWithdrawals = createAsyncThunk(
   }
 );
 
-export const approveAllWithdrawals = createAsyncThunk(
-  'admin/approveAllWithdrawals',
-  async (_, thunkAPI) => {
+// In adminSlice.js
+export const approveWithdrawal = createAsyncThunk(
+  "admin/approveWithdrawal",
+  async ({ id, status }, thunkAPI) => {
     try {
-      const res = await axiosInstance.get('/admin/approvewithdrawals');
-      return res.data.transactions;
+      const response = await axiosInstance.put(`/admin/withdrawalstatus/${id}`, { status });
+      return response.data.transaction; // ✅ match what toggleWithdrawalStatus returns
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response.data);
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.response?.data ||
+        err?.message ||
+        "Approval failed";
+      return thunkAPI.rejectWithValue(errorMessage);
     }
   }
 );
+
+
 
 export const toggleDepositStatus = createAsyncThunk(
   'admin/toggleDepositStatus',
   async ({ id, status }, thunkAPI) => {
     try {
       const res = await axiosInstance.put(`/admin/depositstatus/${id}`, { status });
-      return res.data.transaction;
+      
+      // Metro console me raw response
+      console.log("🔵 Full backend response:", res.data);
+
+      // Poora data return kar do taaki screen me alert kar sake
+      return res.data;
     } catch (err) {
-      return thunkAPI.rejectWithValue(err.response.data);
+      console.log("🔴 Error:", err.response?.data);
+      return thunkAPI.rejectWithValue(err.response?.data || err.message);
     }
   }
 );
+
 
 export const toggleWithdrawalStatus = createAsyncThunk(
   'admin/toggleWithdrawalStatus',
@@ -283,66 +299,86 @@ const adminSlice = createSlice({
       .addCase(fetchAllWithdrawals.fulfilled, (state, action) => {
         state.withdrawals = action.payload;
       })
-      .addCase(approveAllWithdrawals.fulfilled, (state, action) => {
-        state.withdrawals = action.payload;
+      .addCase(approveWithdrawal.fulfilled, (state, action) => {
+        const updated = action.payload;
+        const index = state.withdrawals.findIndex(w => w._id === updated._id);
+        if (index !== -1) {
+          state.withdrawals[index] = updated; // update entire object
+        }
       })
-      .addCase(fetchSpinLogs.fulfilled, (state, action) => {
+     .addCase(fetchSpinLogs.fulfilled, (state, action) => {
         state.spins = action.payload;
       })
-      .addCase(fetchReferralStats.fulfilled, (state, action) => {
-        state.referralStats = action.payload;
-      })
-      .addCase(fetchTransactionReports.fulfilled, (state, action) => {
-        state.transactionReports = action.payload;
-      })
-      .addCase(createInvestmentPlan.fulfilled, (state, action) => {
-        const plan = action.payload;
-        if (plan.amount && !plan.minAmount) {
-          plan.minAmount = plan.amount;
-        }
-        state.investmentPlans.push(plan);
-      })
-      .addCase(updateInvestmentPlan.fulfilled, (state, action) => {
-        const updatedPlan = action.payload;
-        const index = state.investmentPlans.findIndex(plan => plan.id === updatedPlan.id);
-        if (index !== -1) {
-          state.investmentPlans[index] = updatedPlan;
-        }
-      })
-      .addCase(deleteInvestmentPlan.fulfilled, (state, action) => {
-        const deletedId = action.payload.id;
-        state.investmentPlans = state.investmentPlans.filter(plan => plan.id !== deletedId);
-      })
-      .addCase(deleteInvestmentPlan.rejected, (state, action) => {
-        const errorMessage =
-          typeof action.payload === 'string'
-            ? action.payload
-            : action.payload?.message || 'Unknown error occurred while deleting the plan.';
-        Alert.alert('❌ Delete Failed', errorMessage);
-      })
-      .addMatcher(
-        (action) => action.type.startsWith('admin/') && action.type.endsWith('/pending'),
-        (state) => {
-          state.loading = true;
-          state.error = null;
-        }
-      )
-      .addMatcher(
-        (action) => action.type.startsWith('admin/') && action.type.endsWith('/fulfilled'),
-        (state) => {
-          state.loading = false;
-          state.error = null;
-        }
-      )
-      .addMatcher(
-        (action) => action.type.startsWith('admin/') && action.type.endsWith('/rejected'),
-        (state, action) => {
-          state.loading = false;
-          state.error = action.payload;
-        }
-      );
-  }
-});
+    .addCase(fetchReferralStats.fulfilled, (state, action) => {
+      state.referralStats = action.payload;
+    })
+    .addCase(fetchTransactionReports.fulfilled, (state, action) => {
+      state.transactionReports = action.payload;
+    })
+    .addCase(createInvestmentPlan.fulfilled, (state, action) => {
+      const plan = action.payload;
+      if (plan.amount && !plan.minAmount) {
+        plan.minAmount = plan.amount;
+      }
+      state.investmentPlans.push(plan);
+    })
+    .addCase(updateInvestmentPlan.fulfilled, (state, action) => {
+      const updatedPlan = action.payload;
+      const index = state.investmentPlans.findIndex(plan => plan.id === updatedPlan.id);
+      if (index !== -1) {
+        state.investmentPlans[index] = updatedPlan;
+      }
+    })
+    .addCase(deleteInvestmentPlan.fulfilled, (state, action) => {
+      const deletedId = action.payload.id;
+      state.investmentPlans = state.investmentPlans.filter(plan => plan.id !== deletedId);
+    })
+    .addCase(deleteInvestmentPlan.rejected, (state, action) => {
+      const errorMessage =
+        typeof action.payload === 'string'
+          ? action.payload
+          : action.payload?.message || 'Unknown error occurred while deleting the plan.';
+      // Alert.alert('❌ Delete Failed', errorMessage); // ⚠️ Can't use Alert outside component
+      console.error('❌ Delete Failed:', errorMessage);
+    })
+    .addCase(toggleDepositStatus.fulfilled, (state, action) => {
+      const updated = action.payload;
+      const index = state.deposits.findIndex(item => item._id === updated._id);
+      if (index !== -1) {
+        state.deposits[index] = updated;
+      }
+    })
+    .addCase(toggleWithdrawalStatus.fulfilled, (state, action) => {
+      const updated = action.payload;
+      const index = state.withdrawals.findIndex(item => item._id === updated._id);
+      if (index !== -1) {
+        state.withdrawals[index] = updated;
+      }
+    })
+    .addMatcher(
+      (action) => action.type.startsWith('admin/') && action.type.endsWith('/pending'),
+      (state) => {
+        state.loading = true;
+        state.error = null;
+      }
+    )
+    .addMatcher(
+      (action) => action.type.startsWith('admin/') && action.type.endsWith('/fulfilled'),
+      (state) => {
+        state.loading = false;
+        state.error = null;
+      }
+    )
+    .addMatcher(
+      (action) => action.type.startsWith('admin/') && action.type.endsWith('/rejected'),
+      (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      }
+    );
+} // ✅ closes extraReducers
+}); // ✅ closes createSlice
 
-export default adminSlice.reducer;
+// ✅ export actions and reducer
 export const { setSelectedPlan, clearSelectedPlan } = adminSlice.actions;
+export default adminSlice.reducer;

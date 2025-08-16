@@ -1,154 +1,243 @@
 import {
-    Dimensions,
-    ScrollView,
-    StatusBar,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-    Image,
-    TextInput
-} from 'react-native'
-import React, { useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
+  Dimensions,
+  ScrollView,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  TextInput,
+  Alert,
+} from 'react-native';
+import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  verifyUpiId,
+  verifyUpiIdOtp,
+  withdrawFunds,
+} from '../../redux/slices/walletSlice';
 
 const UserWithdraw = () => {
-    const navigation = useNavigation();
-    const { userDetails } = useSelector((state) => state.user);
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const { userDetails } = useSelector((state) => state.user);
 
-    const [amount, setAmount] = useState('');
-    const [walletAddress, setWalletAddress] = useState('');
-    const [date, setDate] = useState('');
-    const [name, setName] = useState(userDetails?.name || '');
+  const [form, setForm] = useState({
+    amount: '',
+    walletAddress: '',
+    date: '',
+    upiId: '',
+    otp: '',
+  });
 
-    const paymentOptions = [
-        {
-            name: 'Bank',
-            image: require('../../assests/NotoBank.png'),
-            onPress: () => console.log('Bank selected'),
-        },
-        {
-            name: 'UPI',
-            image: require('../../assests/UPI.png'),
-            onPress: () => console.log('UPI selected'),
-        },
-        {
-            name: 'Crypto',
-            image: require('../../assests/Crypto.png'),
-            onPress: () => console.log('Crypto selected'),
-        }
-    ];
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
 
-    return (
-        <>
-            <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent />
-            <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.mainContainer}>
-                <ScrollView>
-                    <View style={styles.headerContainer}>
-                        <View style={styles.headerIcons}>
-                            <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.goBack()}>
-                                <MaterialIcons name="arrow-back" size={30} color="#fff" />
-                            </TouchableOpacity>
-                            <TouchableOpacity activeOpacity={0.7}>
-                                <MaterialIcons name="notifications" size={30} color="#fff" />
-                            </TouchableOpacity>
-                        </View>
-                        <View>
-                            <Text style={styles.headerText}>
-                                Hi {userDetails?.name || 'User'}, cash out your {'\n'}rewards fast and safe!"
-                            </Text>
-                        </View>
-                        <View style={styles.headerIcons}>
-                            <Text style={styles.balanceText}>
-                                Balance : ${userDetails?.wallet?.balance || '0'}
-                            </Text>
-                            <Image
-                                source={require('../../assests/WithdrawImage.png')}
-                                resizeMode='cover'
-                                style={styles.balanceImage}
-                            />
-                        </View>
-                    </View>
+  const handleChange = (key, value) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+  };
 
-                    <View style={styles.withdrawalContainer}>
-                        <View style={styles.withdrawView}>
-                            <Text style={styles.withdrawalHeaderText}>Withdrawal</Text>
+  const handleSendOtp = async () => {
+    if (!form.upiId) return Alert.alert('Error', 'Enter UPI-linked email');
 
-                            <View style={styles.textInput}>
-                                <TextInput
-                                    placeholder='Enter amount ($100 min)'
-                                    placeholderTextColor={'#8F8F8F'}
-                                    style={styles.input}
-                                    keyboardType='numeric'
-                                    value={amount}
-                                    onChangeText={setAmount}
-                                />
-                            </View>
+    const res = await dispatch(verifyUpiId(form.upiId));
+    if (verifyUpiId.fulfilled.match(res)) {
+      Alert.alert('Success', 'OTP sent to your email');
+      setOtpSent(true);
+    } else {
+      Alert.alert('Error', res.payload || 'Failed to send OTP');
+    }
+  };
 
-                            <View style={styles.textInput}>
-                                <TextInput
-                                    placeholder='Enter wallet address'
-                                    placeholderTextColor={'#8F8F8F'}
-                                    style={styles.input}
-                                    value={walletAddress}
-                                    onChangeText={setWalletAddress}
-                                />
-                            </View>
+  const handleVerifyOtp = async () => {
+    const res = await dispatch(verifyUpiIdOtp({ upiId: form.upiId, otp: form.otp }));
+    if (verifyUpiIdOtp.fulfilled.match(res)) {
+      Alert.alert('Success', 'OTP verified');
+      setOtpVerified(true);
+    } else {
+      Alert.alert('Error', res.payload || 'OTP verification failed');
+    }
+  };
 
-                            <View style={styles.textInput}>
-                                <TextInput
-                                    placeholder='Enter date (e.g. 2025-07-24)'
-                                    placeholderTextColor={'#8F8F8F'}
-                                    style={styles.input}
-                                    value={date}
-                                    onChangeText={setDate}
-                                />
-                            </View>
+const handleWithdraw = async () => {
+  const { amount, walletAddress, date } = form;
 
-                            <View style={styles.textInput}>
-                                <TextInput
-                                    placeholder='Your Name'
-                                    placeholderTextColor={'#8F8F8F'}
-                                    style={styles.input}
-                                    value={name}
-                                    editable={false}
-                                />
-                            </View>
+  if (!amount || !walletAddress || !date || !form.upiId) {
+    return Alert.alert('Error', 'Please fill all fields');
+  }
+  if (!otpVerified) return Alert.alert('Error', 'Verify OTP first');
 
-                            <Text style={styles.labelText}>Select ((2% fee, $10 min))</Text>
-                            <View style={styles.paymentOption}>
-                                {paymentOptions.map((item, index) => (
-                                    <TouchableOpacity
-                                        activeOpacity={0.7}
-                                        key={index}
-                                        onPress={item.onPress}
-                                        style={styles.optionCard}
-                                    >
-                                        <Image source={item.image} resizeMode='cover' style={styles.image} />
-                                        <Text style={styles.text}>{item.name}</Text>
-                                    </TouchableOpacity>
-                                ))}
-                            </View>
+  const res = await dispatch(withdrawFunds({ amount, walletAddress, date }));
+  if (withdrawFunds.fulfilled.match(res)) {
+    Alert.alert('Success', 'Withdrawal request sent');
+    setForm({ amount: '', walletAddress: '', date: '', upiId: '', otp: '' });
+    setOtpSent(false);
+    setOtpVerified(false);
+  } else {
+    Alert.alert('Failed', res.payload || 'Withdraw failed');
+  }
+};
 
-                            <TouchableOpacity
-                                activeOpacity={0.7}
-                                onPress={() => navigation.navigate('UserWithdrawalOTP')}
-                                style={styles.otpBtn}
-                            >
-                                <Text style={styles.otpBtnText}>Send OTP</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </ScrollView>
-            </SafeAreaView>
-        </>
-    );
+  return (
+    <>
+      <StatusBar barStyle={'dark-content'} backgroundColor={'transparent'} translucent />
+      <SafeAreaView edges={['left', 'right', 'bottom']} style={styles.mainContainer}>
+        <ScrollView>
+          <View style={styles.headerContainer}>
+            <View style={styles.headerIcons}>
+              <TouchableOpacity activeOpacity={0.7} onPress={() => navigation.goBack()}>
+                <MaterialIcons name="arrow-back" size={30} color="#fff" />
+              </TouchableOpacity>
+              <TouchableOpacity activeOpacity={0.7}>
+                <MaterialIcons name="notifications" size={30} color="#fff" />
+              </TouchableOpacity>
+            </View>
+            <View>
+              <Text style={styles.headerText}>
+                Hi {userDetails?.name || 'User'}, cash out your {'\n'}rewards fast and safe!"
+              </Text>
+            </View>
+            <View style={styles.headerIcons}>
+              <Text style={styles.balanceText}>
+                Balance : ${userDetails?.wallet?.balance || '0'}
+              </Text>
+              <Image
+                source={require('../../assests/WithdrawImage.png')}
+                resizeMode="cover"
+                style={styles.balanceImage}
+              />
+            </View>
+          </View>
+
+          <View style={styles.withdrawalContainer}>
+            <View style={styles.withdrawView}>
+              <Text style={styles.withdrawalHeaderText}>Withdrawal</Text>
+
+              <View style={styles.textInput}>
+                <TextInput
+                  placeholder="Enter amount ($100 min)"
+                  placeholderTextColor={'#8F8F8F'}
+                  style={styles.input}
+                  keyboardType="numeric"
+                  value={form.amount}
+                  onChangeText={(val) => handleChange('amount', val)}
+                />
+              </View>
+
+              <View style={styles.textInput}>
+                <TextInput
+                  placeholder="Enter wallet address"
+                  placeholderTextColor={'#8F8F8F'}
+                  style={styles.input}
+                  value={form.walletAddress}
+                  onChangeText={(val) => handleChange('walletAddress', val)}
+                />
+              </View>
+
+              <View style={styles.textInput}>
+                <TextInput
+                  placeholder="Enter date (e.g. 2025-07-24)"
+                  placeholderTextColor={'#8F8F8F'}
+                  style={styles.input}
+                  value={form.date}
+                  onChangeText={(val) => handleChange('date', val)}
+                />
+              </View>
+
+              <View style={styles.textInput}>
+                <TextInput
+                  placeholder="Your Name"
+                  placeholderTextColor={'#8F8F8F'}
+                  style={styles.input}
+                  value={userDetails?.name}
+                  editable={false}
+                />
+              </View>
+
+              <View style={styles.textInput}>
+                <TextInput
+                  placeholder="Enter Your Registered Email"
+                  placeholderTextColor={'#8F8F8F'}
+                  style={styles.input}
+                  value={form.upiId}
+                  onChangeText={(val) => handleChange('upiId', val)}
+                  keyboardType="email-address"
+                />
+              </View>
+
+              <Text style={styles.labelText}>Select ((2% fee, $10 min))</Text>
+              <View style={styles.paymentOption}>
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  style={styles.optionCard}
+                >
+                  <Image
+                    source={require('../../assests/Crypto.png')}
+                    resizeMode="cover"
+                    style={styles.image}
+                  />
+                  <Text style={styles.text}>Binance</Text>
+                </TouchableOpacity>
+              </View>
+
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={handleSendOtp}
+                style={styles.otpBtn}
+                disabled={otpSent}
+              >
+                <Text style={styles.otpBtnText}>{otpSent ? 'OTP Sent' : 'Send OTP'}</Text>
+              </TouchableOpacity>
+
+              {otpSent && (
+                <>
+                  <View style={styles.textInput}>
+                    <TextInput
+                      placeholder="Enter OTP"
+                      placeholderTextColor={'#8F8F8F'}
+                      style={styles.input}
+                      value={form.otp}
+                      onChangeText={(val) => handleChange('otp', val)}
+                      keyboardType="numeric"
+                    />
+                  </View>
+
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={handleVerifyOtp}
+                    style={[styles.otpBtn, { backgroundColor: otpVerified ? '#6c757d' : '#28a745' }]}
+                    disabled={otpVerified}
+                  >
+                    <Text style={styles.otpBtnText}>
+                      {otpVerified ? 'OTP Verified' : 'Verify OTP'}
+                    </Text>
+                  </TouchableOpacity>
+                </>
+              )}
+
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={handleWithdraw}
+                style={styles.otpBtn}
+              >
+                <Text style={styles.otpBtnText}>Withdraw</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
+    </>
+  );
 };
 
 export default UserWithdraw;
+
+
+
 
 const styles = StyleSheet.create({
     mainContainer: {
